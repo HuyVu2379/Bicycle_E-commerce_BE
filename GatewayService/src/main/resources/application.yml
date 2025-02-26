@@ -1,0 +1,31 @@
+server:
+  port: 8080  # API Gateway chạy trên cổng 8080
+spring:
+  application:
+    name: api-gateway  # Tên của API Gateway trong Eureka
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/products/**
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/carts/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+
+eureka:
+  client:
+    register-with-eureka: true  # Đăng ký service này với Eureka
+    fetch-registry: true  # Lấy danh sách các service từ Eureka
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Kết nối với Eureka Server

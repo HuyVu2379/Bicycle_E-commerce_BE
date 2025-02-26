@@ -1,0 +1,16 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: product-service
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:dp8bVWUl6uDBx24o@huyvu.fulic.mongodb.net/productdb?retryWrites=true&w=majority
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -19,8 +19,8 @@
         <module name="CartService" />
         <module name="OrderService" />
         <module name="UserService" />
-        <module name="ProductService" />
         <module name="PaymentService" />
+        <module name="ProductService" />
       </profile>
     </annotationProcessing>
   </component>
