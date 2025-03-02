@@ -15,4 +15,9 @@ public class CartServiceImpl implements CartService {
     public Optional<Cart> createCart(Cart cart) {
         return Optional.of(cartRepository.save(cart));
     }
+
+    @Override
+    public Optional<Cart> getCartById(String id) {
+        return Optional.of(cartRepository.findById(id).get());
+    }
 }

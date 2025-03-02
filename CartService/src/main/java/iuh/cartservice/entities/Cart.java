@@ -15,6 +15,7 @@ public class Cart extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartId;
 
+    @Column(unique = true,nullable = false)
     private String userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)

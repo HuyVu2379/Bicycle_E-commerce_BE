@@ -1,4 +1,4 @@
-package iuh.userservice.exception;
+package iuh.userservice.dtos.responses;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

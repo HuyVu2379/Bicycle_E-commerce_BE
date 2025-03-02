@@ -8,4 +8,5 @@ import java.util.Optional;
 @Service
 public interface CartService {
     public Optional<Cart> createCart(Cart cart);
+    public Optional<Cart> getCartById(String id);
 }

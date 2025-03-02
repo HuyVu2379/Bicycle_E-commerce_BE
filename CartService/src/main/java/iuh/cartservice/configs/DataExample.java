@@ -15,30 +15,28 @@ import java.util.List;
 
 @Component
 public class DataExample implements CommandLineRunner {
-    @Autowired
     private CartRepository cartRepository;
-    @Autowired
     private CartItemRepository cartItemRepository;
+    public DataExample(CartRepository cartRepository, CartItemRepository cartItemRepository) {
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+    }
     private Faker faker = new Faker();
 
     @Override
     public void run(String... args) {
         for (int i = 0; i < 10; i++) {
-            // Tạo Cart
             Cart cart = new Cart();
             cart.setUserId(String.valueOf(faker.number().digits(5)));
-            // Tạo CartItem
             CartItem cartItem = new CartItem();
             cartItem.setProductId(faker.idNumber().valid().toString());
             cartItem.setQuantity(faker.number().numberBetween(1, 10));
 
-            // Liên kết CartItem với Cart
             cartItem.setCart(cart);
             List<CartItem> cartItems = new ArrayList<>();
             cartItems.add(cartItem);
             cart.setItems(cartItems);
 
-            // Lưu Cart (CartItem sẽ tự động lưu nhờ Cascade)
             cartRepository.save(cart);
         }
     }

@@ -11,5 +11,4 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class CartRequest {
     private String userId;
-
 }

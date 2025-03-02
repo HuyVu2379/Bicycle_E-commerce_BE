@@ -1,6 +1,5 @@
-package iuh.cartservice.exception;
+package iuh.cartservice.dtos.responses;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
