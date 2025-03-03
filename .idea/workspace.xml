@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="437a03b5-50bd-443b-b801-a430b932f644" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -257,7 +252,7 @@
       <workItem from="1740836534001" duration="5545000" />
       <workItem from="1740889249602" duration="8030000" />
       <workItem from="1741011041399" duration="68000" />
-      <workItem from="1741011153226" duration="3352000" />
+      <workItem from="1741011153226" duration="3395000" />
     </task>
     <servers />
   </component>

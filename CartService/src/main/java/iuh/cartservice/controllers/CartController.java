@@ -68,4 +68,20 @@ public class CartController {
             throw e;
         }
     }
+
+    @PostMapping(value = "/create-cart-item", produces = "application/json")
+    public ResponseEntity<MessageResponse<CartItem>> createCartItem(@RequestBody CartItem cartItem) {
+        try {
+            System.out.println("cartItem: " + cartItem);
+            Optional<CartItem> result = cartItemService.addCartItem(cartItem);
+            if(result.isPresent()){
+                return SuccessEntityResponse.created("CartItem created successfully", result.get());
+            }
+            else{
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem creation failed");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }
