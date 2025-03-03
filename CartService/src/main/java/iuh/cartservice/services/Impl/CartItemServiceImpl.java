@@ -1,14 +1,21 @@
 package iuh.cartservice.services.Impl;
 
 import iuh.cartservice.entities.CartItem;
+import iuh.cartservice.repositories.CartItemRepository;
 import iuh.cartservice.services.CartItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class CartItemServiceImpl implements CartItemService {
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
     @Override
-    public Optional<CartItem> addCartItem(String id) {
-        return Optional.empty();
+    public Optional<CartItem> addCartItem(CartItem cartItem) {
+        return Optional.of(cartItemRepository.save(cartItem));
     }
 
     @Override
@@ -23,7 +30,13 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public boolean removeCartItem(String id) {
-        return false;
+        if(!cartItemRepository.existsById(id)) {
+            return false;
+        }
+        else{
+            cartItemRepository.deleteById(id);
+            return true;
+        }
     }
 
     @Override
