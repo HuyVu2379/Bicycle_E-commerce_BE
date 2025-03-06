@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Service
 public interface CartItemService {
-    public Optional<CartItem> addCartItem(String id);
+    public Optional<CartItem> addCartItem(CartItem cartItem);
     public Optional<CartItem> updateCartItem(String id, int quantity);
     public Optional<CartItem> getCartItemById(String id);
     public boolean removeCartItem(String id);
