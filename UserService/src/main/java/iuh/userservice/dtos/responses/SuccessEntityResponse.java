@@ -3,7 +3,7 @@ package iuh.userservice.dtos.responses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class SuccessResponse {
+public class SuccessEntityResponse {
     public static <T> ResponseEntity<MessageResponse<T>> ok(String message, T data) {
         return ResponseEntity.ok(new MessageResponse<>(HttpStatus.OK.value(), message, true, data));
     }

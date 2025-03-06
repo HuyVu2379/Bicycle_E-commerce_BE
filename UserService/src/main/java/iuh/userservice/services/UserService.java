@@ -1,7 +1,13 @@
 package iuh.userservice.services;
 
+import iuh.userservice.dtos.requests.RegisterRequest;
+import iuh.userservice.entities.User;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public interface UserService {
+    Optional<User> findUserByEmail(String email);
+    Optional<User> registerUser(RegisterRequest registerRequest);
 }

@@ -87,7 +87,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.18620689&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -115,7 +115,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.CartServiceApplication">
+  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
     <configuration name="CartServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="iuh.cartservice.CartServiceApplication" />
       <extension name="coverage">
@@ -225,7 +225,14 @@
       <workItem from="1740792512286" duration="401000" />
       <workItem from="1740802541814" duration="691000" />
       <workItem from="1740836534001" duration="5545000" />
-      <workItem from="1740889249602" duration="8030000" />
+      <workItem from="1740889249602" duration="8279000" />
+      <workItem from="1740925050851" duration="521000" />
+      <workItem from="1740925599638" duration="8684000" />
+      <workItem from="1740989114175" duration="2278000" />
+      <workItem from="1741078595017" duration="13630000" />
+      <workItem from="1741101579073" duration="2746000" />
+      <workItem from="1741141595769" duration="15058000" />
+      <workItem from="1741184661725" duration="4168000" />
     </task>
     <servers />
   </component>
