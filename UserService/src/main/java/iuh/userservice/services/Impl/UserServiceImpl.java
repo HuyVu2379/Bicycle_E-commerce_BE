@@ -6,16 +6,25 @@ import iuh.userservice.enums.Role;
 import iuh.userservice.exception.errors.DuplicateUserException;
 import iuh.userservice.repositories.UserRepository;
 import iuh.userservice.services.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userService;
-    private PasswordEncoder passwordEncoder =  new BCryptPasswordEncoder();
-    public UserServiceImpl(UserRepository userService) {
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+
+    public UserServiceImpl(UserRepository userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,5 +53,20 @@ public class UserServiceImpl implements UserService {
                 .dob(registerRequest.getDob())
                 .build();
         return Optional.of(userService.save(user));
+    }
+
+    @Override
+    public Optional<User> updateUser(User user) {
+        return Optional.of(userService.save(user));
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return userService.existsByEmail(email);
+    }
+
+    @Override
+    public Boolean existsByPhoneNumber(String phoneNumber) {
+        return userService.existsByPhoneNumber(phoneNumber);
     }
 }

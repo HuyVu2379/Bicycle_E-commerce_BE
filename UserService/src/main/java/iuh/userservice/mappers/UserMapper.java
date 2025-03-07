@@ -3,6 +3,7 @@ package iuh.userservice.mappers;
 import iuh.userservice.dtos.requests.AuthRequest;
 import iuh.userservice.dtos.requests.RegisterRequest;
 import iuh.userservice.dtos.responses.AuthResponse;
+import iuh.userservice.dtos.responses.UserResponse;
 import iuh.userservice.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,5 +15,6 @@ public interface UserMapper {
     public AuthRequest RegisterRequestToAuthRequest(RegisterRequest registerRequest);
     public AuthResponse RegisterRequestToAuthResponse(RegisterRequest registerRequest);
     public AuthResponse UserToAuthResponse(User user);
+    public UserResponse UserToUserResponse(User user);
 
 }
