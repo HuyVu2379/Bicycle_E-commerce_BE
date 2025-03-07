@@ -7,7 +7,7 @@ import iuh.cartservice.entities.Cart;
 import iuh.cartservice.entities.CartItem;
 import iuh.cartservice.exception.errors.CartNotFoundException;
 import iuh.cartservice.mappers.CartMapper;
-import iuh.cartservice.services.CartItemService;
+import iuh.cartservice.repositories.CartItemRepository;
 import iuh.cartservice.services.CartItemService;
 import iuh.cartservice.services.Impl.CartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,22 @@ public class CartController {
     private CartMapper cartMapper;
     @Autowired
     private CartItemService cartItemService;
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @GetMapping(value = "/all", produces = "application/json")
+    public ResponseEntity<MessageResponse<Iterable<Cart>>> getAllCarts() {
+        try {
+            Iterable<Cart> result = cartService.getAllCarts();
+            if (result.iterator().hasNext()) {
+                return SuccessEntityResponse.found("All carts fetched successfully", result);
+            } else {
+                throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch carts");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     @PostMapping(value = "/create", produces = "application/json")
     public ResponseEntity<MessageResponse<Cart>> createCart(@RequestBody CartRequest cartRequest) {
@@ -78,6 +94,35 @@ public class CartController {
                 return SuccessEntityResponse.created("CartItem created successfully", result.get());
             } else {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem creation failed");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @GetMapping(value = "/cart-item/{cartItemId}", produces = "application/json")
+    public ResponseEntity<MessageResponse<CartItem>> getCartItemById(@PathVariable String cartItemId) {
+        try {
+            Optional<CartItem> result = cartItemService.getCartItemById(cartItemId);
+            if (result.isPresent()) {
+                return SuccessEntityResponse.found("CartItem found successfully", result.get());
+            } else {
+                throw new CartNotFoundException("CartItem not found with ID: " + cartItemId);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @PatchMapping(value = "/update-cart-item-quantity/{cartItemId}", produces = "application/json")
+    public ResponseEntity<MessageResponse<CartItem>> updateCartItemQuantity(@PathVariable String cartItemId,
+            @RequestBody Integer quantity) {
+        try {
+            Optional<CartItem> result = cartItemService.updateCartItem(cartItemId, quantity);
+            if (result.isPresent()) {
+                return SuccessEntityResponse.created("CartItem updated successfully", result.get());
+            } else {
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem update failed");
             }
         } catch (Exception e) {
             throw e;
