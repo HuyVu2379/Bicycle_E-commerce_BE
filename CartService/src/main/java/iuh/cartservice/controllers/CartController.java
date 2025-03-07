@@ -6,6 +6,7 @@ import iuh.cartservice.dtos.responses.SuccessEntityResponse;
 import iuh.cartservice.entities.Cart;
 import iuh.cartservice.exception.errors.CartNotFoundException;
 import iuh.cartservice.mappers.CartMapper;
+import iuh.cartservice.services.CartItemService;
 import iuh.cartservice.services.Impl.CartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ public class CartController {
     private CartServiceImpl cartService;
     @Autowired
     private CartMapper cartMapper;
-
 
     @PostMapping(value = "/create", produces = "application/json")
     public ResponseEntity<MessageResponse<Cart>> createCart(@RequestBody CartRequest cartRequest) {
@@ -49,4 +49,5 @@ public class CartController {
             throw new CartNotFoundException("Cart not found with ID: " + id);
         }
     }
+
 }
