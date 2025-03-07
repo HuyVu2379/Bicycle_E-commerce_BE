@@ -2,8 +2,8 @@ package iuh.cartservice.services;
 
 import iuh.cartservice.entities.CartItem;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public interface CartItemService {
