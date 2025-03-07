@@ -35,14 +35,6 @@ public class AuthController {
         return SuccessEntityResponse.ok("Login successfully", authResponse);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<MessageResponse<AuthResponse>> register(@RequestBody RegisterRequest registerRequest) {
-        userService.registerUser(registerRequest);
-        AuthRequest authRequest = userMapper.RegisterRequestToAuthRequest(registerRequest);
-        AuthResponse authResponse = authenticationService.authenticate(authRequest);
-        return SuccessEntityResponse.created("Register successfully", authResponse);
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<MessageResponse<Void>> logout(HttpServletRequest request,
                                                         @AuthenticationPrincipal UserDetails userDetails) {

@@ -8,8 +8,14 @@ import java.util.Optional;
 @Service
 public interface CartItemService {
     public Optional<CartItem> addCartItem(CartItem cartItem);
+
     public Optional<CartItem> updateCartItem(String id, int quantity);
-    public Optional<CartItem> getCartItemById(String id);
+
     public boolean removeCartItem(String id);
+
     public boolean removeAllCartItems();
+
+    public Optional<CartItem> getCartItemsById(String cartId);
+
+    public List<CartItem> getAllCartItems();
 }

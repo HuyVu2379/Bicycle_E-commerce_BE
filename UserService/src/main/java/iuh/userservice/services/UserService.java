@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface UserService {
     Optional<User> findUserByEmail(String email);
     Optional<User> registerUser(RegisterRequest registerRequest);
+    Optional<User> updateUser(User user);
+    Boolean existsByEmail(String email);
+    Boolean existsByPhoneNumber(String phoneNumber);
 }
