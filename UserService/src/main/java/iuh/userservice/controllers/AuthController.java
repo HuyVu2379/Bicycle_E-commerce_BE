@@ -65,7 +65,13 @@ public class AuthController {
     public ResponseEntity<MessageResponse<Boolean>> validateToken(@RequestParam String token) {
         try {
             boolean isValid = authenticationService.validateToken(token);
-            return SuccessEntityResponse.ok("Token is valid", isValid);
+            if(isValid){
+                return SuccessEntityResponse.ok("Token is valid", isValid);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new MessageResponse<>(HttpStatus.UNAUTHORIZED.value(), "Token is invalid", false, null));
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse<>(HttpStatus.UNAUTHORIZED.value(), "Token is invalid", false, null));

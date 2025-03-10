@@ -103,7 +103,7 @@ public class CartController {
     @GetMapping(value = "/cart-item/{cartItemId}", produces = "application/json")
     public ResponseEntity<MessageResponse<CartItem>> getCartItemById(@PathVariable String cartItemId) {
         try {
-            Optional<CartItem> result = cartItemService.getCartItemById(cartItemId);
+            Optional<CartItem> result = cartItemService.getCartItemsById(cartItemId);
             if (result.isPresent()) {
                 return SuccessEntityResponse.found("CartItem found successfully", result.get());
             } else {
