@@ -28,10 +28,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private JWTUtil jwtUtil;
     private static final Logger logger = LoggerFactory.getLogger(JWTUtil.class);
     private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
-            "/api/v1/users/auth/login",
-            "/api/v1/users/auth/register",
-            "/api/v1/users/auth/refresh-token",
-            "/api/v1/users/auth/validate-token"
+            "/api/v1/auth/login",
+            "/api/v1/users/register",
+            "/api/v1/auth/refresh-token",
+            "/api/v1/auth/validate-token",
+            "/api/v1/address/create"
     );
     public AuthenticationFilter() {
         super(Config.class);

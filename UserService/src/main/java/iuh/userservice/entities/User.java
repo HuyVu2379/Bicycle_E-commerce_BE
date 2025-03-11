@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private LocalDateTime dob;
     @Column(nullable = false,unique = true)
     private String phoneNumber;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String addressId;
     @Column(nullable = true)
     private String avatar;

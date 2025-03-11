@@ -14,4 +14,5 @@ public interface CartService {
     public Optional<Cart> createCart(Cart cart);
 
     public Optional<Cart> getCartById(String id);
+    public Optional<Cart> getCartByUserId(String userId);
 }

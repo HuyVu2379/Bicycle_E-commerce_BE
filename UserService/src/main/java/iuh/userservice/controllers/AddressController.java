@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/users/address")
+@RequestMapping("/api/v1/address")
 public class AddressController {
     @Autowired
     private AddressServiceImpl addressService;

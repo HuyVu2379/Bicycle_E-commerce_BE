@@ -26,7 +26,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Optional<Cart> getCartById(String id) {
-        return Optional.of(cartRepository.findById(id).get());
+        Optional<Cart> cartOptional = cartRepository.findById(id);
+        return cartOptional.isPresent() ? cartOptional : Optional.empty();
+    }
+
+    @Override
+    public Optional<Cart> getCartByUserId(String userId) {
+        return Optional.ofNullable(cartRepository.findByUserId(userId));
     }
 
 

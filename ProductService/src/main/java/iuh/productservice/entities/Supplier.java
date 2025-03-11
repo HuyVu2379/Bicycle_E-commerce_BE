@@ -18,7 +18,7 @@ public class Supplier {
     private String supplierId;
     @NotBlank(message = "Tên nhà cung cấp không được để trống")
     private String name;
-    private Address address;
+    private String addressId;
     private String phone;
     private String email;
     private String description;

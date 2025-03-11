@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -44,9 +47,13 @@ public class CartController {
             throw e;
         }
     }
-
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/create", produces = "application/json")
-    public ResponseEntity<MessageResponse<Cart>> createCart(@RequestBody CartRequest cartRequest) {
+    public ResponseEntity<MessageResponse<Cart>> createCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = (String) authentication.getDetails();
+        CartRequest cartRequest = new CartRequest();
+        cartRequest.setUserId(userId);
         Cart cart = cartMapper.CartRequestToCart(cartRequest);
         try {
             Optional<Cart> result = cartService.createCart(cart);
@@ -60,72 +67,31 @@ public class CartController {
         }
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<MessageResponse<Cart>> getCartById(@PathVariable String id) {
-        System.out.println("id: " + id);
         Optional<Cart> result = cartService.getCartById(id);
-        if (result.isPresent()) {
-            return SuccessEntityResponse.found("Found cart", result.get());
-        } else {
-            throw new CartNotFoundException("Cart not found with ID: " + id);
-        }
-    }
-
-    @PostMapping(value = "/remove-cart-item/{cartItemId}", produces = "application/json")
-    public ResponseEntity<MessageResponse<Boolean>> removeCartItem(@PathVariable String cartItemId) {
-        try {
-            boolean result = cartItemService.removeCartItem(cartItemId);
-            if (result) {
-                return SuccessEntityResponse.created("CartItem removed successfully", result);
-            } else {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem removing failed");
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    @PostMapping(value = "/create-cart-item", produces = "application/json")
-    public ResponseEntity<MessageResponse<CartItem>> createCartItem(@RequestBody CartItem cartItem) {
-        try {
-            System.out.println("cartItem: " + cartItem);
-            Optional<CartItem> result = cartItemService.addCartItem(cartItem);
+        try{
             if (result.isPresent()) {
-                return SuccessEntityResponse.created("CartItem created successfully", result.get());
-            } else {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem creation failed");
+                return SuccessEntityResponse.found("Found cart", result.get());
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             throw e;
         }
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(), "Cart not found", false, null));
     }
 
-    @GetMapping(value = "/cart-item/{cartItemId}", produces = "application/json")
-    public ResponseEntity<MessageResponse<CartItem>> getCartItemById(@PathVariable String cartItemId) {
-        try {
-            Optional<CartItem> result = cartItemService.getCartItemsById(cartItemId);
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/find-cart-by-userId/{id}", produces = "application/json")
+    public ResponseEntity<MessageResponse<Cart>> getCartByUserId(@PathVariable String id) {
+        Optional<Cart> result = cartService.getCartByUserId(id);
+        try{
             if (result.isPresent()) {
-                return SuccessEntityResponse.found("CartItem found successfully", result.get());
-            } else {
-                throw new CartNotFoundException("CartItem not found with ID: " + cartItemId);
+                return SuccessEntityResponse.found("Found cart", result.get());
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             throw e;
         }
-    }
-
-    @PatchMapping(value = "/update-cart-item-quantity/{cartItemId}", produces = "application/json")
-    public ResponseEntity<MessageResponse<CartItem>> updateCartItemQuantity(@PathVariable String cartItemId,
-            @RequestBody Integer quantity) {
-        try {
-            Optional<CartItem> result = cartItemService.updateCartItem(cartItemId, quantity);
-            if (result.isPresent()) {
-                return SuccessEntityResponse.created("CartItem updated successfully", result.get());
-            } else {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem update failed");
-            }
-        } catch (Exception e) {
-            throw e;
-        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(), "Cart not found", false, null));
     }
 }
