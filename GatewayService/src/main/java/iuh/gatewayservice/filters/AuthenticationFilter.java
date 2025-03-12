@@ -13,47 +13,59 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
-    @Autowired
-    private JWTUtil jwtUtil;
-    private static final Logger logger = LoggerFactory.getLogger(JWTUtil.class);
-    private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
+    private final JWTUtil jwtUtil;
+    private final PathMatcher pathMatcher;
+    private final List<String> publicEndpoints = Arrays.asList(
             "/api/v1/auth/login",
             "/api/v1/users/register",
             "/api/v1/auth/refresh-token",
             "/api/v1/auth/validate-token",
-            "/api/v1/address/create"
+            "/api/v1/address/create",
+            "/api/v1/products/public/**",
+            "/api/v1/categories/public/**",
+            "/api/v1/suppliers/public/**",
+            "/api/v1/specifications/public/**",
+            "/api/v1/inventories/public/**",
+            "/api/v1/reviews/public/**"
     );
-    public AuthenticationFilter() {
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
+
+    @Autowired
+    public AuthenticationFilter(JWTUtil jwtUtil, PathMatcher pathMatcher) {
         super(Config.class);
+        this.jwtUtil = jwtUtil;
+        this.pathMatcher = pathMatcher;
     }
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String path = exchange.getRequest().getPath().toString();
-            logger.info("Request path: {}", path); // Log đường dẫn request
-            if (PUBLIC_ENDPOINTS.stream().anyMatch(path::startsWith)) {
+            logger.info("Request path: {}", path);
+
+            if (isPublicEndpoint(path)) {
                 return chain.filter(exchange);
             }
 
             String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            logger.info("Authorization header: {}", authHeader); // Log header đầy đủ
+            logger.info("Authorization header: {}", authHeader);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return unauthorizedResponse(exchange, "Missing or invalid Authorization header");
             }
 
             String token = authHeader.substring(7).trim();
-            logger.info("Extracted JWT token: {}", token); // Log token đã trích xuất
+            logger.info("Extracted JWT token: {}", token);
 
             return jwtUtil.validateToken(token)
                     .flatMap(isValid -> {
@@ -64,7 +76,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             ServerWebExchange modifiedExchange = exchange.mutate()
                                     .request(exchange.getRequest().mutate()
                                             .header("X-Auth-User", email)
-                                            .header("X-Auth-Role",role)
+                                            .header("X-Auth-Role", role)
                                             .header("X-Auth-UserId", userId)
                                             .build())
                                     .build();
@@ -77,33 +89,36 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         };
     }
 
+    private boolean isPublicEndpoint(String path) {
+        return publicEndpoints.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
     private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String message) {
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        // Tạo đối tượng phản hồi
         AuthResponse response = new AuthResponse(HttpStatus.UNAUTHORIZED.value(), message, false, System.currentTimeMillis());
+        ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            // Sử dụng ObjectMapper để chuyển đổi đối tượng thành JSON
-            ObjectMapper objectMapper = new ObjectMapper();
             byte[] responseBytes = objectMapper.writeValueAsBytes(response);
-
             return exchange.getResponse()
                     .writeWith(Mono.just(exchange.getResponse()
                             .bufferFactory()
                             .wrap(responseBytes)));
         } catch (JsonProcessingException e) {
             logger.error("Error converting response to JSON", e);
-
-            // Fallback nếu có lỗi
-            String fallbackJson = "{\"status\":401,\"message\":\"Unauthorized\",\"success\":false}";
+            String fallbackJson = String.format(
+                    "{\"status\":401,\"message\":\"Unauthorized\",\"success\":false,\"timestamp\":%d}",
+                    System.currentTimeMillis()
+            );
             return exchange.getResponse()
                     .writeWith(Mono.just(exchange.getResponse()
                             .bufferFactory()
                             .wrap(fallbackJson.getBytes(StandardCharsets.UTF_8))));
         }
     }
+
     public static class Config {
     }
 }
