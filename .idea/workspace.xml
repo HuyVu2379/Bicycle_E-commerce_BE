@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4d832a8c-ff5d-4228-9807-91ad0ca81003" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/filters/AuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/filters/AuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/ProductServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/ProductServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/configs/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/configs/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ReviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ReviewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/ReviewRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/ReviewRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/restClient/addressClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/restClient/addressClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ReviewServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ReviewServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ReviewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ReviewService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/CategoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,17 +51,23 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.EurekaServer [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.GatewayService [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ProductService [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.UserService [clean].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;baocoder&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -188,6 +190,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -238,6 +248,9 @@
       <workItem from="1741662598498" duration="10537000" />
       <workItem from="1741704716738" duration="7418000" />
       <workItem from="1741737673987" duration="7273000" />
+      <workItem from="1741766984406" duration="444000" />
+      <workItem from="1741857803835" duration="4071000" />
+      <workItem from="1741942757814" duration="3075000" />
     </task>
     <servers />
   </component>
