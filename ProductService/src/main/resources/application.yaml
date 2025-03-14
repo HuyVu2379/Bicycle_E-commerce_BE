@@ -6,7 +6,7 @@ spring:
     name: product-service
   data:
     mongodb:
-      uri: mongodb+srv://admin:dp8bVWUl6uDBx24o@huyvu.fulic.mongodb.net/productdb?retryWrites=true&w=majority
+      uri: mongodb+srv://admin:dp8bVWUl6uDBx24o@huyvu.fulic.mongodb.net/productdb?retryWrites=true&w=majority&appName=HuyVu
 
 eureka:
   client:

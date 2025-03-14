@@ -4,6 +4,7 @@ import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Review;
 import iuh.productservice.services.Impl.ReviewServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class ReviewController {
     private final ReviewServiceImpl reviewService;
 
+    @Autowired
     public ReviewController(ReviewServiceImpl reviewService) {
         this.reviewService = reviewService;
     }
