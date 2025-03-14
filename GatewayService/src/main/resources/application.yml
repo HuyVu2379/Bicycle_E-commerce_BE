@@ -18,7 +18,7 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/api/v1/products/**, /api/v1/reviews/**,/api/v1/suppliers/**,/api/v1/specifications/**,/api/v1/categories/**,/api/v1/inventories/**
+            - Path=/api/v1/products/**, /api/v1/reviews/**,/api/v1/suppliers/**,/api/v1/specifications/**,/api/v1/categories/**,/api/v1/inventories/**,/api/v1/reviews/public**,/api/v1/suppliers/public**,/api/v1/specifications/public**,/api/v1/categories/public**,/api/v1/inventories/public**
           filters:
             - AuthenticationFilter
         - id: cart-service
