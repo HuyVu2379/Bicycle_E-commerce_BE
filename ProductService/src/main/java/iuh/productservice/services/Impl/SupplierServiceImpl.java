@@ -6,6 +6,7 @@ import iuh.productservice.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +17,11 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public Optional<Supplier> createSupplier(Supplier supplier) {
         return Optional.of(supplierRepository.save(supplier));
+    }
+
+    @Override
+    public List<Supplier> getAllSuppliers() {
+        return supplierRepository.findAll();
     }
 
     @Override
