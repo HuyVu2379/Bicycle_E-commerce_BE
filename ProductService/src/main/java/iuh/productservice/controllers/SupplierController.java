@@ -1,5 +1,6 @@
 package iuh.productservice.controllers;
 
+import iuh.productservice.dtos.requests.SupplierRequest;
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Supplier;
@@ -25,8 +26,8 @@ public class SupplierController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<MessageResponse<Supplier>> createSupplier(@RequestBody Supplier supplier) {
-        Optional<Supplier> supplierResponse = supplierService.createSupplier(supplier);
+    public ResponseEntity<MessageResponse<Supplier>> createSupplier(@RequestBody SupplierRequest supplierRequest) {
+        Optional<Supplier> supplierResponse = supplierService.createSupplier(supplierRequest);
         if (supplierResponse.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -35,7 +36,7 @@ public class SupplierController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Supplier created successfully", supplierService.createSupplier(supplier).get());
+        return SuccessEntityResponse.created("Supplier created successfully", supplierResponse.get());
     }
 
     @PostMapping("/update")
