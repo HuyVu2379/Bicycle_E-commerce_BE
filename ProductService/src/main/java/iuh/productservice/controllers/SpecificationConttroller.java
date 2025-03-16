@@ -62,7 +62,6 @@ public class SpecificationConttroller {
     }
 
     @GetMapping("/find/{productid}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<List<Specification>>> findSpecifications(@PathVariable String productid) {
         List<Specification> specificationsResponse = specificationService.findSpecificationsByProductId(productid);
         if (specificationsResponse.isEmpty()) {

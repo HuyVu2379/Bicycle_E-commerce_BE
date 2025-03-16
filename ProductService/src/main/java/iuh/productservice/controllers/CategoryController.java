@@ -22,7 +22,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/public/getAll")
     public ResponseEntity<MessageResponse<Iterable<Category>>> getAll() {
         return SuccessEntityResponse.ok("All Categorys retrieved successfully", categoryService.getAll());

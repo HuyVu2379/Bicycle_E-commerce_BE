@@ -29,7 +29,7 @@ public class InventoryController {
     }
 
     @PostMapping("/createInventory")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Inventory> createInventory(@RequestBody Inventory inventory) {
         Optional<Inventory> inventoryOptional = inventoryService.createInventory(inventory);
         if (inventoryOptional.isEmpty()) {
@@ -39,7 +39,7 @@ public class InventoryController {
     }
 
     @PutMapping("/updateInventory")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Inventory> updateInventory(@RequestBody Inventory inventory) {
         Optional<Inventory> inventoryOptional = inventoryService.updateInventory(inventory);
         if (inventoryOptional.isEmpty()) {
@@ -49,7 +49,7 @@ public class InventoryController {
     }
 
     @DeleteMapping("/deleteInventory/{inventoryId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteInventory(@PathVariable String inventoryId) {
         inventoryService.deleteInventory(inventoryId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

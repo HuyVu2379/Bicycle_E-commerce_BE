@@ -18,8 +18,7 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
-    @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/public/getAll")
     public ResponseEntity<MessageResponse<List<Supplier>>> getAllSuppliers() {
         return SuccessEntityResponse.ok("Get all suppliers sucessfull", supplierService.getAllSuppliers());
     }
@@ -69,8 +68,7 @@ public class SupplierController {
         return SuccessEntityResponse.ok("Supplier deleted successfully", supplierResponse);
     }
 
-    @GetMapping("/get/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/public/getSupplierById/{id}")
     public ResponseEntity<MessageResponse<Supplier>> getSupplierById(@PathVariable String id) {
         Optional<Supplier> supplierResponse = supplierService.getSupplierById(id);
         if (supplierResponse.isEmpty()) {
@@ -84,8 +82,7 @@ public class SupplierController {
         return SuccessEntityResponse.ok("Supplier retrieved successfully", supplierResponse.get());
     }
 
-    @GetMapping("/")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/public/getSupplierByEmail")
     public ResponseEntity<MessageResponse<Supplier>> getSupplierByEmail(@RequestParam String email) {
         Optional<Supplier> supplierResponse = supplierService.getSupplierByEmail(email);
         if (supplierResponse.isEmpty()) {
