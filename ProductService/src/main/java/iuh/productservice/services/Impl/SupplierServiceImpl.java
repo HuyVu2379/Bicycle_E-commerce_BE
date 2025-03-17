@@ -1,5 +1,9 @@
 package iuh.productservice.services.Impl;
 
+import iuh.productservice.client.AuthServiceClient;
+import iuh.productservice.dtos.requests.AddressRequest;
+import iuh.productservice.dtos.requests.SupplierRequest;
+import iuh.productservice.dtos.responses.AddressResponse;
 import iuh.productservice.entities.Supplier;
 import iuh.productservice.repositories.SupplierRepository;
 import iuh.productservice.services.SupplierService;
@@ -14,9 +18,34 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
 
+    @Autowired
+    private AuthServiceClient addressServiceClient;
+
     @Override
-    public Optional<Supplier> createSupplier(Supplier supplier) {
-        return Optional.of(supplierRepository.save(supplier));
+    public Optional<Supplier> createSupplier(SupplierRequest supplierRequest) {
+        Supplier supplier = new Supplier();
+        supplier.setName(supplierRequest.getName());
+        supplier.setPhone(supplierRequest.getPhone());
+        supplier.setEmail(supplierRequest.getEmail());
+        supplier.setDescription(supplierRequest.getDescription());
+        supplier.setAddressId(null);
+        supplierRepository.save(supplier); //luu supplier truoc de lay supplierId
+
+        //Gui request tao address
+        AddressRequest addressRequest = new AddressRequest();
+        addressRequest.setCity(supplierRequest.getAddress().getCity());
+        addressRequest.setDistrict(supplierRequest.getAddress().getDistrict());
+        addressRequest.setStreet(supplierRequest.getAddress().getStreet());
+        addressRequest.setWard(supplierRequest.getAddress().getWard());
+        addressRequest.setCountry(supplierRequest.getAddress().getCountry());
+        addressRequest.setUserId(supplier.getSupplierId());
+        AddressResponse addressResponse = addressServiceClient.createAddress(addressRequest);
+
+        //Cap nhat addressId cho supplier
+        supplier.setAddressId(addressResponse.getAddressId());
+        supplierRepository.save(supplier);
+
+        return Optional.of(supplier);
     }
 
     @Override

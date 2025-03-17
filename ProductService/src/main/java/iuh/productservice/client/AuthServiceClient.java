@@ -1,6 +1,8 @@
 package iuh.productservice.client;
 
+import iuh.productservice.dtos.requests.AddressRequest;
 import iuh.productservice.dtos.requests.AuthRequest;
+import iuh.productservice.dtos.responses.AddressResponse;
 import iuh.productservice.dtos.responses.AuthResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,4 +18,6 @@ public interface AuthServiceClient {
     AuthResponse refreshToken(@RequestBody AuthRequest authRequest);
     @GetMapping("/api/v1/auth/validate-token")
     Boolean validateToken(@RequestParam String token);
+    @PostMapping("/api/v1/address/create")
+    AddressResponse createAddress(@RequestBody AddressRequest addressRequest);
 }
