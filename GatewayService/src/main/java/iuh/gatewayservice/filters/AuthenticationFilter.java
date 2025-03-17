@@ -31,7 +31,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             "/api/v1/users/register",
             "/api/v1/auth/refresh-token",
             "/api/v1/auth/validate-token",
-            "/api/v1/address/create",
+            "/api/v1/address/**",
             "/api/v1/products/public/**",
             "/api/v1/categories/public/**",
             "/api/v1/suppliers/public/**",

@@ -1,9 +1,9 @@
 package iuh.productservice.services.Impl;
-
-import iuh.productservice.client.AuthServiceClient;
+import iuh.productservice.client.UserServiceClient;
 import iuh.productservice.dtos.requests.AddressRequest;
 import iuh.productservice.dtos.requests.SupplierRequest;
 import iuh.productservice.dtos.responses.AddressResponse;
+import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.entities.Supplier;
 import iuh.productservice.repositories.SupplierRepository;
 import iuh.productservice.services.SupplierService;
@@ -19,7 +19,7 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository supplierRepository;
 
     @Autowired
-    private AuthServiceClient addressServiceClient;
+    private UserServiceClient userServiceClient;
 
     @Override
     public Optional<Supplier> createSupplier(SupplierRequest supplierRequest) {
@@ -39,9 +39,8 @@ public class SupplierServiceImpl implements SupplierService {
         addressRequest.setWard(supplierRequest.getAddress().getWard());
         addressRequest.setCountry(supplierRequest.getAddress().getCountry());
         addressRequest.setUserId(supplier.getSupplierId());
-        AddressResponse addressResponse = addressServiceClient.createAddress(addressRequest);
-
-        //Cap nhat addressId cho supplier
+        MessageResponse<AddressResponse> response = userServiceClient.createAddress(addressRequest);
+        AddressResponse addressResponse = response.getData();
         supplier.setAddressId(addressResponse.getAddressId());
         supplierRepository.save(supplier);
 

@@ -1,10 +1,11 @@
-package iuh.productservice.dtos.requests;
+package iuh.productservice.dtos.responses;
 
-import iuh.productservice.dtos.responses.AddressResponse;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class SupplierRequest {
+@Builder
+public class SupplierResponse {
     private String supplierId;
     private String name;
     private String phone;

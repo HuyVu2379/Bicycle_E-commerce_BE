@@ -7,17 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class AddressResponse {
-    private Data data;
-
-    public String getAddressId() {
-        return data.getAddressId();
-    }
-
-    @lombok.Data
-    public static class Data {
-        private String addressId;
-    }
+    private String addressId;
+    private String city;
+    private String district;
+    private String street;
+    private String ward;
+    private String country;
 }
