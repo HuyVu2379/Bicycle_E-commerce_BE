@@ -1,4 +1,4 @@
-package iuh.productservice.dtos.responses;
+package iuh.orderservice.dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

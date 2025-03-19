@@ -1,4 +1,4 @@
-package iuh.orderservice.exception;
+package iuh.orderservice.dtos.responses;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
