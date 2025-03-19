@@ -1,9 +1,12 @@
 package iuh.orderservice.services.Impl;
 
+import iuh.orderservice.clients.ProductServiceClient;
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
 import iuh.orderservice.dtos.requests.ProductRequest;
+import iuh.orderservice.dtos.responses.PriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
+import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
 import iuh.orderservice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,10 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private ProductServiceClient productServiceClient;
 
     @Override
     public Optional<Order> createOrder(CreateOrderRequest request, String userId) {
@@ -29,7 +36,8 @@ public class OrderServiceImpl implements OrderService {
         double totalPrice = 0;
 
         for (ProductRequest product : request.getProducts()) {
-            double price = productServiceClient.getProductPrice(product.getProductId());
+            PriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
+            double price = priceRespone != null ? priceRespone.getData() : 0.0;
             double subtotal = price * product.getQuantity();
             totalPrice += subtotal;
 
@@ -44,6 +52,14 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderDetails(orderDetails);
         orderRepository.save(order);
+
+        for (OrderDetail orderDetail : orderDetails) {
+            orderDetail.setOrder(order);
+            OrderDetail save = orderDetailRepository.save(orderDetail);
+            if (save == null) {
+                return Optional.empty();
+            }
+        }
         return Optional.of(order);
     }
 
