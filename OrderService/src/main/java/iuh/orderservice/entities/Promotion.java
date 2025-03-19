@@ -19,7 +19,7 @@ public class Promotion extends BaseEntity{
     private int reducePercent;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private int limit;
+    private int limitValue;
     private boolean isActive;
     @Enumerated(EnumType.STRING)
     private DiscountType applyFor;

@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(of = {"orderId"})
+@Table(name = "orders")
 public class Order extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
