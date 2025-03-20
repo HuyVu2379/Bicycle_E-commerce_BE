@@ -1,6 +1,6 @@
 package iuh.orderservice.dtos.responses;
 
-public class PriceRespone {
+public class ProductPriceRespone {
     private double data;
 
     public double getData() {

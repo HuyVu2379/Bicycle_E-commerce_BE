@@ -35,4 +35,10 @@ public class ProductController {
         double price = productService.getPrice(productId);
         return SuccessEntityResponse.ok("Price retrieved successfully", price);
     }
+
+    @GetMapping("/public/get-name/{productId}")
+    public ResponseEntity<MessageResponse<String>> getProductName(@PathVariable String productId) {
+        String productName = productService.getProductName(productId);
+        return SuccessEntityResponse.ok("Product name retrieved successfully", productName);
+    }
 }

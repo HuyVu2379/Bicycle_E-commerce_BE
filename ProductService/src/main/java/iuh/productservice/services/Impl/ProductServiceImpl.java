@@ -23,4 +23,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).orElse(null);
         return product.getPrice();
     }
+
+    @Override
+    public String getProductName(String productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        return product.getName();
+    }
 }

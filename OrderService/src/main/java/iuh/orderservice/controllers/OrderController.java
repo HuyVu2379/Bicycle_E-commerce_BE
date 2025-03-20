@@ -42,6 +42,23 @@ public class OrderController {
         return SuccessEntityResponse.created("Order create sucessfully", orderOpt.get());
     }
 
+    @PostMapping("/delete/{orderId}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<MessageResponse<Object>> deleteOrder(@PathVariable String orderId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        boolean isDeleted = orderService.deleteOrder(orderId, userId);
+        if (!isDeleted) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "Order deletion failed",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.created("Order deleted", isDeleted);
+    }
+
     @GetMapping("/get/{orderId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Object>> getOrder(@PathVariable String orderId){

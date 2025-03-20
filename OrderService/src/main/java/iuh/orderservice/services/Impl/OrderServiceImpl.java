@@ -3,13 +3,12 @@ package iuh.orderservice.services.Impl;
 import iuh.orderservice.clients.ProductServiceClient;
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
 import iuh.orderservice.dtos.requests.ProductRequest;
-import iuh.orderservice.dtos.responses.PriceRespone;
+import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
 import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
 import iuh.orderservice.services.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         double totalPrice = 0;
 
         for (ProductRequest product : request.getProducts()) {
-            PriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
+            ProductPriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
             double price = priceRespone != null ? priceRespone.getData() : 0.0;
             double subtotal = price * product.getQuantity();
             totalPrice += subtotal;
@@ -72,7 +71,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean deleteOrder(String orderId) {
+    public boolean deleteOrder(String orderId, String userId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null && order.getUserId().equals(userId)) {
+            orderRepository.deleteById(orderId);
+            return true;
+        }
         return false;
     }
 
@@ -119,17 +123,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Double> getRevenueByProduct(String productId) {
-
-
-        return List.of();
-    }
-
-    @Override
     public Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
         // Sắp xếp dữ liệu
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+//        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         // Lấy danh sách doanh thu theo userId
         List<Object[]> results = orderRepository.getOrdersByUserGroup();
@@ -137,19 +134,26 @@ public class OrderServiceImpl implements OrderService {
         // Chuyển đổi danh sách Object[] thành danh sách Map<String, Object>
         List<Map<String, Object>> revenueList = results.stream()
                 .map(obj -> {
-                    Map<String, Object> map = new HashMap<>();
+                    Map<String, Object> map = new LinkedHashMap<>();
                     map.put("userId", obj[0].toString());
                     map.put("totalRevenue", (Double) obj[1]);
                     return map;
                 })
                 .collect(Collectors.toList());
 
-        // Phân trang thủ công
+        // **Sắp xếp thủ công trước khi phân trang**
+        Comparator<Map<String, Object>> comparator = Comparator.comparing(m -> (Double) m.get("totalRevenue"));
+        if ("desc".equalsIgnoreCase(sortDirection)) {
+            comparator = comparator.reversed();
+        }
+        revenueList.sort(comparator);
+
+        // **Phân trang thủ công**
         int start = Math.min(pageNo * pageSize, revenueList.size());
         int end = Math.min((pageNo + 1) * pageSize, revenueList.size());
         List<Map<String, Object>> pagedRevenueList = revenueList.subList(start, end);
 
-        return new PageImpl<>(pagedRevenueList, pageable, revenueList.size());
+        return new PageImpl<>(pagedRevenueList, PageRequest.of(pageNo, pageSize), revenueList.size());
     }
 
 }

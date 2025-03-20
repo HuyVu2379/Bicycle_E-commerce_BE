@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface ProductService {
     Optional<Product> createProduct(Product product);
     double getPrice(String productId);
+    String getProductName(String productId);
 }

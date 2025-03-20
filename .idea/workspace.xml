@@ -6,11 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="4d832a8c-ff5d-4228-9807-91ad0ca81003" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderDetailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderDetailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/PriceRespone.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/ProductPriceRespone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderDetailRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderDetailRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderDetailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderDetailServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderDetailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderDetailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -282,7 +289,9 @@
       <workItem from="1742135693721" duration="1314000" />
       <workItem from="1742223244937" duration="3596000" />
       <workItem from="1742376966299" duration="6446000" />
-      <workItem from="1742390994123" duration="10130000" />
+      <workItem from="1742390994123" duration="10267000" />
+      <workItem from="1742468639666" duration="1522000" />
+      <workItem from="1742473407221" duration="4010000" />
     </task>
     <servers />
   </component>
