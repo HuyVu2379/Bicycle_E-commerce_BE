@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
 @Data
 @EqualsAndHashCode(of = {"orderId"})
 @Table(name = "orders")
