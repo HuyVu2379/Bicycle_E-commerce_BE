@@ -1,7 +1,9 @@
 package iuh.productservice.exception;
 
 import iuh.productservice.dtos.responses.ErrorResponse;
+import iuh.productservice.exception.erorrs.ConflictException;
 import iuh.productservice.exception.erorrs.NotFoundException;
+import iuh.productservice.exception.erorrs.ServiceUnavailable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,24 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse();
+        error.setMessage("Conflict: " + ex.getMessage());
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setTimestamp(System.currentTimeMillis());
+        error.setPath(request.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(ServiceUnavailable.class)
+    public ResponseEntity<ErrorResponse> handleServiceUnavailableException(ConflictException ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse();
+        error.setMessage("Service unavailable: " + ex.getMessage());
+        error.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+        error.setTimestamp(System.currentTimeMillis());
+        error.setPath(request.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse();
