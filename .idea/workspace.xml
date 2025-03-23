@@ -41,6 +41,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/HuyVu2379/Bicycle_E-commerce_BE.git&quot;,
+    &quot;accountId&quot;: &quot;f9498931-c123-4bc8-8a02-8808f71b53fe&quot;
+  }
+}</component>
   <component name="JpbToolWindowState">
     <option name="isToolWindowVisible" value="false" />
   </component>
@@ -71,19 +78,26 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.OrderService [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;Database detector&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.PaymentServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LuongTanDat&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE/OrderService/src/main/java/iuh/orderservice/dtos/requests&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -93,6 +107,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -278,6 +293,13 @@
       <workItem from="1741965363977" duration="197000" />
       <workItem from="1741965652272" duration="27000" />
       <workItem from="1742135693721" duration="1314000" />
+      <workItem from="1742223244937" duration="3596000" />
+      <workItem from="1742366517117" duration="5534000" />
+      <workItem from="1742385967023" duration="28000" />
+      <workItem from="1742386570558" duration="18000" />
+      <workItem from="1742704324809" duration="2268000" />
+      <workItem from="1742711100386" duration="1094000" />
+      <workItem from="1742713007688" duration="1331000" />
       <workItem from="1742450062872" duration="10724000" />
       <workItem from="1742527771833" duration="7224000" />
     </task>
