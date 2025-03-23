@@ -78,6 +78,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                                             .header("X-Auth-User", email)
                                             .header("X-Auth-Role", role)
                                             .header("X-Auth-UserId", userId)
+                                            .header("X-Auth-Token", token)
                                             .build())
                                     .build();
                             return chain.filter(modifiedExchange);

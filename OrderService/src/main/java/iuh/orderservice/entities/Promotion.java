@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(of = {"promotionId"})
-public class Promotion extends BaseEntity{
+@EqualsAndHashCode(of = { "promotionId" })
+public class Promotion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
