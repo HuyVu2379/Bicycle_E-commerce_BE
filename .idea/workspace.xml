@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="4d832a8c-ff5d-4228-9807-91ad0ca81003" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/PromotionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/PromotionResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/PromotionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/PromotionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,41 +70,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Maven.OrderService [clean].executor": "Run",
-    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
-    "Notification.DoNotAsk-Database detector": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.CartServiceApplication.executor": "Run",
-    "Spring Boot.EurekaServerApplication.executor": "Run",
-    "Spring Boot.GatewayServiceApplication.executor": "Run",
-    "Spring Boot.OrderServiceApplication.executor": "Run",
-    "Spring Boot.PaymentServiceApplication.executor": "Run",
-    "Spring Boot.ProductServiceApplication.executor": "Run",
-    "Spring Boot.UserServiceApplication.executor": "Run",
-    "git-widget-placeholder": "LuongTanDat",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/KienTrucPhanMem/Bicycle_E-commerce_BE/OrderService/src/main/java/iuh/orderservice/dtos/requests",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "project.propCompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Maven.OrderService [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;Database detector&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.PaymentServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LuongTanDat&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE/OrderService/src/main/java/iuh/orderservice/dtos/requests&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -304,6 +303,7 @@
       <workItem from="1742386570558" duration="18000" />
       <workItem from="1742704324809" duration="2268000" />
       <workItem from="1742711100386" duration="1094000" />
+      <workItem from="1742713007688" duration="1331000" />
     </task>
     <servers />
   </component>

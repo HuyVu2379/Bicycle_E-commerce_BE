@@ -40,6 +40,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public Optional<Inventory> getInventoryById(String inventoryId) {
+        return inventoryRepository.findById(inventoryId);
+    }
+
+    @Override
     public Optional<Inventory> getAllInventoryByProductId(String productId) {
         return inventoryRepository.findAllByProductId(productId);
     }
