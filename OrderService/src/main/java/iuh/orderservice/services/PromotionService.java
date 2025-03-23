@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @Service
 public interface PromotionService {
-    Promotion createPromotion(Promotion promotion);
-    Promotion updatePromotion(Promotion promotion);
+    Optional<Promotion> createPromotion(Promotion promotion);
+    Optional<Promotion> updatePromotion(Promotion promotion);
     void deletePromotionById(String id);
     Optional<Promotion> getPromotionById(String id);
     List<Promotion> getAllPromotions();

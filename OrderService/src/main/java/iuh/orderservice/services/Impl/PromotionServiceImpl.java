@@ -19,13 +19,13 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Promotion createPromotion(Promotion promotion) {
-        return promotionRepository.save(promotion);
+    public Optional<Promotion> createPromotion(Promotion promotion) {
+        return Optional.of(promotionRepository.save(promotion));
     }
 
     @Override
-    public Promotion updatePromotion(Promotion promotion) {
-        return promotionRepository.saveAndFlush(promotion);
+    public Optional<Promotion> updatePromotion(Promotion promotion) {
+        return Optional.of(promotionRepository.saveAndFlush(promotion));
     }
 
     @Override

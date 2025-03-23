@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4d832a8c-ff5d-4228-9807-91ad0ca81003" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/Promotion.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/Promotion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/PromotionResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/responses/PromotionResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/PromotionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/PromotionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/PromotionService.java" afterDir="false" />
     </list>
@@ -34,18 +31,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "luongtandat0512"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;luongtandat0512&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/HuyVu2379/Bicycle_E-commerce_BE.git",
-    "accountId": "f9498931-c123-4bc8-8a02-8808f71b53fe"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/HuyVu2379/Bicycle_E-commerce_BE.git&quot;,
+    &quot;accountId&quot;: &quot;f9498931-c123-4bc8-8a02-8808f71b53fe&quot;
   }
-}]]></component>
+}</component>
   <component name="JpbToolWindowState">
     <option name="isToolWindowVisible" value="false" />
   </component>
@@ -77,6 +74,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Maven.OrderService [clean].executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
+    "Notification.DoNotAsk-Database detector": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -301,6 +300,10 @@
       <workItem from="1742135693721" duration="1314000" />
       <workItem from="1742223244937" duration="3596000" />
       <workItem from="1742366517117" duration="5534000" />
+      <workItem from="1742385967023" duration="28000" />
+      <workItem from="1742386570558" duration="18000" />
+      <workItem from="1742704324809" duration="2268000" />
+      <workItem from="1742711100386" duration="1094000" />
     </task>
     <servers />
   </component>
