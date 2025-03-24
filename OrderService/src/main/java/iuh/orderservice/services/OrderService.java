@@ -13,15 +13,13 @@ import java.util.Optional;
 public interface OrderService {
     Optional<Order> createOrder(CreateOrderRequest request, String userId);
     Optional<Order> getOrderById(String orderId);
-    boolean deleteOrder(String orderId);
+    boolean deleteOrder(String orderId, String userId);
     //Lich su mua hang cua nguoi dung
     List<Order> getOrdersByUserId(String userId);
     //Thong ke doanh thu theo thoi gian
     double getRevenueByTime(String startTime, String endTime);
     //Thong ke doanh thu theo tung thang trong nam
     Map<String, Double> getRevenueByYear(int year);
-    //Thong ke doanh thu theo san pham
-    List<Double> getRevenueByProduct(String productId);
     //Thong ke doanh thu theo nguoi dung
     Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection);
 }

@@ -13,6 +13,7 @@ public interface ProductService {
     boolean existsById(String productId);
     Optional<Product> createProduct(Product product);
     double getPrice(String productId);
+    String getProductName(String productId);
     Optional<Product> updateProduct(Product product,String productId);
     boolean deleteProduct(String productId);
     Optional<ProductResponse> getProductById(String productId);

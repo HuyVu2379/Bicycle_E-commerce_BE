@@ -66,6 +66,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public String getProductName(String productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        return product.getName();
+    }
     public Optional<Product> updateProduct(Product product, String productId) {
         Product product1 = productRepository.findById(productId).orElse(null);
         if (product1 == null) {
@@ -123,5 +127,4 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         return productRepository.findAll(pageable).getContent();
     }
-
 }

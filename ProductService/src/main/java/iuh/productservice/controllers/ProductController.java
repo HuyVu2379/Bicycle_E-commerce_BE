@@ -39,6 +39,10 @@ public class ProductController {
         return SuccessEntityResponse.ok("Price retrieved successfully", price);
     }
 
+    @GetMapping("/public/get-name/{productId}")
+    public ResponseEntity<MessageResponse<String>> getProductName(@PathVariable String productId) {
+        String productName = productService.getProductName(productId);
+        return SuccessEntityResponse.ok("Product name retrieved successfully", productName);
     @PutMapping("/update/{productId}")
     public ResponseEntity<MessageResponse<Product>> updateProduct(@RequestBody Product product, @PathVariable String productId) {
         Optional<Product> productResponse = productService.updateProduct(product, productId);
