@@ -172,6 +172,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
+
+    @Override
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }

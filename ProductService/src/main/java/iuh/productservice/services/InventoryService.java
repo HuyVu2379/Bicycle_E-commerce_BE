@@ -11,6 +11,7 @@ public interface InventoryService {
     Optional<Inventory> createInventory(Inventory inventory);
     Optional<Inventory> updateInventory(Inventory inventory);
     void deleteInventory(String inventoryId);
+    Optional<Inventory> getInventoryById(String inventoryId);
     Optional<Inventory> getAllInventoryByProductId(String productId);
     List<Inventory> getAllInventories();
 }

@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@EqualsAndHashCode(of = {"promotionId"})
-public class Promotion extends BaseEntity{
+@EqualsAndHashCode(of = { "promotionId" })
+public class Promotion extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
@@ -19,7 +19,7 @@ public class Promotion extends BaseEntity{
     private int reducePercent;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private int maxLimit;
+    private int limitValue;
     private boolean isActive;
     @Enumerated(EnumType.STRING)
     private DiscountType applyFor;

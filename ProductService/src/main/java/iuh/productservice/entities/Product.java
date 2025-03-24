@@ -1,7 +1,6 @@
 package iuh.productservice.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 @Document
 @Data
 @EqualsAndHashCode(of = {"productId"})
+@Builder
 public class Product {
     @Id
     private String productId;
@@ -29,10 +29,10 @@ public class Product {
     private String description;
     @DecimalMin(value = "0.0", message = "Giá phải lớn hơn hoặc bằng 0")
     private double price;
+    private double priceReduced = price;
     private String promotionId;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
 }

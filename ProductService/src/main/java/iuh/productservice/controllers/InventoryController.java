@@ -7,6 +7,8 @@
 package iuh.productservice.controllers;
 
 
+import iuh.productservice.dtos.responses.MessageResponse;
+import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Inventory;
 import iuh.productservice.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,47 +32,60 @@ public class InventoryController {
 
     @PostMapping("/createInventory")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Inventory> createInventory(@RequestBody Inventory inventory) {
+    public ResponseEntity<MessageResponse<Object>> createInventory(@RequestBody Inventory inventory) {
         Optional<Inventory> inventoryOptional = inventoryService.createInventory(inventory);
         if (inventoryOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory created failed", false, null));
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(inventory);
+        return SuccessEntityResponse.created("Inventory created successfully", inventory);
     }
 
     @PutMapping("/updateInventory")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Inventory> updateInventory(@RequestBody Inventory inventory) {
+    public ResponseEntity<MessageResponse<Object>> updateInventory(@RequestBody Inventory inventory) {
         Optional<Inventory> inventoryOptional = inventoryService.updateInventory(inventory);
         if (inventoryOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory updated failed", false, null)
+            );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(inventory);
+        return SuccessEntityResponse.created("Inventory updated successfully", inventory);
     }
 
     @DeleteMapping("/deleteInventory/{inventoryId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteInventory(@PathVariable String inventoryId) {
-        inventoryService.deleteInventory(inventoryId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<MessageResponse<Void>> deleteInventory(@PathVariable String inventoryId) {
+        Optional<Inventory> inventory = inventoryService.getInventoryById(inventoryId);
+        if (inventory.isPresent()){
+            inventoryService.deleteInventory(inventoryId);
+            return SuccessEntityResponse.created("Inventory deleted successfully", null);
+        }
+        return ResponseEntity.badRequest().body(
+                new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory deleted failed", false, null)
+        );
     }
 
     @GetMapping("/public/getAllInventories")
-    public ResponseEntity<List<Inventory>> getAllInventories() {
+    public ResponseEntity<MessageResponse<Object>> getAllInventories() {
         List<Inventory> inventoryList = inventoryService.getAllInventories();
-        if(inventoryList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (inventoryList.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
+            );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(inventoryList);
+        return SuccessEntityResponse.found("Inventory found", inventoryList);
 
     }
 
     @GetMapping("/public/getAllInventoryByProductId/{productId}")
-    public ResponseEntity<Optional<Inventory>> getAllInventoryByProductId(@PathVariable String productId) {
+    public ResponseEntity<MessageResponse<Object>> getAllInventoryByProductId(@PathVariable String productId) {
         Optional<Inventory> inventory = inventoryService.getAllInventoryByProductId(productId);
-        if(inventory.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (inventory.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
+            );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(inventory);
+        return SuccessEntityResponse.found("Inventory found", inventory.get());
     }
 }
