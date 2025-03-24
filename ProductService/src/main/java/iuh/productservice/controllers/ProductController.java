@@ -23,6 +23,7 @@ public class ProductController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Product>> createProduct(@RequestBody Product product) {
+        System.out.println("Check product from controller: " + product);
         Optional<Product> productResponse = productService.createProduct(product);
         if (productResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -91,7 +92,7 @@ public class ProductController {
     @GetMapping("/public/getProductsWithPage")
     public ResponseEntity<MessageResponse<List<Product>>> getProductsWithPage(
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "0") int pageNo, // Chú ý: Spring dùng 0-based index
+            @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
         return SuccessEntityResponse.ok("Products retrieved successfully", productService.getProductWithPage(pageSize, pageNo, sortBy, sortDirection));

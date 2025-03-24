@@ -76,7 +76,7 @@ public class PromotionController {
     public ResponseEntity<MessageResponse<Object>> getPromotionById(@PathVariable String id) {
         Optional<Promotion> promotion = promotionService.getPromotionById(id);
         if(promotion.isPresent()) {
-            return SuccessEntityResponse.found("Promotion found", promotion.get());
+            return SuccessEntityResponse.ok("Promotion found", promotion.get());
         } else {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Promotion not found", false, null)

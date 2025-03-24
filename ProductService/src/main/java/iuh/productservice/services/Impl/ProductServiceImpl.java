@@ -11,7 +11,6 @@ import iuh.productservice.mappers.ProductMapper;
 import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,10 +43,17 @@ public class ProductServiceImpl implements ProductService {
         product.setPriceReduced(product.getPrice());
         String promotionId = product.getPromotionId();
         if (promotionId != null) {
-            String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-            MessageResponse<PromotionResponse> promotionRequest = orderServiceClient.getPromotion(token, promotionId);
-            if (promotionRequest.isSuccess() && promotionRequest.getData() != null) {
-                product.setPriceReduced(product.getPrice() * (1 - promotionRequest.getData().getReducePercent() / 100));
+            String token = "Bearer " + SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+            try {
+                MessageResponse<PromotionResponse> promotionRequest = orderServiceClient.getPromotion(token, promotionId);
+                System.out.println("Check promotion: " + promotionRequest);
+                if (promotionRequest.isSuccess() && promotionRequest.getData() != null) {
+                    double discount = product.getPrice() * (1 - Double.parseDouble(String.valueOf(promotionRequest.getData().getReducePercent())) / 100 );
+                    product.setPriceReduced(discount);
+                }
+            } catch (Exception e) {
+                System.out.println("Feign client error: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return Optional.of(productRepository.save(product));
