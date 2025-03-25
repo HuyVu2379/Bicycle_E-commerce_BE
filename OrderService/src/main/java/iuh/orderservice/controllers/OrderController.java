@@ -56,7 +56,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Order deleted", isDeleted);
+        return SuccessEntityResponse.ok("Order deleted", isDeleted);
     }
 
     @GetMapping("/get/{orderId}")
@@ -71,7 +71,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Order found", orderOpt.get());
+        return SuccessEntityResponse.found("Order found", orderOpt.get());
     }
 
     @GetMapping("/get-by-user")
@@ -88,7 +88,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Orders found", orders);
+        return SuccessEntityResponse.found("Orders found", orders);
     }
 
     @GetMapping("/get-revenue-by-time")
@@ -103,7 +103,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Revenue found", orderOpt);
+        return SuccessEntityResponse.ok("Revenue found", orderOpt);
     }
 
     @GetMapping("/get-revenue-by-year/{year}")
@@ -118,7 +118,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Revenue found", revenues);
+        return SuccessEntityResponse.ok("Revenue found", revenues);
     }
 
     @GetMapping("/get-revenue-by-users")
@@ -137,7 +137,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Revenue found", revenues);
+        return SuccessEntityResponse.ok("Revenue found", revenues);
     }
 
 }

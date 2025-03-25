@@ -43,6 +43,8 @@ jwt:
   refresh-token:
     expiration: 604800000
 eureka:
+  instance:
+    preferIpAddress: true
   client:
     register-with-eureka: true
     fetch-registry: true
