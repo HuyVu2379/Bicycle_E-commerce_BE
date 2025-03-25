@@ -8,6 +8,7 @@ import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
 import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
+import iuh.orderservice.repositories.PromotionRepository;
 import iuh.orderservice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -27,6 +28,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private ProductServiceClient productServiceClient;
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @Override
     public Optional<Order> createOrder(CreateOrderRequest request, String userId) {
@@ -35,7 +38,10 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setPromotionId(request.getPromotionId());
         List<OrderDetail> orderDetails = new ArrayList<>();
+
         double totalPrice = 0;
+        int promotionReducePercent = promotionRepository.findById(request.getPromotionId()).orElse(null).getReducePercent();
+        double reducePercent = promotionReducePercent / 100.0;
 
         for (ProductRequest product : request.getProducts()) {
             ProductPriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
@@ -51,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
             orderDetails.add(orderDetail);
         }
 
+        totalPrice = totalPrice - totalPrice * reducePercent;
         order.setTotalPrice(totalPrice);
         order.setOrderDetails(orderDetails);
         orderRepository.save(order);
