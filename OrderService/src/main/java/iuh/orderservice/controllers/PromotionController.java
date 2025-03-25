@@ -63,7 +63,7 @@ public class PromotionController {
         Optional<Promotion> promotion = promotionService.getPromotionById(id);
         if (promotion.isPresent()) {
             promotionService.deletePromotionById(id);
-            return SuccessEntityResponse.created("Promotion deleted successfully", null);
+            return SuccessEntityResponse.ok("Promotion deleted successfully", null);
         } else {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Promotion not found", false, null)
