@@ -1,5 +1,6 @@
 package iuh.orderservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,7 @@ public class OrderDetail extends BaseEntity{
     private double subtotal = 0;
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore // to prevent infinite loop when serializing
     private Order order;
     public double calcSubtotal(int quantity,double price){
         return quantity*price;

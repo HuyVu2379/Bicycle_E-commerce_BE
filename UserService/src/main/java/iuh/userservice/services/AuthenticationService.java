@@ -12,6 +12,7 @@ import java.util.Map;
 
 @Service
 public interface AuthenticationService extends UserDetailsService {
+    public String extractUserId(String token);
     public UserDetails loadUserByEmail(String email);
     public boolean isTokenValid(String token, UserDetails userDetails);
     public AuthResponse refreshToken(String refreshToken);

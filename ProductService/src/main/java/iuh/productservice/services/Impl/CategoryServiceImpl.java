@@ -20,6 +20,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Optional<Category> getCategoryById(String id) {
+        return categoryRepository.findById(id);
+    }
+
+    @Override
     public Optional<Category> addCategory(Category category) {
         return Optional.of(categoryRepository.save(category));
     }
