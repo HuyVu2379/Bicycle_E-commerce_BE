@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findUserById(String id) {
+        return userService.findById(id);
+    }
+
+    @Override
     public Optional<User> registerUser(RegisterRequest registerRequest) {
         if (userService.existsByEmail(registerRequest.getEmail())) {
             throw new DuplicateUserException("Email already exists");

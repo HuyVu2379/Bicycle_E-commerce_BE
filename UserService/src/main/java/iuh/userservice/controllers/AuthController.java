@@ -38,6 +38,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<MessageResponse<AuthResponse>> login(@RequestBody AuthRequest loginRequest) {
+        System.out.println("Login request: " + loginRequest);
         AuthResponse authResponse = authenticationService.authenticate(loginRequest);
         tokenRepository.saveToken(authResponse.getUserId(), authResponse.getRefreshToken(), TimeUnit.DAYS.toMillis(7));
         return SuccessEntityResponse.ok("Login successfully", authResponse);

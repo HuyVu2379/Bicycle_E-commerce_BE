@@ -23,74 +23,116 @@ public class ProductController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Product>> createProduct(@RequestBody Product product) {
-        System.out.println("Check product from controller: " + product);
-        Optional<Product> productResponse = productService.createProduct(product);
-        if (productResponse.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
-                            "Product creation failed", false, null));
+        try {
+            System.out.println("Check product from controller: " + product);
+            Optional<Product> productResponse = productService.createProduct(product);
+            if (productResponse.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
+                                "Product creation failed. Possibly duplicate or invalid data.", false, null));
+            }
+            return SuccessEntityResponse.created("Product created successfully", productResponse.get());
+        } catch (Exception e) {
+            throw e;
         }
-        return SuccessEntityResponse.created("Product created successfully", productResponse.get());
     }
 
     @GetMapping("/public/get-price/{productId}")
     public ResponseEntity<MessageResponse<Double>> getPrice(@PathVariable String productId) {
-        double price = productService.getPrice(productId);
-        return SuccessEntityResponse.ok("Price retrieved successfully", price);
+        try {
+            double price = productService.getPrice(productId);
+            return SuccessEntityResponse.ok("Price retrieved successfully", price);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Product not found");
+        }
     }
 
     @GetMapping("/public/get-name/{productId}")
     public ResponseEntity<MessageResponse<String>> getProductName(@PathVariable String productId) {
-        String productName = productService.getProductName(productId);
-        return SuccessEntityResponse.ok("Product name retrieved successfully", productName);
-    @PutMapping("/update/{productId}")
-    public ResponseEntity<MessageResponse<Product>> updateProduct(@RequestBody Product product, @PathVariable String productId) {
-        Optional<Product> productResponse = productService.updateProduct(product, productId);
-        if (productResponse.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
-                            "Product update failed", false, null));
+        try {
+            String productName = productService.getProductName(productId);
+            return SuccessEntityResponse.ok("Product name retrieved successfully", productName);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Product not found");
         }
-        return SuccessEntityResponse.ok("Product updated successfully", productResponse.get());
+    }
+
+    @PutMapping("/update/{productId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<MessageResponse<Product>> updateProduct(@RequestBody Product product, @PathVariable String productId) {
+        try {
+            Optional<Product> productResponse = productService.updateProduct(product, productId);
+            if (productResponse.isEmpty()) {
+                throw new NotFoundException("Product not found or invalid data");
+            }
+            return SuccessEntityResponse.ok("Product updated successfully", productResponse.get());
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<MessageResponse<Boolean>> deleteProduct(@PathVariable String productId) {
-        boolean isDeleted = productService.deleteProduct(productId);
-        if (!productService.existsById(productId)) {
-            throw new NotFoundException("Product with id " + productId);
+        try {
+            if (!productService.existsById(productId)) {
+                throw new NotFoundException("Product with id " + productId + " not found");
+            }
+            boolean isDeleted = productService.deleteProduct(productId);
+            if (!isDeleted) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new MessageResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                "Product deletion failed due to server error", false, false));
+            }
+            return SuccessEntityResponse.ok("Product deleted successfully", true);
+        } catch (Exception e) {
+            throw e;
         }
-        if (!isDeleted) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
-                            "Product deletion failed", false, null));
-        }
-        return SuccessEntityResponse.ok("Product deleted successfully", isDeleted);
+
     }
 
     @GetMapping("/public/all")
     public ResponseEntity<MessageResponse<List<Product>>> getAllProducts() {
-        return SuccessEntityResponse.ok("All products retrieved successfully", productService.getAllProduct());
+        List<Product> products = productService.getAllProduct();
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
+                            "No products found", true, products));
+        }
+        return SuccessEntityResponse.ok("All products retrieved successfully", products);
     }
 
     @GetMapping("/public/getProductsByCategory/{categoryId}")
     public ResponseEntity<MessageResponse<List<Product>>> getProductsByCategory(@PathVariable String categoryId) {
-        return SuccessEntityResponse.ok("Products retrieved successfully", productService.getProductByCategory(categoryId));
+        List<Product> products = productService.getProductByCategory(categoryId);
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
+                            "No products found for category " + categoryId, true, products));
+        }
+        return SuccessEntityResponse.ok("Products retrieved successfully", products);
     }
 
     @GetMapping("/public/getProductsBySupplier/{supplierId}")
     public ResponseEntity<MessageResponse<List<Product>>> getProductsBySupplier(@PathVariable String supplierId) {
-        return SuccessEntityResponse.ok("Products retrieved successfully", productService.getProductBySupplier(supplierId));
+        List<Product> products = productService.getProductBySupplier(supplierId);
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
+                            "No products found for supplier " + supplierId, true, products));
+        }
+        return SuccessEntityResponse.ok("Products retrieved successfully", products);
     }
 
     @GetMapping("/public/getProductsBySearchName")
     public ResponseEntity<MessageResponse<List<Product>>> getProductsBySearchText(@RequestParam String searchText) {
         List<Product> products = productService.getProductBySearch(searchText);
         if (products.isEmpty()) {
-            throw new NotFoundException("Product with name " + searchText);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(),
+                            "No products found with name containing: " + searchText, false, null));
         }
-        return SuccessEntityResponse.ok("Products retrieved successfully", productService.getProductBySearch(searchText));
+        return SuccessEntityResponse.ok("Products retrieved successfully", products);
     }
 
     @GetMapping("/public/getProductsWithPage")
@@ -99,6 +141,12 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
-        return SuccessEntityResponse.ok("Products retrieved successfully", productService.getProductWithPage(pageSize, pageNo, sortBy, sortDirection));
+        List<Product> products = productService.getProductWithPage(pageSize, pageNo, sortBy, sortDirection);
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
+                            "No products found for this page", true, products));
+        }
+        return SuccessEntityResponse.ok("Products retrieved successfully", products);
     }
 }

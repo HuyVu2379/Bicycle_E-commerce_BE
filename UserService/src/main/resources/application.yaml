@@ -16,6 +16,20 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
   data:
     redis:
       host: localhost
@@ -25,7 +39,7 @@ jwt:
   token:
     validity: 86400000
   secretKey: 92312d77cd9437b5c2ddf01aef8bb8a1e5f20b5c8ee53a295fa488989652070d9aadf064d8e521219309f198de5873b59755bdc04c0fa4a2fd5c192364e60a8c492f81cfe8e6741bf1cc3064f8194a4235a5f3982cb0517c4d01741c97b76a2b339f05e57b3d4160ba092b37d35d48af2cf06ff6ae1dfd76b5ec033e8114fa01ef022fb307023ff9d3627940913d663c736747ca86468bd1735d96cb191227f6dded90a7f7ef71d7208123e4933877bd8b5b3dee1287ac111bc7fb84fee272497bdfae0f4d36743d7e761f0ac7ddb598277ce15d5ca1a3459f9072de6ce34153a29788146217a6a84aab6b1e279f603fadfd228e5cd706279894821aebac75d5171633a04f9a3738ad840cd85acf0583442019f8f5276cfd37ef976e0ba19f49
-  expiration: 900000
+  expiration: 9000000
   header: Authorization
   prefix: Bearer
   refresh-token:
