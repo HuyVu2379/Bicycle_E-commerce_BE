@@ -35,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> createOrder(CreateOrderRequest request, String userId, String token) {
+//        System.out.println(token); //token da chua bearer
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderDate(LocalDateTime.now());

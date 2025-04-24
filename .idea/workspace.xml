@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -276,7 +273,7 @@
       <workItem from="1742894789276" duration="1994000" />
       <workItem from="1742913631279" duration="1342000" />
       <workItem from="1744415656053" duration="6000" />
-      <workItem from="1745466524251" duration="7894000" />
+      <workItem from="1745466524251" duration="9006000" />
     </task>
     <servers />
   </component>
