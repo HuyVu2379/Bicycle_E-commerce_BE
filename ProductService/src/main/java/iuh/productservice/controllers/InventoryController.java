@@ -89,12 +89,10 @@ public class InventoryController {
         return SuccessEntityResponse.found("Inventory found", inventory.get());
     }
 
-    @PostMapping("/reduce-quantity/{productId}/{quantity}")
-    @PreAuthorize("hasRole('ADMIN')" + " or hasRole('USER')")
+    @PostMapping("/public/reduce-quantity/{productId}/{quantity}")
     public ResponseEntity<MessageResponse<Object>> reduceInventory(
             @PathVariable String productId,
             @PathVariable int quantity) {
-
         boolean success = inventoryService.reduceInventory(productId, quantity);
         if (success) {
             return ResponseEntity.ok(new MessageResponse<>(HttpStatus.OK.value(), "Inventory had been reduced", true));

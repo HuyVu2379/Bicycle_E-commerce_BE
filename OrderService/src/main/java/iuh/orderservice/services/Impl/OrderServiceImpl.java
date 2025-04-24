@@ -3,6 +3,7 @@ package iuh.orderservice.services.Impl;
 import iuh.orderservice.clients.ProductServiceClient;
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
 import iuh.orderservice.dtos.requests.ProductRequest;
+import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
@@ -12,6 +13,7 @@ import iuh.orderservice.repositories.PromotionRepository;
 import iuh.orderservice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private PromotionRepository promotionRepository;
 
     @Override
-    public Optional<Order> createOrder(CreateOrderRequest request, String userId) {
+    public Optional<Order> createOrder(CreateOrderRequest request, String userId, String token) {
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderDate(LocalDateTime.now());
@@ -40,12 +42,27 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = new ArrayList<>();
 
         double totalPrice = 0;
-        int promotionReducePercent = promotionRepository.findById(request.getPromotionId()).orElse(null).getReducePercent();
-        double reducePercent = promotionReducePercent / 100.0;
+        double reducePercent = 0.0;
+        if (request.getPromotionId() != null && !request.getPromotionId().isEmpty()) {
+            var promotionOpt = promotionRepository.findById(request.getPromotionId());
+            if (promotionOpt.isPresent()) {
+                reducePercent = promotionOpt.get().getReducePercent() / 100.0;
+                order.setPromotionId(request.getPromotionId()); // chỉ set nếu hợp lệ
+            }
+        }
 
         for (ProductRequest product : request.getProducts()) {
+            if (product.getProductId() == null || product.getProductId().isEmpty()) {
+                throw new IllegalArgumentException("Product ID cannot be null or empty");
+            }
+
             ProductPriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
-            double price = priceRespone != null ? priceRespone.getData() : 0.0;
+            double price_c = priceRespone != null ? priceRespone.getData() : 0.0;
+            if (price_c <= 0.0) {
+                throw new RuntimeException("Invalid price for product: " + product.getProductId());
+            }
+
+            double price = priceRespone.getData();
             double subtotal = price * product.getQuantity();
             totalPrice += subtotal;
 
@@ -65,12 +82,22 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.setOrder(order);
             OrderDetail save = orderDetailRepository.save(orderDetail);
+
+            ResponseEntity<MessageResponse<Object>> response = productServiceClient.reduceInventory(
+                    orderDetail.getProductId(),
+                    orderDetail.getQuantity()
+            );
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Reduce inventory failed for product: " + orderDetail.getProductId());
+            }
+
             if (save == null) {
                 return Optional.empty();
             }
         }
         return Optional.of(order);
     }
+
 
     @Override
     public Optional<Order> getOrderById(String orderId) {

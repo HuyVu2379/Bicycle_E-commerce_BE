@@ -7,6 +7,7 @@ import iuh.orderservice.dtos.responses.OrderResponse;
 import iuh.orderservice.dtos.responses.SuccessEntityResponse;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.services.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,13 +25,16 @@ import java.util.stream.Collectors;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MessageResponse<Object>> createOrder(@RequestBody CreateOrderRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        Optional<Order> orderOpt = orderService.createOrder(request, userId);
+        String token = httpServletRequest.getHeader("Authorization");
+        Optional<Order> orderOpt = orderService.createOrder(request, userId, token);
         if (orderOpt.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -60,7 +64,7 @@ public class OrderController {
     }
 
     @GetMapping("/get/{orderId}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')" + " || hasAnyRole('USER')")
     public ResponseEntity<MessageResponse<Object>> getOrder(@PathVariable String orderId){
         Optional<Order> orderOpt = orderService.getOrderById(orderId);
         if (orderOpt.isEmpty()) {
