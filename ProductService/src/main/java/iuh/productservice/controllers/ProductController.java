@@ -58,7 +58,6 @@ public class ProductController {
     }
 
     @PutMapping("/update/{productId}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Product>> updateProduct(@RequestBody Product product, @PathVariable String productId) {
         try {
             Optional<Product> productResponse = productService.updateProduct(product, productId);

@@ -35,7 +35,7 @@ public class OrderDetailController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Get order details successfully", orderDetails);
+        return SuccessEntityResponse.found("Get order details successfully", orderDetails);
     }
 
     @GetMapping("/get-revenue-by-products")
@@ -56,7 +56,7 @@ public class OrderDetailController {
                             null
                     ));
         }
-        return SuccessEntityResponse.created("Get revenue by products successfully", revenueByProducts);
+        return SuccessEntityResponse.ok("Get revenue by products successfully", revenueByProducts);
     }
 
 }

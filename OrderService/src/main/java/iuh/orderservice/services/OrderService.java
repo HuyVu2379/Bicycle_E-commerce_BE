@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 public interface OrderService {
-    Optional<Order> createOrder(CreateOrderRequest request, String userId);
+    Optional<Order> createOrder(CreateOrderRequest request, String userId, String token);
     Optional<Order> getOrderById(String orderId);
     boolean deleteOrder(String orderId, String userId);
     //Lich su mua hang cua nguoi dung
