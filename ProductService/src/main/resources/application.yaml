@@ -7,6 +7,8 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://admin:dp8bVWUl6uDBx24o@huyvu.fulic.mongodb.net/productdb?retryWrites=true&w=majority&appName=HuyVu
+  main:
+    allow-bean-definition-overriding: true
 
 eureka:
   client:

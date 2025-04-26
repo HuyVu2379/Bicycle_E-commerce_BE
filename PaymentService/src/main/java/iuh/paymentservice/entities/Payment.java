@@ -27,5 +27,4 @@ public class Payment extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private String transactionId;
-
 }

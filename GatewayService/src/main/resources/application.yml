@@ -10,7 +10,7 @@ spring:
           enabled: true
       routes:
         - id: order-service
-          uri: lb://order-service
+          uri: lb://order-services
           predicates:
             - Path=/api/v1/orders/**, /api/v1/order-details/**, /api/v1/promotions/**
           filters:
