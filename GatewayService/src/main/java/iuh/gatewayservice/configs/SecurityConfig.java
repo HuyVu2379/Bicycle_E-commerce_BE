@@ -20,13 +20,11 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for API Gateway
+                .csrf(csrf -> csrf.disable())
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/api/v1/auth/**").permitAll()
-                        .pathMatchers("/api/v1/users/**").permitAll()
-                        // Add more public endpoints as needed
-                        .pathMatchers("/actuator/**").permitAll() // Health checks
-                        .pathMatchers("/", "/error").permitAll() // Basic error handling
+                        .pathMatchers("/api/v1/**").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
+                        .pathMatchers("/", "/error").permitAll()
                         .anyExchange().authenticated()
                 );
 

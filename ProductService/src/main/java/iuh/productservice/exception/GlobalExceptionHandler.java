@@ -1,13 +1,13 @@
 package iuh.productservice.exception;
 
 import iuh.productservice.dtos.responses.ErrorResponse;
+import iuh.productservice.exception.erorrs.AccessDeniedException;
 import iuh.productservice.exception.erorrs.ConflictException;
 import iuh.productservice.exception.erorrs.NotFoundException;
 import iuh.productservice.exception.erorrs.ServiceUnavailable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,6 +27,7 @@ public class GlobalExceptionHandler {
         error.setPath(request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
     @ExceptionHandler(ServiceUnavailable.class)
     public ResponseEntity<ErrorResponse> handleServiceUnavailableException(ConflictException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse();
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
         error.setPath(request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse();
@@ -45,6 +47,7 @@ public class GlobalExceptionHandler {
         error.setPath(request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(NotFoundException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse();
@@ -54,6 +57,7 @@ public class GlobalExceptionHandler {
         error.setPath(request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -68,14 +72,15 @@ public class GlobalExceptionHandler {
         error.setPath(request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.FORBIDDEN.value());
-        body.put("error", "Forbidden");
-        body.put("message", "You don't have permission to access this resource");
-        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        errorResponse.setTimestamp(System.currentTimeMillis());
+        errorResponse.setPath(request.getRequestURI());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
 }
