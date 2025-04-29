@@ -6,10 +6,12 @@ import iuh.userservice.dtos.responses.AuthResponse;
 import iuh.userservice.dtos.responses.MessageResponse;
 import iuh.userservice.dtos.responses.SuccessEntityResponse;
 import iuh.userservice.dtos.responses.UserResponse;
+import iuh.userservice.entities.Address;
 import iuh.userservice.entities.User;
 import iuh.userservice.exception.errors.UserNotFoundException;
 import iuh.userservice.mappers.AddressMapper;
 import iuh.userservice.mappers.UserMapper;
+import iuh.userservice.services.AddressService;
 import iuh.userservice.services.Impl.AuthenticationServiceImpl;
 import iuh.userservice.services.Impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private AuthenticationServiceImpl authenticationService;
+    @Autowired
+    private AddressService addressService;
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse<AuthResponse>> register(@RequestBody RegisterRequest registerRequest) {
@@ -67,14 +71,32 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<MessageResponse<User>> getUserById(@PathVariable String userId) {
+    public ResponseEntity<MessageResponse<UserResponse>> getUserById(@PathVariable String userId) {
         try {
             System.out.println("check userId: " + userId);
-            Optional<User> user = userService.findUserById(userId);
-            if (user.isEmpty()) {
+            Optional<User> userOptional = userService.findUserById(userId);
+            if (userOptional.isEmpty()) {
                 throw new UserNotFoundException("Không tìm thấy người dùng với ID: " + userId);
             }
-            return SuccessEntityResponse.ok("Lấy thông tin người dùng thành công", user.get());
+            User user = userOptional.get();
+
+            Optional<Address> addressOptional = addressService.getAddressByUserId(userId);
+            Address address = addressOptional.orElse(null);
+
+            UserResponse userResponse = null;
+            userResponse = userResponse.builder().fullName(user.getFullName())
+                    .gender(user.getGender() != null ? user.getGender().toString() : null)
+                    .address(address)
+                    .dob(user.getDob())
+                    .avatar(user.getAvatar())
+                    .phoneNumber(user.getPhoneNumber())
+                    .email(user.getEmail())
+                    .userId(user.getUserId())
+                    .build();
+            if (user == null) {
+                throw new UserNotFoundException("Không tìm thấy người dùng với ID: " + userId);
+            }
+            return SuccessEntityResponse.ok("Lấy thông tin người dùng thành công", userResponse);
         } catch (Exception e) {
             throw e;
         }

@@ -2,6 +2,7 @@ package iuh.userservice.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Data
@@ -15,11 +16,12 @@ public class Address extends BaseEntity{
     @Column(name = "address_id",nullable = false,unique = true)
     @GeneratedValue(strategy = GenerationType.UUID)
     private String addressId;
-    private String district;
-    private String city;
-    private String street;
-    private String ward;
-    private String country;
+    private String fullAddress; // dia chi day du
+    private String city; // thanh pho/tinh
+    private String street; // duong
+    private String ward;  // quan/xa
+    private String district; // huyen
+    private String country = "Viet Nam";
     @Column(name = "userId",nullable = false)
     private String userId;
 }

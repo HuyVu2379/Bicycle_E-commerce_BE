@@ -39,7 +39,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:8080",
-                "https://yourdomain.com"  // Add your production domain here
+                "https://yourdomain.com"
         ));
 
         // Allow all common HTTP methods
