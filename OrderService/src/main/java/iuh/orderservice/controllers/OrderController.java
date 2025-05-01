@@ -9,6 +9,7 @@ import iuh.orderservice.entities.Order;
 import iuh.orderservice.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -70,7 +71,7 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "orderDate") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection){
-        List<Order> orders = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDirection).getContent();
+        Page<Order> orders = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDirection);
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -90,7 +91,7 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "orderDate") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection){
-        List<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId).getContent();
+        Page<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId);
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -126,7 +127,7 @@ public class OrderController {
             @RequestParam(defaultValue = "desc") String sortDirection){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        List<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId).getContent();
+        Page<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId);
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -175,7 +176,12 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "totalRevenue") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection){
-        List<Map<String, Object>> revenues = orderService.getRevenueByUsers(pageNo, pageSize, sortBy, sortDirection).stream().collect(Collectors.toList());
+        Page<Map<String, Object>> revenues = orderService.getRevenueByUsers(
+                pageNo,
+                pageSize,
+                sortBy,
+                sortDirection
+        );
         if (revenues.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
