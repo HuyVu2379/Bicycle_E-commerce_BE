@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> getOrderById(String orderId) {
-        return Optional.of(orderRepository.findById(orderId).orElse(null));
+        return Optional.ofNullable(orderRepository.findById(orderId).orElse(null));
     }
 
     @Override
@@ -116,8 +116,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersByUserId(String userId) {
-        List<Order> orders = orderRepository.findOrdersByUserId(userId);
+    public Page<Order> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Order> orders = orderRepository.findOrdersByUserId(userId, pageable);
         if (orders.isEmpty()) {
             return null;
         }

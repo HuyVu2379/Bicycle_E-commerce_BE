@@ -63,6 +63,45 @@ public class OrderController {
         return SuccessEntityResponse.ok("Order deleted", isDeleted);
     }
 
+    @GetMapping("/get-all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<MessageResponse<Object>> getAllOrders(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "orderDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection){
+        List<Order> orders = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDirection).getContent();
+        if (orders.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "Orders not found",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.ok("Orders found", orders);
+    }
+
+    @GetMapping("/get-by-user/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN')" + " || hasAnyRole('USER')")
+    public ResponseEntity<MessageResponse<Object>> getOrdersByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "orderDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection){
+        List<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId).getContent();
+        if (orders.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "Orders not found",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.ok("Orders found", orders);
+    }
+
     @GetMapping("/get/{orderId}")
     @PreAuthorize("hasAnyRole('ADMIN')" + " || hasAnyRole('USER')")
     public ResponseEntity<MessageResponse<Object>> getOrder(@PathVariable String orderId){
@@ -78,12 +117,16 @@ public class OrderController {
         return SuccessEntityResponse.found("Order found", orderOpt.get());
     }
 
-    @GetMapping("/get-by-user")
+    @GetMapping("/history-orders")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<MessageResponse<Object>> getOrderByUser(){
+    public ResponseEntity<MessageResponse<Object>> getHistoryOrdersByUser(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "orderDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        List<Order> orders = orderService.getOrdersByUserId(userId);
+        List<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId).getContent();
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,

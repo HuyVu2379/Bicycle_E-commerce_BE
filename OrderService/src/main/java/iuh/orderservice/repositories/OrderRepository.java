@@ -14,7 +14,10 @@ import java.util.Map;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
-    List<Order> findOrdersByUserId(String userId);
+//    List<Order> findOrdersByUserId(String userId);
+
+    //get orders by userId paging
+    Page<Order> findOrdersByUserId(String userId, Pageable pageable);
 
     List<Order> getOrderByOrderDateBetween(LocalDateTime orderDateAfter, LocalDateTime orderDateBefore);
 
