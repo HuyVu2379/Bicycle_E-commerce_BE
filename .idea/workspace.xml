@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/client/UserServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/client/UserServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SupplierController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SupplierController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/SupplierService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/SupplierService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,6 +294,7 @@
       <workItem from="1745895568633" duration="19337000" />
       <workItem from="1746090226257" duration="3567000" />
       <workItem from="1746101248549" duration="2624000" />
+      <workItem from="1746161062256" duration="6359000" />
     </task>
     <servers />
   </component>

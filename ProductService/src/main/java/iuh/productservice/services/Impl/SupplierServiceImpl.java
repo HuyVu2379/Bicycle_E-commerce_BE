@@ -4,10 +4,15 @@ import iuh.productservice.dtos.requests.AddressRequest;
 import iuh.productservice.dtos.requests.SupplierRequest;
 import iuh.productservice.dtos.responses.AddressResponse;
 import iuh.productservice.dtos.responses.MessageResponse;
+import iuh.productservice.dtos.responses.SupplierResponse;
 import iuh.productservice.entities.Supplier;
 import iuh.productservice.repositories.SupplierRepository;
 import iuh.productservice.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,15 +53,48 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+    public Page<SupplierResponse> getAllSuppliers(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Supplier> suppliers = supplierRepository.findAll(pageable);
+        return suppliers.map(supplier -> {
+            AddressResponse addressResponse = userServiceClient.getAddressByUserId(supplier.getSupplierId()).getData();
+            return SupplierResponse.builder()
+                    .supplierId(supplier.getSupplierId())
+                    .name(supplier.getName())
+                    .phone(supplier.getPhone())
+                    .email(supplier.getEmail())
+                    .description(supplier.getDescription())
+                    .address(addressResponse)
+                    .build();
+        });
     }
 
     @Override
-    public Optional<Supplier> updateSupplier(Supplier supplier) {
-        if(supplierRepository.findById(supplier.getSupplierId()).isEmpty()){
+    public Optional<Supplier> updateSupplier(SupplierRequest supplierRequest) {
+        Supplier foundSupplier = supplierRepository.findById(supplierRequest.getSupplierId()).orElse(null);
+        if(supplierRepository.findById(supplierRequest.getSupplierId()).isEmpty()){
             return Optional.empty();
         }
+        Supplier supplier = new Supplier();
+        supplier.setSupplierId(supplierRequest.getSupplierId());
+        supplier.setName(supplierRequest.getName());
+        supplier.setPhone(supplierRequest.getPhone());
+        supplier.setEmail(supplierRequest.getEmail());
+        supplier.setDescription(supplierRequest.getDescription());
+        supplier.setAddressId(foundSupplier.getAddressId());
+
+        //Gui request update address
+        AddressRequest addressRequest = new AddressRequest();
+        addressRequest.setAddressId(foundSupplier.getAddressId());
+        addressRequest.setCity(supplierRequest.getAddress().getCity());
+        addressRequest.setDistrict(supplierRequest.getAddress().getDistrict());
+        addressRequest.setStreet(supplierRequest.getAddress().getStreet());
+        addressRequest.setWard(supplierRequest.getAddress().getWard());
+        addressRequest.setCountry(supplierRequest.getAddress().getCountry());
+        addressRequest.setUserId(supplier.getSupplierId());
+        userServiceClient.updateAddress(addressRequest);
+
         return Optional.of(supplierRepository.save(supplier));
     }
 
