@@ -28,7 +28,7 @@ public class SupplierController {
     @GetMapping("/public/getAll")
     public ResponseEntity<MessageResponse<Page<SupplierResponse>>> getAllSuppliers(@RequestParam(defaultValue = "0") int pageNo,
                                                                            @RequestParam(defaultValue = "10") int pageSize,
-                                                                           @RequestParam(defaultValue = "orderDate") String sortBy,
+                                                                           @RequestParam(defaultValue = "createdAt") String sortBy,
                                                                            @RequestParam(defaultValue = "desc") String sortDirection) {
         Page<SupplierResponse> suppliers = supplierService.getAllSuppliers(pageNo, pageSize, sortBy, sortDirection);
         if (suppliers.isEmpty()) {
