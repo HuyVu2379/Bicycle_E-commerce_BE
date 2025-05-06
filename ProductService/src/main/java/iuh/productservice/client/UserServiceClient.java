@@ -20,5 +20,8 @@ public interface UserServiceClient {
     MessageResponse<AddressResponse> createAddress(@RequestBody AddressRequest addressRequest);
     @GetMapping("/api/v1/address/{userId}")
     MessageResponse<AddressResponse> getAddressByUserId(@PathVariable("userId") String userId);
-
+    @DeleteMapping("/api/v1/address/delete")
+    MessageResponse<Boolean> deleteAddress(@RequestBody String userId);
+    @PostMapping("/api/v1/address/update")
+    MessageResponse<AddressResponse> updateAddress(@RequestBody AddressRequest addressRequest);
 }

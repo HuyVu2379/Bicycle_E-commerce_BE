@@ -5,6 +5,7 @@ import iuh.orderservice.dtos.responses.SuccessEntityResponse;
 import iuh.orderservice.entities.OrderDetail;
 import iuh.orderservice.services.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -45,9 +46,8 @@ public class OrderDetailController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "totalRevenue") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection){
-        List<Map<String, Object>> revenueByProducts = orderDetailService
-                .getRevenueByProducts(pageNo, pageSize, sortBy, sortDirection)
-                .stream().toList();
+        Page<Map<String, Object>> revenueByProducts = orderDetailService
+                .getRevenueByProducts(pageNo, pageSize, sortBy, sortDirection);
         if (revenueByProducts.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,

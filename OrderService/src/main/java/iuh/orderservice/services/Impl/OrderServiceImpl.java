@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> getOrderById(String orderId) {
-        return Optional.of(orderRepository.findById(orderId).orElse(null));
+        return Optional.ofNullable(orderRepository.findById(orderId).orElse(null));
     }
 
     @Override
@@ -116,8 +116,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersByUserId(String userId) {
-        List<Order> orders = orderRepository.findOrdersByUserId(userId);
+    public Page<Order> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Order> orders = orderRepository.findOrdersByUserId(userId, pageable);
         if (orders.isEmpty()) {
             return null;
         }
@@ -159,36 +168,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
-        // Sắp xếp dữ liệu
-//        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        // Tạo Sort và Pageable
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
-        // Lấy danh sách doanh thu theo userId
-        List<Object[]> results = orderRepository.getOrdersByUserGroup();
+        // Gọi repository với phân trang
+        Page<Object[]> resultPage = orderRepository.getOrdersByUserGroup(pageable, sortBy);
 
-        // Chuyển đổi danh sách Object[] thành danh sách Map<String, Object>
-        List<Map<String, Object>> revenueList = results.stream()
-                .map(obj -> {
-                    Map<String, Object> map = new LinkedHashMap<>();
-                    map.put("userId", obj[0].toString());
-                    map.put("totalRevenue", (Double) obj[1]);
-                    return map;
-                })
-                .collect(Collectors.toList());
-
-        // **Sắp xếp thủ công trước khi phân trang**
-        Comparator<Map<String, Object>> comparator = Comparator.comparing(m -> (Double) m.get("totalRevenue"));
-        if ("desc".equalsIgnoreCase(sortDirection)) {
-            comparator = comparator.reversed();
-        }
-        revenueList.sort(comparator);
-
-        // **Phân trang thủ công**
-        int start = Math.min(pageNo * pageSize, revenueList.size());
-        int end = Math.min((pageNo + 1) * pageSize, revenueList.size());
-        List<Map<String, Object>> pagedRevenueList = revenueList.subList(start, end);
-
-        return new PageImpl<>(pagedRevenueList, PageRequest.of(pageNo, pageSize), revenueList.size());
+        // Chuyển đổi sang Map
+        return resultPage.map(obj -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("userId", obj[0].toString());
+            map.put("totalRevenue", (Double) obj[1]);
+            return map;
+        });
     }
 
 }
