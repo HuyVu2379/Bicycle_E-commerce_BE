@@ -14,10 +14,14 @@ import iuh.userservice.mappers.UserMapper;
 import iuh.userservice.services.AddressService;
 import iuh.userservice.services.Impl.AuthenticationServiceImpl;
 import iuh.userservice.services.Impl.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -32,6 +36,7 @@ public class UserController {
     private AuthenticationServiceImpl authenticationService;
     @Autowired
     private AddressService addressService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse<AuthResponse>> register(@RequestBody RegisterRequest registerRequest) {
@@ -41,29 +46,49 @@ public class UserController {
         return SuccessEntityResponse.created("Register successfully", authResponse);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<MessageResponse<UserResponse>> update(@RequestBody User userRequest) {
+    @PostMapping(value = "/upload/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<MessageResponse<UserResponse>> update(
+            @RequestPart("userData") User userRequest,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatarFile) {
         try {
+            System.out.println("Check userRequest to upload: " + userRequest);
             Optional<User> existingUserOpt = userService.findUserByEmail(userRequest.getEmail());
+            System.out.println("check existingUserOpt: " + existingUserOpt.get());
             if (existingUserOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(),
                                 "Không tìm thấy người dùng với ID: " + userRequest.getUserId(),
                                 false, null));
             }
+
             User existingUser = existingUserOpt.get();
             existingUser.setFullName(userRequest.getFullName());
             existingUser.setDob(userRequest.getDob());
             existingUser.setAddressId(userRequest.getAddressId());
-            if (userService.existsByPhoneNumber(userRequest.getPhoneNumber())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new MessageResponse<>(HttpStatus.CONFLICT.value(),
-                                "Số điện thoại đã tồn tại", false, null));
-            } else {
+            existingUser.setGender(userRequest.getGender());
+
+            // Xử lý upload ảnh nếu có file
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                // Nếu đang dùng Cloudinary Gateway Filter, lấy thông tin từ header
+                String cloudinaryUrl = userRequest.getAvatar(); // Hoặc giữ nguyên giá trị hiện có
+                // Nếu cần upload trực tiếp từ controller
+                // String cloudinaryUrl = cloudinaryService.uploadImage(avatarFile);
+
+                existingUser.setAvatar(cloudinaryUrl);
+            } else if (userRequest.getAvatar() != null) {
+                // Nếu không có file mới nhưng có URL avatar trong userRequest
+                existingUser.setAvatar(userRequest.getAvatar());
+            }
+
+            if (existingUser.getPhoneNumber() != userRequest.getPhoneNumber()) {
                 existingUser.setPhoneNumber(userRequest.getPhoneNumber());
             }
+
             Optional<User> updatedUser = userService.updateUser(existingUser);
+            Address address = addressService.getAddressByUserId(userRequest.getUserId()).orElse(null);
             UserResponse userResponse = userMapper.UserToUserResponse(updatedUser.get());
+            userResponse.setAddress(address);
+
             return SuccessEntityResponse.ok("Cập nhật người dùng thành công", userResponse);
         } catch (Exception e) {
             throw e;
@@ -84,7 +109,7 @@ public class UserController {
             Address address = addressOptional.orElse(null);
 
             UserResponse userResponse = null;
-            userResponse = userResponse.builder().fullName(user.getFullName())
+            userResponse = UserResponse.builder().fullName(user.getFullName())
                     .gender(user.getGender() != null ? user.getGender().toString() : null)
                     .address(address)
                     .dob(user.getDob())

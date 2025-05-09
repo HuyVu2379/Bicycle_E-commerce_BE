@@ -9,6 +9,31 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: product-image-upload
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/products/upload/**
+            - Method=POST,PUT
+          filters:
+            - AuthenticationFilter
+            - name: CloudinaryUpload
+              args:
+                fileParamName: file
+                folder: Bicycle-E-commerce
+
+        # Upload ảnh người dùng
+        - id: user-image-upload
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/upload/**
+            - Method=POST,PUT
+          filters:
+            - AuthenticationFilter
+            - name: CloudinaryUpload
+              args:
+                fileParamName: file
+                folder: Bicycle-E-commerce
+
         - id: order-service
           uri: lb://order-service
           predicates:
@@ -51,4 +76,9 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 instance:
-    preferIpAddress: true
+  preferIpAddress: true
+cloudinary:
+  cloud_name: dxssmpeii
+  api_key: 685489151257751
+  api_secret: _pNWRfMbtjT08kgGp8z6c6Rotxs
+  folder: Bicycle-E-commerce
