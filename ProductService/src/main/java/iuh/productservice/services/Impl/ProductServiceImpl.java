@@ -11,12 +11,14 @@ import iuh.productservice.mappers.ProductMapper;
 import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,9 +124,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        return productRepository.findAll(pageable).getContent();
+    public Page<Product> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        // Validate inputs
+        if (pageNo < 0) {
+            throw new IllegalArgumentException("Page number cannot be negative");
+        }
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException("Page size must be greater than zero");
+        }
+        if (!Arrays.asList("name", "price", "id").contains(sortBy)) { // Adjust valid fields as needed
+            throw new IllegalArgumentException("Invalid sort field: " + sortBy);
+        }
+        if (!Arrays.asList("ASC", "DESC").contains(sortDirection.toUpperCase())) {
+            throw new IllegalArgumentException("Invalid sort direction: " + sortDirection);
+        }
+
+        try {
+            // Create Sort object
+            Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+            // Create Pageable object
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            // Fetch paginated data
+            return productRepository.findAll(pageable);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid pagination or sorting parameters: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching products: " + e.getMessage());
+        }
     }
 }

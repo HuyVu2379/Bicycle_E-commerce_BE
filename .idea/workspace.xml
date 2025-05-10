@@ -6,17 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GatewayService/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GatewayService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/filters/CloudinaryUploadGatewayFilterFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/CloudinaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/CloudinaryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/Impl/CloudinaryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/Impl/CloudinaryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/AddressMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/AddressMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/AddressRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/AddressRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AddressService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AddressService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AuthenticationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AuthenticationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/AddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/AddressServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +29,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -70,7 +73,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.EurekaServerApplication.executor": "Run",
-    "Spring Boot.GatewayServiceApplication.executor": "Debug",
+    "Spring Boot.GatewayServiceApplication.executor": "Run",
     "Spring Boot.OrderServiceApplication.executor": "Run",
     "Spring Boot.ProductServiceApplication.executor": "Run",
     "Spring Boot.UserServiceApplication.executor": "Run",
@@ -84,6 +87,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.ApplicationConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -99,11 +103,11 @@
       <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\OrderService\src\main\java\iuh\orderservice" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="iuh.gatewayservice.responses" />
       <recent name="iuh.gatewayservice.exception" />
       <recent name="iuh.productservice.dtos.requests" />
       <recent name="iuh.productservice.exception.erorrs" />
       <recent name="iuh.productservice.exception" />
-      <recent name="iuh.productservice.entities" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -296,7 +300,8 @@
       <workItem from="1746435740824" duration="324000" />
       <workItem from="1746605059075" duration="12339000" />
       <workItem from="1746677653794" duration="19563000" />
-      <workItem from="1746763163679" duration="5241000" />
+      <workItem from="1746763163679" duration="24071000" />
+      <workItem from="1746847081187" duration="18129000" />
     </task>
     <servers />
   </component>

@@ -1,24 +1,37 @@
 package iuh.productservice.controllers;
 
 import iuh.productservice.dtos.responses.MessageResponse;
+import iuh.productservice.dtos.responses.ProductResponse;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Product;
 import iuh.productservice.exception.erorrs.NotFoundException;
-import iuh.productservice.services.ProductService;
+import iuh.productservice.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private InventoryService inventoryService;
+    @Autowired
+    private SpecificationService specificationService;
+    @Autowired
+    private SupplierService supplierService;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -135,17 +148,31 @@ public class ProductController {
     }
 
     @GetMapping("/public/getProductsWithPage")
-    public ResponseEntity<MessageResponse<List<Product>>> getProductsWithPage(
+    public ResponseEntity<MessageResponse<Page<ProductResponse>>> getProductsWithPage(
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
-        List<Product> products = productService.getProductWithPage(pageSize, pageNo, sortBy, sortDirection);
-        if (products.isEmpty()) {
+        Page<Product> productPage = productService.getProductWithPage(pageNo, pageSize, sortBy, sortDirection);
+
+        List<ProductResponse> productResponses = productPage.getContent().stream().map(product ->
+                ProductResponse.builder()
+                        .product(product)
+                        .category(categoryService.getCategoryById(product.getCategoryId()).orElse(null))
+                        .inventory(inventoryService.getAllInventoryByProductId(product.getProductId()).orElse(null))
+                        .supplier(supplierService.getSupplierById(product.getSupplierId()).orElse(null))
+                        .specification(specificationService.findSpecificationsByProductId(product.getProductId()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        Page<ProductResponse> productResponsePage = new PageImpl<>(productResponses, productPage.getPageable(), productPage.getTotalElements());
+
+        if (productResponsePage.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
-                            "No products found for this page", true, products));
+                            "No products found", true, productResponsePage));
         }
-        return SuccessEntityResponse.ok("Products retrieved successfully", products);
+        return ResponseEntity.ok(new MessageResponse<>(HttpStatus.OK.value(),
+                "Products retrieved successfully", false, productResponsePage));
     }
 }

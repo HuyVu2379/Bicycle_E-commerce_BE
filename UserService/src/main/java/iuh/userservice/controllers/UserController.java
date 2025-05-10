@@ -2,6 +2,7 @@ package iuh.userservice.controllers;
 
 import iuh.userservice.dtos.requests.AuthRequest;
 import iuh.userservice.dtos.requests.RegisterRequest;
+import iuh.userservice.dtos.requests.UpdateAvatarRequest;
 import iuh.userservice.dtos.responses.AuthResponse;
 import iuh.userservice.dtos.responses.MessageResponse;
 import iuh.userservice.dtos.responses.SuccessEntityResponse;
@@ -46,49 +47,48 @@ public class UserController {
         return SuccessEntityResponse.created("Register successfully", authResponse);
     }
 
-    @PostMapping(value = "/upload/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MessageResponse<UserResponse>> update(
-            @RequestPart("userData") User userRequest,
-            @RequestPart(value = "avatar", required = false) MultipartFile avatarFile) {
+    @PutMapping("/updateAvatar")
+    public ResponseEntity<MessageResponse<Boolean>> register(@RequestBody UpdateAvatarRequest updateAvatarRequest) {
+        boolean result = userService.updateAvatar(updateAvatarRequest);
+        if (result == true) {
+            return SuccessEntityResponse.ok("Update avatar successfully", true);
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Failed to update avatar", false, null));
+        }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<MessageResponse<UserResponse>> update(@RequestBody User userRequest) {
         try {
-            System.out.println("Check userRequest to upload: " + userRequest);
+            System.out.println("check user request: " + userRequest);
             Optional<User> existingUserOpt = userService.findUserByEmail(userRequest.getEmail());
-            System.out.println("check existingUserOpt: " + existingUserOpt.get());
             if (existingUserOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(),
                                 "Không tìm thấy người dùng với ID: " + userRequest.getUserId(),
                                 false, null));
             }
-
             User existingUser = existingUserOpt.get();
             existingUser.setFullName(userRequest.getFullName());
             existingUser.setDob(userRequest.getDob());
             existingUser.setAddressId(userRequest.getAddressId());
-            existingUser.setGender(userRequest.getGender());
-
-            // Xử lý upload ảnh nếu có file
-            if (avatarFile != null && !avatarFile.isEmpty()) {
-                // Nếu đang dùng Cloudinary Gateway Filter, lấy thông tin từ header
-                String cloudinaryUrl = userRequest.getAvatar(); // Hoặc giữ nguyên giá trị hiện có
-                // Nếu cần upload trực tiếp từ controller
-                // String cloudinaryUrl = cloudinaryService.uploadImage(avatarFile);
-
-                existingUser.setAvatar(cloudinaryUrl);
-            } else if (userRequest.getAvatar() != null) {
-                // Nếu không có file mới nhưng có URL avatar trong userRequest
-                existingUser.setAvatar(userRequest.getAvatar());
-            }
-
-            if (existingUser.getPhoneNumber() != userRequest.getPhoneNumber()) {
+            existingUser.setAvatar(userRequest.getAvatar());
+            int phone = userService.existsByPhoneNumber(userRequest.getPhoneNumber());
+            if (userRequest.getPhoneNumber() == existingUser.getPhoneNumber()) {
+                existingUser.setPhoneNumber(userRequest.getPhoneNumber());
+            } else {
+                if (phone >= 2) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(new MessageResponse<>(HttpStatus.CONFLICT.value(),
+                                    "Số điện thoại đã tồn tại", false, null));
+                }
                 existingUser.setPhoneNumber(userRequest.getPhoneNumber());
             }
-
+            Optional<Address> address = addressService.getAddressByUserId(existingUser.getUserId());
             Optional<User> updatedUser = userService.updateUser(existingUser);
-            Address address = addressService.getAddressByUserId(userRequest.getUserId()).orElse(null);
             UserResponse userResponse = userMapper.UserToUserResponse(updatedUser.get());
-            userResponse.setAddress(address);
-
+            userResponse.setAddress(address.get());
             return SuccessEntityResponse.ok("Cập nhật người dùng thành công", userResponse);
         } catch (Exception e) {
             throw e;

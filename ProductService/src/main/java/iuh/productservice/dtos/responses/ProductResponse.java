@@ -1,23 +1,21 @@
 package iuh.productservice.dtos.responses;
 
-import iuh.productservice.entities.Category;
-import iuh.productservice.entities.Supplier;
+import iuh.productservice.entities.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ProductResponse {
-    private String productId;
-    private String name;
+    private Product product;
     private Category category;
+    private Inventory inventory;
     private Supplier supplier;
-    private String description;
-    private double price;
-    private double priceReduced = price;
-    private String promotionId;
+    private List<Specification> specification;
 }
