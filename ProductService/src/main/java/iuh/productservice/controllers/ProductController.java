@@ -153,26 +153,17 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
-        Page<Product> productPage = productService.getProductWithPage(pageNo, pageSize, sortBy, sortDirection);
-
-        List<ProductResponse> productResponses = productPage.getContent().stream().map(product ->
-                ProductResponse.builder()
-                        .product(product)
-                        .category(categoryService.getCategoryById(product.getCategoryId()).orElse(null))
-                        .inventory(inventoryService.getAllInventoryByProductId(product.getProductId()).orElse(null))
-                        .supplier(supplierService.getSupplierById(product.getSupplierId()).orElse(null))
-                        .specification(specificationService.findSpecificationsByProductId(product.getProductId()))
-                        .build()
-        ).collect(Collectors.toList());
-
-        Page<ProductResponse> productResponsePage = new PageImpl<>(productResponses, productPage.getPageable(), productPage.getTotalElements());
-
+        System.out.println("check productResponsePage: " + pageSize + " " + pageNo + " " + sortBy + " " + sortDirection);
+        // Gọi service để lấy Page<ProductResponse>
+        Page<ProductResponse> productResponsePage = productService.getProductWithPage(pageNo, pageSize, sortBy, sortDirection);
+        System.out.println("check productResponsePage: " + productResponsePage);
+        // Kiểm tra kết quả
         if (productResponsePage.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
                             "No products found", true, productResponsePage));
         }
-        return ResponseEntity.ok(new MessageResponse<>(HttpStatus.OK.value(),
-                "Products retrieved successfully", false, productResponsePage));
+
+        return SuccessEntityResponse.ok("Products retrieved successfully",productResponsePage);
     }
 }

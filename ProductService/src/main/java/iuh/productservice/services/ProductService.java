@@ -21,5 +21,5 @@ public interface ProductService {
     List<Product> getProductByCategory(String categoryId);
     List<Product> getProductBySupplier(String supplierId);
     List<Product> getProductBySearch(String searchText);
-    Page<Product> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection);
+    Page<ProductResponse> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection);
 }

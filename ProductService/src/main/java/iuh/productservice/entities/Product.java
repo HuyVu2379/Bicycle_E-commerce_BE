@@ -17,7 +17,7 @@ import java.util.List;
 @Document
 @Data
 @EqualsAndHashCode(of = {"productId"})
-@Builder
+@NoArgsConstructor
 public class Product {
     @Id
     private String productId;
@@ -28,6 +28,8 @@ public class Product {
     private String categoryId;
     @NotNull(message = "Nhà cung cấp không được để trống")
     private String supplierId;
+    @NotNull(message = "Lô nhap không được để trống")
+    private String inventoryId;
     private Color color;
     private String description;
     private List<String> imageUrls;
