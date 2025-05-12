@@ -3,14 +3,17 @@ package iuh.orderservice.services.Impl;
 import iuh.orderservice.clients.ProductServiceClient;
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
 import iuh.orderservice.dtos.requests.ProductRequest;
+import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
 import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
+import iuh.orderservice.repositories.PromotionRepository;
 import iuh.orderservice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,19 +30,40 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private ProductServiceClient productServiceClient;
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @Override
-    public Optional<Order> createOrder(CreateOrderRequest request, String userId) {
+    public Optional<Order> createOrder(CreateOrderRequest request, String userId, String token) {
+//        System.out.println(token); //token da chua bearer
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderDate(LocalDateTime.now());
         order.setPromotionId(request.getPromotionId());
         List<OrderDetail> orderDetails = new ArrayList<>();
+
         double totalPrice = 0;
+        double reducePercent = 0.0;
+        if (request.getPromotionId() != null && !request.getPromotionId().isEmpty()) {
+            var promotionOpt = promotionRepository.findById(request.getPromotionId());
+            if (promotionOpt.isPresent()) {
+                reducePercent = promotionOpt.get().getReducePercent() / 100.0;
+                order.setPromotionId(request.getPromotionId()); // chỉ set nếu hợp lệ
+            }
+        }
 
         for (ProductRequest product : request.getProducts()) {
+            if (product.getProductId() == null || product.getProductId().isEmpty()) {
+                throw new IllegalArgumentException("Product ID cannot be null or empty");
+            }
+
             ProductPriceRespone priceRespone = productServiceClient.getPrice(product.getProductId());
-            double price = priceRespone != null ? priceRespone.getData() : 0.0;
+            double price_c = priceRespone != null ? priceRespone.getData() : 0.0;
+            if (price_c <= 0.0) {
+                throw new RuntimeException("Invalid price for product: " + product.getProductId());
+            }
+
+            double price = priceRespone.getData();
             double subtotal = price * product.getQuantity();
             totalPrice += subtotal;
 
@@ -51,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
             orderDetails.add(orderDetail);
         }
 
+        totalPrice = totalPrice - totalPrice * reducePercent;
         order.setTotalPrice(totalPrice);
         order.setOrderDetails(orderDetails);
         orderRepository.save(order);
@@ -58,6 +83,15 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.setOrder(order);
             OrderDetail save = orderDetailRepository.save(orderDetail);
+
+            ResponseEntity<MessageResponse<Object>> response = productServiceClient.reduceInventory(
+                    orderDetail.getProductId(),
+                    orderDetail.getQuantity()
+            );
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Reduce inventory failed for product: " + orderDetail.getProductId());
+            }
+
             if (save == null) {
                 return Optional.empty();
             }
@@ -65,9 +99,10 @@ public class OrderServiceImpl implements OrderService {
         return Optional.of(order);
     }
 
+
     @Override
     public Optional<Order> getOrderById(String orderId) {
-        return Optional.of(orderRepository.findById(orderId).orElse(null));
+        return Optional.ofNullable(orderRepository.findById(orderId).orElse(null));
     }
 
     @Override
@@ -81,8 +116,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersByUserId(String userId) {
-        List<Order> orders = orderRepository.findOrdersByUserId(userId);
+    public Page<Order> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Order> orders = orderRepository.findOrdersByUserId(userId, pageable);
         if (orders.isEmpty()) {
             return null;
         }
@@ -124,36 +168,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
-        // Sắp xếp dữ liệu
-//        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-//        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        // Tạo Sort và Pageable
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
-        // Lấy danh sách doanh thu theo userId
-        List<Object[]> results = orderRepository.getOrdersByUserGroup();
+        // Gọi repository với phân trang
+        Page<Object[]> resultPage = orderRepository.getOrdersByUserGroup(pageable, sortBy);
 
-        // Chuyển đổi danh sách Object[] thành danh sách Map<String, Object>
-        List<Map<String, Object>> revenueList = results.stream()
-                .map(obj -> {
-                    Map<String, Object> map = new LinkedHashMap<>();
-                    map.put("userId", obj[0].toString());
-                    map.put("totalRevenue", (Double) obj[1]);
-                    return map;
-                })
-                .collect(Collectors.toList());
-
-        // **Sắp xếp thủ công trước khi phân trang**
-        Comparator<Map<String, Object>> comparator = Comparator.comparing(m -> (Double) m.get("totalRevenue"));
-        if ("desc".equalsIgnoreCase(sortDirection)) {
-            comparator = comparator.reversed();
-        }
-        revenueList.sort(comparator);
-
-        // **Phân trang thủ công**
-        int start = Math.min(pageNo * pageSize, revenueList.size());
-        int end = Math.min((pageNo + 1) * pageSize, revenueList.size());
-        List<Map<String, Object>> pagedRevenueList = revenueList.subList(start, end);
-
-        return new PageImpl<>(pagedRevenueList, PageRequest.of(pageNo, pageSize), revenueList.size());
+        // Chuyển đổi sang Map
+        return resultPage.map(obj -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("userId", obj[0].toString());
+            map.put("totalRevenue", (Double) obj[1]);
+            return map;
+        });
     }
 
 }

@@ -9,6 +9,7 @@ import iuh.productservice.dtos.responses.SupplierResponse;
 import iuh.productservice.entities.Supplier;
 import iuh.productservice.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,20 @@ public class SupplierController {
     private UserServiceClient userServiceClient;
 
     @GetMapping("/public/getAll")
-    public ResponseEntity<MessageResponse<List<Supplier>>> getAllSuppliers() {
-        return SuccessEntityResponse.ok("Get all suppliers sucessfull", supplierService.getAllSuppliers());
+    public ResponseEntity<MessageResponse<Page<SupplierResponse>>> getAllSuppliers(@RequestParam(defaultValue = "0") int pageNo,
+                                                                           @RequestParam(defaultValue = "10") int pageSize,
+                                                                           @RequestParam(defaultValue = "createdAt") String sortBy,
+                                                                           @RequestParam(defaultValue = "desc") String sortDirection) {
+        Page<SupplierResponse> suppliers = supplierService.getAllSuppliers(pageNo, pageSize, sortBy, sortDirection);
+        if (suppliers.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "No suppliers found",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.ok("Suppliers retrieved successfully", suppliers);
     }
 
     @PostMapping("/create")
@@ -46,8 +59,8 @@ public class SupplierController {
 
     @PostMapping("/update")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<MessageResponse<Supplier>> updateSupplier(@RequestBody Supplier supplier) {
-        Optional<Supplier> supplierResponse = supplierService.updateSupplier(supplier);
+    public ResponseEntity<MessageResponse<Supplier>> updateSupplier(@RequestBody SupplierRequest supplierRequest) {
+        Optional<Supplier> supplierResponse = supplierService.updateSupplier(supplierRequest);
         if (supplierResponse.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
@@ -56,7 +69,7 @@ public class SupplierController {
                             null
                     ));
         }
-        return SuccessEntityResponse.ok("Supplier updated successfully", supplierService.updateSupplier(supplier).get());
+        return SuccessEntityResponse.ok("Supplier updated successfully", supplierResponse.get());
     }
 
     @PostMapping("/delete/{id}")
@@ -71,13 +84,13 @@ public class SupplierController {
                             null
                     ));
         }
+        userServiceClient.deleteAddress(id);
         return SuccessEntityResponse.ok("Supplier deleted successfully", supplierResponse);
     }
 
     @GetMapping("/public/getSupplierById/{id}")
     public ResponseEntity<MessageResponse<SupplierResponse>> getSupplierById(@PathVariable String id) {
         AddressResponse addressResponse = userServiceClient.getAddressByUserId(id).getData();
-        System.out.println("check address response: " + addressResponse);
         Supplier supplier = supplierService.getSupplierById(id).get();
         SupplierResponse supplierResponse = SupplierResponse.builder()
                 .supplierId(supplier.getSupplierId())
@@ -99,9 +112,18 @@ public class SupplierController {
     }
 
     @GetMapping("/public/getSupplierByEmail")
-    public ResponseEntity<MessageResponse<Supplier>> getSupplierByEmail(@RequestParam String email) {
+    public ResponseEntity<MessageResponse<SupplierResponse>> getSupplierByEmail(@RequestParam String email) {
         Optional<Supplier> supplierResponse = supplierService.getSupplierByEmail(email);
-        if (supplierResponse.isEmpty()) {
+        AddressResponse addressResponse = userServiceClient.getAddressByUserId(supplierResponse.get().getSupplierId()).getData();
+        SupplierResponse actualSupplierResponse = SupplierResponse.builder()
+                .supplierId(supplierResponse.get().getSupplierId())
+                .name(supplierResponse.get().getName())
+                .phone(supplierResponse.get().getPhone())
+                .email(supplierResponse.get().getEmail())
+                .description(supplierResponse.get().getDescription())
+                .address(addressResponse)
+                .build();
+        if (actualSupplierResponse == null) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
                             "Supplier retrieval failed",
@@ -109,8 +131,6 @@ public class SupplierController {
                             null
                     ));
         }
-        return SuccessEntityResponse.ok("Supplier retrieved successfully", supplierResponse.get());
+        return SuccessEntityResponse.ok("Supplier retrieved successfully", actualSupplierResponse);
     }
-
-
 }

@@ -1,14 +1,11 @@
 package iuh.paymentservice.services;
 
-import iuh.paymentservice.dtos.requests.MomoPaymentRequest;
-import iuh.paymentservice.dtos.responses.MomoPaymentResponse;
-import iuh.paymentservice.exception.MessageResponse;
+import iuh.paymentservice.entities.Payment;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public interface PaymentService {
-    String processPayment(String userId, double amount, String currency);
-
-    MomoPaymentResponse initiatePayment(MomoPaymentRequest request);
-    String handleCallback(String orderId, String resultCode, String signature, String paymentTransactionId);
+    Optional<Payment> createPayment();
 }

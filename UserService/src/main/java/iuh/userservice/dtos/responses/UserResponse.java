@@ -1,8 +1,6 @@
 package iuh.userservice.dtos.responses;
 
-import iuh.userservice.enums.Gender;
-import iuh.userservice.enums.Role;
-import jakarta.persistence.*;
+import iuh.userservice.entities.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +17,9 @@ public class UserResponse {
     private String email;
     private LocalDateTime dob;
     private String phoneNumber;
-    private String addressId;
+    private Address address;
     private String fullName;
+    private String avatar;
+    private String gender;
+
 }

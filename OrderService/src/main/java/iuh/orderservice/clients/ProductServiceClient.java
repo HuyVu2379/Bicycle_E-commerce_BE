@@ -1,16 +1,23 @@
 package iuh.orderservice.clients;
 
+import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.ProductNameRespone;
 import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "product-service")
+@FeignClient(name = "api-gateway")
 public interface ProductServiceClient {
     @GetMapping("/api/v1/products/public/get-price/{productId}")
     ProductPriceRespone getPrice(@PathVariable String productId);
 
     @GetMapping("/api/v1/products/public/get-name/{productId}")
     ProductNameRespone getName(@PathVariable String productId);
+
+    @PostMapping("/api/v1/inventories/public/reduce-quantity/{productId}/{quantity}")
+    ResponseEntity<MessageResponse<Object>> reduceInventory(
+            @PathVariable("productId") String productId,
+            @PathVariable("quantity") int quantity
+    );
 }

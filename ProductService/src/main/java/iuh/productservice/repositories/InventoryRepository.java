@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface InventoryRepository extends MongoRepository<Inventory, String> {
     Optional<Inventory> findAllByProductId(String productId);
+    List<Inventory> findByProductIdOrderByImportDateAsc(String productId);
 }

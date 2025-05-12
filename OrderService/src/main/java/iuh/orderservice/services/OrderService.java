@@ -11,15 +11,22 @@ import java.util.Optional;
 
 @Service
 public interface OrderService {
-    Optional<Order> createOrder(CreateOrderRequest request, String userId);
+    Optional<Order> createOrder(CreateOrderRequest request, String userId, String token);
     Optional<Order> getOrderById(String orderId);
     boolean deleteOrder(String orderId, String userId);
-    //Lich su mua hang cua nguoi dung
-    List<Order> getOrdersByUserId(String userId);
+
+    //get all orders paging
+    Page<Order> getAllOrders(int pageNo, int pageSize, String sortBy, String sortDirection);
+
+    //get orders by userId paging
+    Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId);
+
     //Thong ke doanh thu theo thoi gian
     double getRevenueByTime(String startTime, String endTime);
+
     //Thong ke doanh thu theo tung thang trong nam
     Map<String, Double> getRevenueByYear(int year);
+
     //Thong ke doanh thu theo nguoi dung
     Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection);
 }
