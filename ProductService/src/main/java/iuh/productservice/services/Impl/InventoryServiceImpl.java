@@ -1,12 +1,14 @@
 package iuh.productservice.services.Impl;
 
 import iuh.productservice.entities.Inventory;
+import iuh.productservice.enums.Color;
 import iuh.productservice.repositories.InventoryRepository;
 import iuh.productservice.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,8 +59,13 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional
-    public boolean reduceInventory(String productId, int quantityToDeduct) {
-        List<Inventory> inventories = inventoryRepository.findByProductIdOrderByImportDateAsc(productId);
+    public boolean reduceInventory(String productId, String color, int quantityToDeduct) {
+        Color colorEnum = Arrays.stream(Color.values())
+                .filter(c -> c.getColorName().equalsIgnoreCase(color))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid color: " + color));
+
+        List<Inventory> inventories = inventoryRepository.findByProductIdAndColorOrderByImportDateAsc(productId, colorEnum);
         int remaining = quantityToDeduct;
 
         for (Inventory inventory : inventories) {

@@ -49,8 +49,7 @@ public class ProductController {
             throw e;
         }
     }
-    @GetMapping("/{productId}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/public/{productId}")
     public ResponseEntity<MessageResponse<ProductResponse>> getProductById(@PathVariable String productId) {
         try {
             Optional<ProductResponse> productResponse = productService.getProductById(productId);

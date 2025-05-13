@@ -69,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
 
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProductId(product.getProductId());
+            orderDetail.setColor(product.getColor());
             orderDetail.setQuantity(product.getQuantity());
             orderDetail.setSubtotal(subtotal);
             orderDetail.setOrder(order);
@@ -86,6 +87,7 @@ public class OrderServiceImpl implements OrderService {
 
             ResponseEntity<MessageResponse<Object>> response = productServiceClient.reduceInventory(
                     orderDetail.getProductId(),
+                    orderDetail.getColor(),
                     orderDetail.getQuantity()
             );
             if (!response.getStatusCode().is2xxSuccessful()) {

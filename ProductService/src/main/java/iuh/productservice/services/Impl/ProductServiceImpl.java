@@ -77,6 +77,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public double getPrice(String productId) {
         Product product = productRepository.findById(productId).orElse(null);
+        if (product != null && (product.getPriceReduced() < product.getPrice()) ) {
+            return product.getPriceReduced();
+        }
         return product.getPrice();
     }
 
