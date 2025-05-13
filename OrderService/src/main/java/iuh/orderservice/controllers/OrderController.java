@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -142,8 +143,8 @@ public class OrderController {
     @GetMapping("/get-revenue-by-time")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Object>> getRevenueByTime(@RequestParam String startTime, @RequestParam String endTime){
-        double orderOpt = orderService.getRevenueByTime(startTime, endTime);
-        if (orderOpt == 0) {
+        BigDecimal orderOpt = orderService.getRevenueByTime(startTime, endTime);
+        if (orderOpt == null) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
                             "Revenue not found",
@@ -157,7 +158,7 @@ public class OrderController {
     @GetMapping("/get-revenue-by-year/{year}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MessageResponse<Object>> getRevenueByYear(@PathVariable String year){
-        Map<String, Double> revenues = orderService.getRevenueByYear(Integer.parseInt(year));
+        Map<String, BigDecimal> revenues = orderService.getRevenueByYear(Integer.parseInt(year));
         if (revenues.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,

@@ -16,6 +16,8 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -136,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public double getRevenueByTime(String startTime, String endTime) {
+    public BigDecimal getRevenueByTime(String startTime, String endTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         LocalDate startDate = LocalDate.parse(startTime, formatter);
@@ -147,26 +149,36 @@ public class OrderServiceImpl implements OrderService {
 
         List<Order> orders = orderRepository.getOrderByOrderDateBetween(start, end);
         if (orders != null) {
-            return orders.stream().mapToDouble(Order::getTotalPrice).sum();
+            return orders.stream()
+                    .map(Order::getTotalPrice)
+                    .map(BigDecimal::valueOf)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
-        return 0.0;
+        return BigDecimal.ZERO;
     }
 
     @Override
-    public Map<String, Double> getRevenueByYear(int year) {
-        List<String> months = List.of("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+    public Map<String, BigDecimal> getRevenueByYear(int year) {
+        List<String> months = List.of("January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December");
+
         List<Order> orders = orderRepository.getOrdersByOrderDate_Year(year);
-        Map<String, Double> revenueByMonth = new LinkedHashMap<>();
+        Map<String, BigDecimal> revenueByMonth = new LinkedHashMap<>();
+
         for (int i = 0; i < months.size(); i++) {
             int monthIndex = i + 1;
-            double revenue = orders.stream()
+            BigDecimal revenue = orders.stream()
                     .filter(order -> order.getOrderDate().getMonthValue() == monthIndex)
-                    .mapToDouble(Order::getTotalPrice)
-                    .sum();
+                    .map(Order::getTotalPrice) // giả sử trả về double
+                    .map(BigDecimal::valueOf)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
             revenueByMonth.put(months.get(i), revenue);
         }
+
         return revenueByMonth;
     }
+
 
     @Override
     public Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection) {
@@ -181,7 +193,8 @@ public class OrderServiceImpl implements OrderService {
         return resultPage.map(obj -> {
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("userId", obj[0].toString());
-            map.put("totalRevenue", (Double) obj[1]);
+            DecimalFormat df = new DecimalFormat("#,##0.00");
+            map.put("totalRevenue", df.format(BigDecimal.valueOf((Double) obj[1])));
             return map;
         });
     }
