@@ -26,7 +26,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Optional<Address> updateAddress(Address address) {
-        return Optional.of(addressRepository.save(address));
+        return addressRepository.updateAddress(address);
     }
 
     @Override

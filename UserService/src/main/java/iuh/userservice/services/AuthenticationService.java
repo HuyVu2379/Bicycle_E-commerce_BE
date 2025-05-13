@@ -12,15 +12,15 @@ import java.util.Map;
 
 @Service
 public interface AuthenticationService extends UserDetailsService {
-    public String extractUserId(String token);
-    public UserDetails loadUserByEmail(String email);
-    public boolean isTokenValid(String token, UserDetails userDetails);
-    public AuthResponse refreshToken(String refreshToken);
-    public boolean validateToken(String token);
-    public String generateToken(Map<String, Object> extraClaims, User user);
-    public AuthResponse authenticate(AuthRequest request);
-    public String generateToken(User user);
-    public String extractEmail(String token);
-    public String generateRefreshToken(User user);
-    public void logout(String token, String userId);
+    String extractUserId(String token);
+    UserDetails loadUserByEmail(String email);
+    boolean isTokenValid(String token, UserDetails userDetails);
+    AuthResponse refreshToken(String refreshToken);
+    boolean validateToken(String token);
+    String generateToken(Map<String, Object> extraClaims, User user);
+    AuthResponse authenticate(AuthRequest request);
+    String generateToken(User user);
+    String extractEmail(String token);
+    String generateRefreshToken(User user);
+    void logout(String token, String userId);
 }

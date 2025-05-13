@@ -12,6 +12,7 @@ import java.util.Optional;
 @Service
 public interface SupplierService {
     Optional<Supplier> createSupplier(SupplierRequest supplierDTO);
+    List<Supplier> getAllSuppliers();
     //get all suppliers with pagination
     Page<SupplierResponse> getAllSuppliers(int pageNo, int pageSize, String sortBy, String sortDirection);
     Optional<Supplier> updateSupplier(SupplierRequest supplierRequest);

@@ -2,6 +2,7 @@ package iuh.userservice.controllers;
 
 import iuh.userservice.dtos.requests.AuthRequest;
 import iuh.userservice.dtos.requests.RegisterRequest;
+import iuh.userservice.dtos.requests.UpdateAvatarRequest;
 import iuh.userservice.dtos.responses.AuthResponse;
 import iuh.userservice.dtos.responses.MessageResponse;
 import iuh.userservice.dtos.responses.SuccessEntityResponse;
@@ -14,10 +15,14 @@ import iuh.userservice.mappers.UserMapper;
 import iuh.userservice.services.AddressService;
 import iuh.userservice.services.Impl.AuthenticationServiceImpl;
 import iuh.userservice.services.Impl.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -32,6 +37,7 @@ public class UserController {
     private AuthenticationServiceImpl authenticationService;
     @Autowired
     private AddressService addressService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
     public ResponseEntity<MessageResponse<AuthResponse>> register(@RequestBody RegisterRequest registerRequest) {
@@ -41,9 +47,21 @@ public class UserController {
         return SuccessEntityResponse.created("Register successfully", authResponse);
     }
 
+    @PutMapping("/updateAvatar")
+    public ResponseEntity<MessageResponse<Boolean>> register(@RequestBody UpdateAvatarRequest updateAvatarRequest) {
+        boolean result = userService.updateAvatar(updateAvatarRequest);
+        if (result == true) {
+            return SuccessEntityResponse.ok("Update avatar successfully", true);
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Failed to update avatar", false, null));
+        }
+    }
+
     @PostMapping("/update")
     public ResponseEntity<MessageResponse<UserResponse>> update(@RequestBody User userRequest) {
         try {
+            System.out.println("check user request: " + userRequest);
             Optional<User> existingUserOpt = userService.findUserByEmail(userRequest.getEmail());
             if (existingUserOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -55,15 +73,22 @@ public class UserController {
             existingUser.setFullName(userRequest.getFullName());
             existingUser.setDob(userRequest.getDob());
             existingUser.setAddressId(userRequest.getAddressId());
-            if (userService.existsByPhoneNumber(userRequest.getPhoneNumber())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body(new MessageResponse<>(HttpStatus.CONFLICT.value(),
-                                "Số điện thoại đã tồn tại", false, null));
+            existingUser.setAvatar(userRequest.getAvatar());
+            int phone = userService.existsByPhoneNumber(userRequest.getPhoneNumber());
+            if (userRequest.getPhoneNumber() == existingUser.getPhoneNumber()) {
+                existingUser.setPhoneNumber(userRequest.getPhoneNumber());
             } else {
+                if (phone >= 2) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(new MessageResponse<>(HttpStatus.CONFLICT.value(),
+                                    "Số điện thoại đã tồn tại", false, null));
+                }
                 existingUser.setPhoneNumber(userRequest.getPhoneNumber());
             }
+            Optional<Address> address = addressService.getAddressByUserId(existingUser.getUserId());
             Optional<User> updatedUser = userService.updateUser(existingUser);
             UserResponse userResponse = userMapper.UserToUserResponse(updatedUser.get());
+            userResponse.setAddress(address.get());
             return SuccessEntityResponse.ok("Cập nhật người dùng thành công", userResponse);
         } catch (Exception e) {
             throw e;
@@ -84,7 +109,7 @@ public class UserController {
             Address address = addressOptional.orElse(null);
 
             UserResponse userResponse = null;
-            userResponse = userResponse.builder().fullName(user.getFullName())
+            userResponse = UserResponse.builder().fullName(user.getFullName())
                     .gender(user.getGender() != null ? user.getGender().toString() : null)
                     .address(address)
                     .dob(user.getDob())
