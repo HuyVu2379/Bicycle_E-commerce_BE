@@ -5,7 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/configs/CloudinaryConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/controllers/UploadFileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/dtos/UploadFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/responses/MessageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/responses/SuccessEntityResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/CloudinaryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GatewayService/src/main/java/iuh/gatewayservice/services/Impl/CloudinaryServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/enums/Color.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/dtos/requests/UpdateAvatarRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/ProductServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/ProductServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SupplierController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SupplierController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/entities/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/SupplierService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/SupplierService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/AddressMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/AddressMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/mappers/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/AddressRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/AddressRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AddressService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AddressService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AuthenticationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/AuthenticationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/AddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/AddressServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,9 +52,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -30,9 +67,7 @@
   <component name="JpbToolWindowState">
     <option name="isToolWindowVisible" value="false" />
   </component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
+  <component name="KubernetesApiProvider">{ &quot;isMigrated&quot;: true }</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -52,35 +87,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;nhiet&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/PHAM LE THANH NHIET/Desktop/ktpm/origin-be/nhiet_6-5/Bicycle_E-commerce_BE&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.EurekaServerApplication.executor": "Run",
+    "Spring Boot.GatewayServiceApplication.executor": "Run",
+    "Spring Boot.OrderServiceApplication.executor": "Run",
+    "Spring Boot.ProductServiceApplication.executor": "Run",
+    "Spring Boot.UserServiceApplication.executor": "Run",
+    "git-widget-placeholder": "Merging dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/KienTrucPhanMem/Bicycle_E-commerce_BE",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.ApplicationConfigurable",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -93,11 +128,11 @@
       <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\OrderService\src\main\java\iuh\orderservice" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="iuh.gatewayservice.responses" />
       <recent name="iuh.gatewayservice.exception" />
       <recent name="iuh.productservice.dtos.requests" />
       <recent name="iuh.productservice.exception.erorrs" />
       <recent name="iuh.productservice.exception" />
-      <recent name="iuh.productservice.entities" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -296,12 +331,13 @@
       <workItem from="1745976424383" duration="2165000" />
       <workItem from="1746243662507" duration="36000" />
       <workItem from="1746435740824" duration="324000" />
-      <workItem from="1746541732336" duration="2043000" />
-      <workItem from="1746606298728" duration="4658000" />
-      <workItem from="1746622242940" duration="2490000" />
-      <workItem from="1746956018637" duration="116000" />
-      <workItem from="1747121880218" duration="6753000" />
-      <workItem from="1747132084369" duration="27000" />
+      <workItem from="1746605059075" duration="12339000" />
+      <workItem from="1746677653794" duration="19563000" />
+      <workItem from="1746763163679" duration="24071000" />
+      <workItem from="1746847081187" duration="18129000" />
+      <workItem from="1746921248250" duration="54000" />
+      <workItem from="1747033938641" duration="12818000" />
+      <workItem from="1747102477483" duration="12851000" />
     </task>
     <servers />
   </component>

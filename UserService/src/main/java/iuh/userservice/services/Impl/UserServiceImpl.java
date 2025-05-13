@@ -1,6 +1,7 @@
 package iuh.userservice.services.Impl;
 
 import iuh.userservice.dtos.requests.RegisterRequest;
+import iuh.userservice.dtos.requests.UpdateAvatarRequest;
 import iuh.userservice.entities.User;
 import iuh.userservice.enums.Role;
 import iuh.userservice.exception.errors.DuplicateUserException;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private UserRepository userService;
     private PasswordEncoder passwordEncoder;
+
     @Autowired
 
     public UserServiceImpl(UserRepository userService, PasswordEncoder passwordEncoder) {
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
         if (userService.existsByEmail(registerRequest.getEmail())) {
             throw new DuplicateUserException("Email already exists");
         }
-        if (userService.existsByPhoneNumber(registerRequest.getPhoneNumber())) {
+        if (userService.existsUserByPhoneNumber(registerRequest.getPhoneNumber()) >= 1) {
             throw new DuplicateUserException("Phone number already exists");
         }
         Role role = registerRequest.getRole() != null ? registerRequest.getRole() : Role.USER;
@@ -71,7 +73,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existsByPhoneNumber(String phoneNumber) {
-        return userService.existsByPhoneNumber(phoneNumber);
+    public int existsByPhoneNumber(String phoneNumber) {
+        return userService.existsUserByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public boolean updateAvatar(UpdateAvatarRequest updateAvatarRequest) {
+        try {
+            int result = userService.updateAvatar(updateAvatarRequest.getAvatarUrl(), updateAvatarRequest.getUserId());
+            if (result > 0) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return false;
     }
 }

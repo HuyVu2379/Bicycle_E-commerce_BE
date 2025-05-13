@@ -10,11 +10,12 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    public User AuthRequestToUser(AuthRequest authRequest);
+    User AuthRequestToUser(AuthRequest authRequest);
 
-    public AuthRequest RegisterRequestToAuthRequest(RegisterRequest registerRequest);
-    public AuthResponse RegisterRequestToAuthResponse(RegisterRequest registerRequest);
-    public AuthResponse UserToAuthResponse(User user);
-    public UserResponse UserToUserResponse(User user);
+    AuthRequest RegisterRequestToAuthRequest(RegisterRequest registerRequest);
+    AuthResponse RegisterRequestToAuthResponse(RegisterRequest registerRequest);
+    AuthResponse UserToAuthResponse(User user);
+    @Mapping(target = "address", ignore = true)
+    UserResponse UserToUserResponse(User user);
 
 }

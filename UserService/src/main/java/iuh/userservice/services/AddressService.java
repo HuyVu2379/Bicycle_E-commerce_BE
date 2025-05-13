@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Service
 public interface AddressService {
-    public Optional<Address> getAddressByUserId(String userId);
-    public Optional<Address> createAddress(Address address);
-    public Optional<Address> updateAddress(Address address);
+    Optional<Address> getAddressByUserId(String userId);
+    Optional<Address> createAddress(Address address);
+    Optional<Address> updateAddress(Address address);
     @Transactional
-    public boolean deleteAddress(String userId);
+    boolean deleteAddress(String userId);
 }

@@ -1,24 +1,37 @@
 package iuh.productservice.controllers;
 
 import iuh.productservice.dtos.responses.MessageResponse;
+import iuh.productservice.dtos.responses.ProductResponse;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Product;
 import iuh.productservice.exception.erorrs.NotFoundException;
-import iuh.productservice.services.ProductService;
+import iuh.productservice.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private InventoryService inventoryService;
+    @Autowired
+    private SpecificationService specificationService;
+    @Autowired
+    private SupplierService supplierService;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -32,6 +45,21 @@ public class ProductController {
                                 "Product creation failed. Possibly duplicate or invalid data.", false, null));
             }
             return SuccessEntityResponse.created("Product created successfully", productResponse.get());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    @GetMapping("/{productId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<MessageResponse<ProductResponse>> getProductById(@PathVariable String productId) {
+        try {
+            Optional<ProductResponse> productResponse = productService.getProductById(productId);
+            if (productResponse.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
+                                "Product creation failed. Possibly duplicate or invalid data.", false, null));
+            }
+            return SuccessEntityResponse.ok("Product created successfully", productResponse.get());
         } catch (Exception e) {
             throw e;
         }
@@ -135,17 +163,22 @@ public class ProductController {
     }
 
     @GetMapping("/public/getProductsWithPage")
-    public ResponseEntity<MessageResponse<List<Product>>> getProductsWithPage(
+    public ResponseEntity<MessageResponse<Page<ProductResponse>>> getProductsWithPage(
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection) {
-        List<Product> products = productService.getProductWithPage(pageSize, pageNo, sortBy, sortDirection);
-        if (products.isEmpty()) {
+        System.out.println("check productResponsePage: " + pageSize + " " + pageNo + " " + sortBy + " " + sortDirection);
+        // Gọi service để lấy Page<ProductResponse>
+        Page<ProductResponse> productResponsePage = productService.getProductWithPage(pageNo, pageSize, sortBy, sortDirection);
+        System.out.println("check productResponsePage: " + productResponsePage);
+        // Kiểm tra kết quả
+        if (productResponsePage.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
-                            "No products found for this page", true, products));
+                            "No products found", true, productResponsePage));
         }
-        return SuccessEntityResponse.ok("Products retrieved successfully", products);
+
+        return SuccessEntityResponse.ok("Products retrieved successfully",productResponsePage);
     }
 }
