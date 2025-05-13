@@ -15,9 +15,10 @@ public interface ProductServiceClient {
     @GetMapping("/api/v1/products/public/get-name/{productId}")
     ProductNameRespone getName(@PathVariable String productId);
 
-    @PostMapping("/api/v1/inventories/public/reduce-quantity/{productId}/{quantity}")
+    @PostMapping("/api/v1/inventories/public/reduce-quantity/{productId}/{color}/{quantity}")
     ResponseEntity<MessageResponse<Object>> reduceInventory(
             @PathVariable("productId") String productId,
+            @PathVariable("color") String color,
             @PathVariable("quantity") int quantity
     );
 }
