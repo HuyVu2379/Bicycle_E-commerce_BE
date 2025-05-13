@@ -15,7 +15,7 @@ import java.util.List;
 public class ProductResponse {
     private Product product;
     private Category category;
-    private Inventory inventory;
+    private List<Inventory> inventory;
     private Supplier supplier;
     private List<Specification> specification;
 }

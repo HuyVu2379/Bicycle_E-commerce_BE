@@ -49,6 +49,21 @@ public class ProductController {
             throw e;
         }
     }
+    @GetMapping("/{productId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<MessageResponse<ProductResponse>> getProductById(@PathVariable String productId) {
+        try {
+            Optional<ProductResponse> productResponse = productService.getProductById(productId);
+            if (productResponse.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new MessageResponse<>(HttpStatus.BAD_REQUEST.value(),
+                                "Product creation failed. Possibly duplicate or invalid data.", false, null));
+            }
+            return SuccessEntityResponse.ok("Product created successfully", productResponse.get());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     @GetMapping("/public/get-price/{productId}")
     public ResponseEntity<MessageResponse<Double>> getPrice(@PathVariable String productId) {

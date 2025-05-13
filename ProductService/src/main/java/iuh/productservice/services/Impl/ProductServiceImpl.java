@@ -8,7 +8,9 @@ import iuh.productservice.entities.*;
 import iuh.productservice.enums.Color;
 import iuh.productservice.mappers.ProductMapper;
 import iuh.productservice.repositories.ProductRepository;
+import iuh.productservice.services.InventoryService;
 import iuh.productservice.services.ProductService;
+import iuh.productservice.services.SpecificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,10 @@ public class ProductServiceImpl implements ProductService {
     private CategoryServiceImpl categoryService;
     @Autowired
     private SupplierServiceImpl supplierService;
+    @Autowired
+    private InventoryService inventoryService;
+    @Autowired
+    private SpecificationService specificationService;
     @Autowired
     private ProductMapper productMapper;
     @Autowired
@@ -100,16 +106,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.deleteByProductId(productId) > 0;
     }
 
-    @Override
-    public Optional<ProductResponse> getProductById(String productId) {
-        Product product = productRepository.findById(productId).orElse(null);
-        ProductResponse productResponse = productMapper.productToProductResponse(product);
-        Category category = categoryService.getCategoryById(product.getCategoryId()).orElse(null);
-        Supplier supplier = supplierService.getSupplierById(product.getSupplierId()).orElse(null);
-        productResponse.setCategory(category);
-        productResponse.setSupplier(supplier);
-        return productResponse != null ? Optional.of(productResponse) : Optional.empty();
-    }
 
     @Override
     public List<Product> getAllProduct() {
@@ -150,6 +146,22 @@ public class ProductServiceImpl implements ProductService {
             log.error("Error fetching products", e);
             throw new RuntimeException("Error fetching products: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Optional<ProductResponse> getProductById(String productId) {
+        ProductResponse productResponse = new ProductResponse();
+        Product product = productRepository.findById(productId).orElse(null);
+        Category category = categoryService.getCategoryById(product.getCategoryId()).orElse(null);
+        Supplier supplier = supplierService.getSupplierById(product.getSupplierId()).orElse(null);
+        List<Inventory> inventories = inventoryService.getAllInventoryByProductId(productId);
+        List<Specification> specifications = specificationService.findSpecificationsByProductId(productId);
+        productResponse.setProduct(product);
+        productResponse.setCategory(category);
+        productResponse.setSupplier(supplier);
+        productResponse.setInventory(inventories);
+        productResponse.setSpecification(specifications);
+        return Optional.of(productResponse);
     }
 
     private void validateInputs(int pageNo, int pageSize, String sortBy, String sortDirection) {
@@ -250,27 +262,33 @@ public class ProductServiceImpl implements ProductService {
             }
 
             // Lấy Inventory
-            Inventory inventory = null;
+            List<Inventory> inventory = new ArrayList<>();
             if (doc.get("inventory") instanceof Document) {
-                Document inventoryDoc = (Document) doc.get("inventory");
-                inventory = new Inventory();
-                // Tương tự, lấy _id từ subdocument inventory
-                inventory.setInventoryId(inventoryDoc.getObjectId("_id").toString());
-                inventory.setProductId(inventoryDoc.getString("productId"));
-                inventory.setQuantity(inventoryDoc.getInteger("quantity", 0));
+                List<Document> inventoryDocs = (List<Document>) doc.get("inventory");
+                inventory = inventoryDocs.stream().map(inventoryDoc -> {
+                    Inventory inven = new Inventory();
+                    if (inventoryDoc.get("_id") != null) {
+                        inven.setInventoryId(inventoryDoc.getObjectId("_id").toString());
+                    }
+                    inven.setInventoryId(inventoryDoc.getObjectId("_id").toString());
+                    inven.setProductId(inventoryDoc.getString("productId"));
+                    inven.setQuantity(inventoryDoc.getInteger("quantity", 0));
+                    inven.setImageUrls(Collections.singletonList(inventoryDoc.getString("imageUrls")));
+                    inven.setColor(Color.valueOf(inventoryDoc.getString("color")));
+                    if (inventoryDoc.get("importDate") != null && inventoryDoc.get("importDate") instanceof Date) {
+                        inven.setImportDate(((Date) inventoryDoc.get("importDate")).toInstant()
+                                .atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay());
+                    }
 
-                if (inventoryDoc.get("importDate") != null && inventoryDoc.get("importDate") instanceof Date) {
-                    inventory.setImportDate(((Date) inventoryDoc.get("importDate")).toInstant()
-                            .atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay());
-                }
+                    if (inventoryDoc.get("createdAt") != null && inventoryDoc.get("createdAt") instanceof Date) {
+                        inven.setCreatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
+                    }
 
-                if (inventoryDoc.get("createdAt") != null && inventoryDoc.get("createdAt") instanceof Date) {
-                    inventory.setCreatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
-                }
-
-                if (inventoryDoc.get("updatedAt") != null && inventoryDoc.get("updatedAt") instanceof Date) {
-                    inventory.setUpdatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
-                }
+                    if (inventoryDoc.get("updatedAt") != null && inventoryDoc.get("updatedAt") instanceof Date) {
+                        inven.setUpdatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
+                    }
+                    return inven;
+                }).collect(Collectors.toList());
             }
 
             // Lấy Supplier
