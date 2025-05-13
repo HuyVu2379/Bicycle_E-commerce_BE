@@ -29,7 +29,7 @@ public class Product {
     @NotNull(message = "Nhà cung cấp không được để trống")
     private String supplierId;
     @NotNull(message = "Lô nhap không được để trống")
-    private String inventoryId;
+//    private String inventoryId; //Xóa
     private String description;
     @DecimalMin(value = "0.0", message = "Giá phải lớn hơn hoặc bằng 0")
     private double price;

@@ -28,5 +28,4 @@ public class Inventory {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
 }

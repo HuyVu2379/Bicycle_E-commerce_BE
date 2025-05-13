@@ -217,7 +217,6 @@ public class ProductServiceImpl implements ProductService {
             product.setName(doc.getString("name"));
             product.setCategoryId(doc.getString("categoryId"));
             product.setSupplierId(doc.getString("supplierId"));
-            product.setInventoryId(doc.getString("inventoryId"));
             product.setDescription(doc.getString("description"));
             product.setPrice(doc.getDouble("price") != null ? doc.getDouble("price") : 0.0);
             product.setPriceReduced(doc.getDouble("priceReduced") != null ? doc.getDouble("priceReduced") : product.getPrice());
