@@ -30,9 +30,7 @@ public class Product {
     private String supplierId;
     @NotNull(message = "Lô nhap không được để trống")
     private String inventoryId;
-    private Color color;
     private String description;
-    private List<String> imageUrls;
     @DecimalMin(value = "0.0", message = "Giá phải lớn hơn hoặc bằng 0")
     private double price;
     private double priceReduced = price;

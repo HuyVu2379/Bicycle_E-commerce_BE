@@ -53,6 +53,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
+    public List<Supplier> getAllSuppliers() {
+        return supplierRepository.findAll();
+    }
+
+    @Override
     public Page<SupplierResponse> getAllSuppliers(int pageNo, int pageSize, String sortBy, String sortDirection) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);

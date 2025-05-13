@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.bson.Document;
+import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private MongoTemplate mongoTemplate;
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     @Override
     public boolean existsById(String productId) {
         return productRepository.existsById(productId);
@@ -55,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
                 MessageResponse<PromotionResponse> promotionRequest = orderServiceClient.getPromotion(token, promotionId);
                 System.out.println("Check promotion: " + promotionRequest);
                 if (promotionRequest.isSuccess() && promotionRequest.getData() != null) {
-                    double discount = product.getPrice() * (1 - Double.parseDouble(String.valueOf(promotionRequest.getData().getReducePercent())) / 100 );
+                    double discount = product.getPrice() * (1 - Double.parseDouble(String.valueOf(promotionRequest.getData().getReducePercent())) / 100);
                     product.setPriceReduced(discount);
                 }
             } catch (Exception e) {
@@ -77,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).orElse(null);
         return product.getName();
     }
+
     public Optional<Product> updateProduct(Product product, String productId) {
         Product product1 = productRepository.findById(productId).orElse(null);
         if (product1 == null) {
@@ -92,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
         return Optional.of(productRepository.save(product1));
     }
 
-@Override
+    @Override
     public boolean deleteProduct(String productId) {
         return productRepository.deleteByProductId(productId) > 0;
     }
@@ -181,21 +184,22 @@ public class ProductServiceImpl implements ProductService {
         Aggregation aggregation = buildAggregation(pageNo, pageSize, sort);
         AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "product", Document.class);
         List<Document> documents = results.getMappedResults();
-        log.info("Aggregation returned {} documents", documents.size());
-        if (documents.isEmpty()) {
-            log.warn("No documents returned from aggregation. Check collection data or lookup conditions.");
-        } else {
-            log.debug("First document: {}", documents.get(0).toJson());
-        }
         return mapToProductResponses(documents);
     }
 
     private Aggregation buildAggregation(int pageNo, int pageSize, Sort sort) {
         return Aggregation.newAggregation(
-                Aggregation.lookup("category", "categoryId", "categoryId", "category"),
-                Aggregation.lookup("inventory", "inventoryId", "inventoryId", "inventory"),
-                Aggregation.lookup("supplier", "supplierId", "supplierId", "supplier"),
-                Aggregation.lookup("specification", "productId", "productId", "specifications"),
+                Aggregation.project()
+                        .and(ConvertOperators.ToObjectId.toObjectId("$categoryId")).as("categoryIdObj")
+                        .and(ConvertOperators.ToObjectId.toObjectId("$inventoryId")).as("inventoryIdObj")
+                        .and(ConvertOperators.ToObjectId.toObjectId("$supplierId")).as("supplierIdObj")
+                        .andInclude("_id", "productId", "name", "categoryId", "supplierId", "inventoryId", "description", "price", "priceReduced",
+                                "promotionId", "createdAt", "updatedAt"),
+                Aggregation.lookup("category", "categoryIdObj", "_id", "category"),
+                Aggregation.lookup("inventory", "inventoryIdObj", "_id", "inventory"),
+                Aggregation.lookup("supplier", "supplierIdObj", "_id", "supplier"),
+                Aggregation.lookup("specification", "_id", "productId", "specifications"),
+
                 Aggregation.unwind("category", true),
                 Aggregation.unwind("inventory", true),
                 Aggregation.unwind("supplier", true),
@@ -207,19 +211,14 @@ public class ProductServiceImpl implements ProductService {
 
     private List<ProductResponse> mapToProductResponses(List<Document> documents) {
         return documents.stream().map(doc -> {
-            log.debug("Processing document: {}", doc.toJson());
-
-            // Lấy dữ liệu Product
+            log.warn("Document in mapToProduct: {}", doc);
             Product product = new Product();
-            product.setProductId(doc.getString("productId"));
+            product.setProductId(doc.getObjectId("_id").toString());
             product.setName(doc.getString("name"));
             product.setCategoryId(doc.getString("categoryId"));
             product.setSupplierId(doc.getString("supplierId"));
             product.setInventoryId(doc.getString("inventoryId"));
-            String colorStr = doc.getString("color");
-            product.setColor(colorStr != null ? Color.valueOf(colorStr) : null);
             product.setDescription(doc.getString("description"));
-            product.setImageUrls(doc.get("imageUrls", List.class));
             product.setPrice(doc.getDouble("price") != null ? doc.getDouble("price") : 0.0);
             product.setPriceReduced(doc.getDouble("priceReduced") != null ? doc.getDouble("priceReduced") : product.getPrice());
             product.setPromotionId(doc.getString("promotionId"));
@@ -230,75 +229,87 @@ public class ProductServiceImpl implements ProductService {
 
             // Lấy Category
             Category category = null;
-            Object categoryObj = doc.get("category");
-            if (categoryObj instanceof Document) {
-                Document categoryDoc = (Document) categoryObj;
+            if (doc.get("category") instanceof Document) {
+                Document categoryDoc = (Document) doc.get("category");
                 category = new Category();
-                category.setCategoryId(categoryDoc.getString("categoryId"));
+                // Đây là điểm quan trọng - lấy _id từ subdocument và gán vào categoryId
+                category.setCategoryId(categoryDoc.getObjectId("_id").toString());
                 category.setName(categoryDoc.getString("name"));
                 category.setDescription(categoryDoc.getString("description"));
-                category.setCreatedAt(categoryDoc.getDate("createdAt") != null ?
-                        LocalDateTime.ofInstant(categoryDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
-                category.setUpdatedAt(categoryDoc.getDate("updatedAt") != null ?
-                        LocalDateTime.ofInstant(categoryDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
-            } else {
-                log.warn("Category is not a Document: {}", categoryObj);
+
+                if (categoryDoc.get("createdAt") != null) {
+                    if (categoryDoc.get("createdAt") instanceof Date) {
+                        category.setCreatedAt(LocalDateTime.ofInstant(((Date) categoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
+                    }
+                }
+
+                if (categoryDoc.get("updatedAt") != null) {
+                    if (categoryDoc.get("updatedAt") instanceof Date) {
+                        category.setUpdatedAt(LocalDateTime.ofInstant(((Date) categoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
+                    }
+                }
             }
 
             // Lấy Inventory
             Inventory inventory = null;
-            Object inventoryObj = doc.get("inventory");
-            if (inventoryObj instanceof Document) {
-                Document inventoryDoc = (Document) inventoryObj;
+            if (doc.get("inventory") instanceof Document) {
+                Document inventoryDoc = (Document) doc.get("inventory");
                 inventory = new Inventory();
-                inventory.setInventoryId(inventoryDoc.getString("inventoryId"));
+                // Tương tự, lấy _id từ subdocument inventory
+                inventory.setInventoryId(inventoryDoc.getObjectId("_id").toString());
                 inventory.setProductId(inventoryDoc.getString("productId"));
-                inventory.setImportDate(inventoryDoc.getDate("importDate") != null ?
-                        LocalDateTime.ofInstant(inventoryDoc.getDate("importDate").toInstant(), ZoneId.systemDefault()) : null);
                 inventory.setQuantity(inventoryDoc.getInteger("quantity", 0));
-                inventory.setCreatedAt(inventoryDoc.getDate("createdAt") != null ?
-                        LocalDateTime.ofInstant(inventoryDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
-                inventory.setUpdatedAt(inventoryDoc.getDate("updatedAt") != null ?
-                        LocalDateTime.ofInstant(inventoryDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
-            } else {
-                log.warn("Inventory is not a Document: {}", inventoryObj);
+
+                if (inventoryDoc.get("importDate") != null && inventoryDoc.get("importDate") instanceof Date) {
+                    inventory.setImportDate(((Date) inventoryDoc.get("importDate")).toInstant()
+                            .atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay());
+                }
+
+                if (inventoryDoc.get("createdAt") != null && inventoryDoc.get("createdAt") instanceof Date) {
+                    inventory.setCreatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
+                }
+
+                if (inventoryDoc.get("updatedAt") != null && inventoryDoc.get("updatedAt") instanceof Date) {
+                    inventory.setUpdatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
+                }
             }
 
             // Lấy Supplier
             Supplier supplier = null;
-            Object supplierObj = doc.get("supplier");
-            if (supplierObj instanceof Document) {
-                Document supplierDoc = (Document) supplierObj;
+            if (doc.get("supplier") instanceof Document) {
+                Document supplierDoc = (Document) doc.get("supplier");
                 supplier = new Supplier();
-                supplier.setSupplierId(supplierDoc.getString("supplierId"));
+                // Lấy _id từ subdocument supplier
+                supplier.setSupplierId(supplierDoc.getObjectId("_id").toString());
                 supplier.setName(supplierDoc.getString("name"));
                 supplier.setAddressId(supplierDoc.getString("addressId"));
                 supplier.setPhone(supplierDoc.getString("phone"));
                 supplier.setEmail(supplierDoc.getString("email"));
                 supplier.setDescription(supplierDoc.getString("description"));
-                supplier.setCreatedAt(supplierDoc.getDate("createdAt") != null ?
-                        LocalDateTime.ofInstant(supplierDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
-                supplier.setUpdatedAt(supplierDoc.getDate("updatedAt") != null ?
-                        LocalDateTime.ofInstant(supplierDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
-            } else {
-                log.warn("Supplier is not a Document: {}", supplierObj);
+
+                if (supplierDoc.get("createdAt") != null && supplierDoc.get("createdAt") instanceof Date) {
+                    supplier.setCreatedAt(LocalDateTime.ofInstant(((Date) supplierDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
+                }
+
+                if (supplierDoc.get("updatedAt") != null && supplierDoc.get("updatedAt") instanceof Date) {
+                    supplier.setUpdatedAt(LocalDateTime.ofInstant(((Date) supplierDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
+                }
             }
 
             // Lấy Specifications
-            List<Specification> specifications = Collections.emptyList();
-            Object specObj = doc.get("specifications");
-            if (specObj instanceof List) {
-                List<Document> specDocs = (List<Document>) specObj;
+            List<Specification> specifications = new ArrayList<>();
+            if (doc.get("specifications") instanceof List) {
+                List<Document> specDocs = (List<Document>) doc.get("specifications");
                 specifications = specDocs.stream().map(specDoc -> {
                     Specification spec = new Specification();
-                    spec.setSpecificationId(specDoc.getString("specificationId"));
+                    if (specDoc.get("_id") != null) {
+                        spec.setSpecificationId(specDoc.getObjectId("_id").toString());
+                    }
                     spec.setProductId(specDoc.getString("productId"));
                     spec.setKey(specDoc.getString("key"));
                     spec.setValue(specDoc.getString("value"));
                     return spec;
                 }).collect(Collectors.toList());
-            } else {
-                log.warn("Specifications is not a List: {}", specObj);
             }
 
             return ProductResponse.builder()
@@ -313,20 +324,15 @@ public class ProductServiceImpl implements ProductService {
 
     private long countTotalDocuments() {
         Aggregation countAggregation = Aggregation.newAggregation(
-                Aggregation.lookup("category", "categoryId", "categoryId", "category"),
-                Aggregation.lookup("inventory", "inventoryId", "inventoryId", "inventory"),
-                Aggregation.lookup("supplier", "supplierId", "supplierId", "supplier"),
-                Aggregation.lookup("specification", "productId", "productId", "specification"),
-                Aggregation.unwind("category", true),
-                Aggregation.unwind("inventory", true),
-                Aggregation.unwind("supplier", true),
-                Aggregation.count().as("total")
+                Aggregation.group("productId")
+                        .count().as("total")
         );
+
         return mongoTemplate.aggregate(countAggregation, "product", Document.class)
                 .getMappedResults()
                 .stream()
-                .mapToLong(doc -> doc.getInteger("total", 0))
+                .mapToInt(doc -> doc.getInteger("total"))
                 .findFirst()
-                .orElse(0L);
+                .orElse(0);
     }
 }
