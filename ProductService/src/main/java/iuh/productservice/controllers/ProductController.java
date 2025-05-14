@@ -2,6 +2,7 @@ package iuh.productservice.controllers;
 
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.ProductResponse;
+import iuh.productservice.dtos.responses.ProductResponseUser;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Product;
 import iuh.productservice.exception.erorrs.NotFoundException;
@@ -179,5 +180,16 @@ public class ProductController {
         }
 
         return SuccessEntityResponse.ok("Products retrieved successfully",productResponsePage);
+    }
+
+    @GetMapping("/public/getAllProduct")
+    public ResponseEntity<MessageResponse<List<ProductResponseUser>>> getAllProduct() {
+        List<ProductResponseUser> products = productService.getProducts();
+        if (products.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
+                            "No products found", true, products));
+        }
+        return SuccessEntityResponse.ok("Products retrieved successfully", products);
     }
 }

@@ -1,9 +1,6 @@
 package iuh.userservice.dtos.responses;
 
 import iuh.userservice.entities.Address;
-import iuh.userservice.enums.Gender;
-import iuh.userservice.enums.Role;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

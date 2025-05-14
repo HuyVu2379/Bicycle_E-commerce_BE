@@ -15,4 +15,6 @@ public interface PromotionService {
     Optional<Promotion> getPromotionById(String id);
 
     List<Promotion> getAllPromotions();
+
+    Optional<Promotion> togglePromotionStatus(String id);
 }

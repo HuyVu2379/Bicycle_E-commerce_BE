@@ -24,7 +24,7 @@ public class OrderDetail extends BaseEntity{
     private double subtotal = 0;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonIgnore // to prevent infinite loop when serializing
+    @JsonIgnore
     private Order order;
     public double calcSubtotal(int quantity,double price){
         return quantity*price;

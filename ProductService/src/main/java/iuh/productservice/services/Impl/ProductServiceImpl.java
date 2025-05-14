@@ -2,11 +2,13 @@ package iuh.productservice.services.Impl;
 
 import iuh.productservice.client.OrderServiceClient;
 import iuh.productservice.dtos.responses.ProductResponse;
+import iuh.productservice.dtos.responses.ProductResponseUser;
 import iuh.productservice.dtos.responses.PromotionResponse;
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.entities.*;
 import iuh.productservice.enums.Color;
 import iuh.productservice.mappers.ProductMapper;
+import iuh.productservice.repositories.InventoryRepository;
 import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.InventoryService;
 import iuh.productservice.services.ProductService;
@@ -47,6 +49,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private MongoTemplate mongoTemplate;
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+    @Autowired
+    private InventoryRepository inventoryRepository;
 
     @Override
     public boolean existsById(String productId) {
@@ -77,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public double getPrice(String productId) {
         Product product = productRepository.findById(productId).orElse(null);
-        if (product != null && (product.getPriceReduced() < product.getPrice()) ) {
+        if (product != null && (product.getPriceReduced() < product.getPrice())) {
             return product.getPriceReduced();
         }
         return product.getPrice();
@@ -149,6 +153,32 @@ public class ProductServiceImpl implements ProductService {
             log.error("Error fetching products", e);
             throw new RuntimeException("Error fetching products: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<ProductResponseUser> getProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream().map(product -> {
+            Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(product.getProductId());
+
+            String imageUrl = inventoryOptional
+                    .map(inventory -> {
+                           List<String> imageUrls = inventory.getImageUrls();
+                            if (imageUrls != null && !imageUrls.isEmpty()) {
+                                return imageUrls.get(0);
+                            }
+                            return null;
+                    }).orElse(null);
+
+            return ProductResponseUser.builder()
+                    .productId(product.getProductId())
+                    .productName(product.getName())
+                    .price(product.getPrice())
+                    .priceReduced(product.getPriceReduced())
+                    .image(imageUrl)
+                    .build();
+        }).collect(Collectors.toList());
+
     }
 
     @Override

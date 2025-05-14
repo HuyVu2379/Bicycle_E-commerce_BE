@@ -63,7 +63,7 @@ public class PromotionController {
         Optional<Promotion> promotion = promotionService.getPromotionById(id);
         if (promotion.isPresent()) {
             promotionService.deletePromotionById(id);
-            return SuccessEntityResponse.created("Promotion deleted successfully", null);
+            return SuccessEntityResponse.ok("Promotion deleted successfully", null);
         } else {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Promotion not found", false, null)
@@ -75,7 +75,7 @@ public class PromotionController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<MessageResponse<Object>> getPromotionById(@PathVariable String id) {
         Optional<Promotion> promotion = promotionService.getPromotionById(id);
-        if(promotion.isPresent()) {
+        if(promotion.isEmpty()) {
             return SuccessEntityResponse.ok("Promotion found", promotion.get());
         } else {
             return ResponseEntity.badRequest().body(
@@ -84,7 +84,7 @@ public class PromotionController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/list")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<MessageResponse<Object>> getAllPromotions() {
         List<Promotion> promotions = promotionService.getAllPromotions();
@@ -95,4 +95,17 @@ public class PromotionController {
         }
         return SuccessEntityResponse.ok("Promotions found", promotions);
     }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<MessageResponse<Object>> togglePromotionStatus(@PathVariable String id) {
+        Optional<Promotion> promotionOptional = promotionService.togglePromotionStatus(id);
+        if (promotionOptional.isPresent()) {
+            return SuccessEntityResponse.ok("Promotion status toggled successfully", promotionOptional.get());
+        } else {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Promotion not found", false, null)
+            );
+        }
+    }
+
 }

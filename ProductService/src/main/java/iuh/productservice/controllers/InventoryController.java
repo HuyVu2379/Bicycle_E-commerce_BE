@@ -60,7 +60,7 @@ public class InventoryController {
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory updated failed", false, null)
             );
         }
-        return SuccessEntityResponse.created("Inventory updated successfully", inventory);
+        return SuccessEntityResponse.ok("Inventory updated successfully", inventory);
     }
 
     @DeleteMapping("/deleteInventory/{inventoryId}")
@@ -69,7 +69,7 @@ public class InventoryController {
         Optional<Inventory> inventory = inventoryService.getInventoryById(inventoryId);
         if (inventory.isPresent()){
             inventoryService.deleteInventory(inventoryId);
-            return SuccessEntityResponse.created("Inventory deleted successfully", null);
+            return SuccessEntityResponse.ok("Inventory deleted successfully", null);
         }
         return ResponseEntity.badRequest().body(
                 new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory deleted failed", false, null)
