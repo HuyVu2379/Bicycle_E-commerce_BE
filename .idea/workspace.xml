@@ -6,10 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/clients/ProductServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/requests/ProductRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/dtos/requests/ProductRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/OrderDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/entities/OrderDetail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderDetailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderDetailServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/OrderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SpecificationConttroller.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/SpecificationConttroller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/requests/AddressRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/requests/AddressRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/requests/SupplierRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/requests/SupplierRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/AddressResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/AddressResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/SupplierServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,13 +51,6 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="Use Maven wrapper" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectColorInfo">{ &quot;customColor&quot;: &quot;&quot;, &quot;associatedIndex&quot;: 5 }</component>
   <component name="ProjectId" id="2tA4ElTrgYz8L39wAcAPwYq7Z3s" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -55,33 +61,34 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-  }
-}</component>
+        &quot;keyToString&quot;: {
+        &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+        &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+        &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+        &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+        &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+        &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+        &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+        &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+        &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+        &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+        &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+        &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+        &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+        &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
+        &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+        &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+        &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+        &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+        &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+        &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+        &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+        &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+        &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
+        &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+        &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+        }
+        }</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -215,6 +222,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -295,11 +310,7 @@
       <workItem from="1746847081187" duration="18129000" />
       <workItem from="1746921248250" duration="54000" />
       <workItem from="1747033938641" duration="12818000" />
-      <workItem from="1747102477483" duration="15930000" />
-      <workItem from="1747141092748" duration="4987000" />
-      <workItem from="1747186468090" duration="1326000" />
-      <workItem from="1747193112448" duration="3326000" />
-      <workItem from="1747199854857" duration="3811000" />
+      <workItem from="1747102477483" duration="12851000" />
     </task>
     <servers />
   </component>

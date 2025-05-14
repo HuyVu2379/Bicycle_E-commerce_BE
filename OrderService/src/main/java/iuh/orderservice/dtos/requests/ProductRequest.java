@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductRequest {
     private String productId;
+    private String color;
     private int quantity;
 }

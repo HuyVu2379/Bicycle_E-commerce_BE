@@ -42,8 +42,26 @@ public class SupplierServiceImpl implements SupplierService {
         addressRequest.setDistrict(supplierRequest.getAddress().getDistrict());
         addressRequest.setStreet(supplierRequest.getAddress().getStreet());
         addressRequest.setWard(supplierRequest.getAddress().getWard());
-        addressRequest.setCountry(supplierRequest.getAddress().getCountry());
+
+        if(supplierRequest.getAddress().getCountry() == null || supplierRequest.getAddress().getCountry().isEmpty()){
+            addressRequest.setCountry("Viet Nam");
+        }else{
+            addressRequest.setCountry(supplierRequest.getAddress().getCountry());
+        }
+
         addressRequest.setUserId(supplier.getSupplierId());
+
+        if(supplierRequest.getAddress().getFullAddress() == null || supplierRequest.getAddress().getFullAddress().isEmpty()){
+            String fullAddress = supplierRequest.getAddress().getStreet() + ", " +
+                    supplierRequest.getAddress().getWard() + ", " +
+                    supplierRequest.getAddress().getDistrict() + ", " +
+                    supplierRequest.getAddress().getCity()+ ", " +
+                    supplierRequest.getAddress().getCountry();
+            addressRequest.setFullAddress(fullAddress);
+        }else{
+            addressRequest.setFullAddress(supplierRequest.getAddress().getFullAddress());
+        }
+
         MessageResponse<AddressResponse> response = userServiceClient.createAddress(addressRequest);
         AddressResponse addressResponse = response.getData();
         supplier.setAddressId(addressResponse.getAddressId());
@@ -88,6 +106,7 @@ public class SupplierServiceImpl implements SupplierService {
         supplier.setEmail(supplierRequest.getEmail());
         supplier.setDescription(supplierRequest.getDescription());
         supplier.setAddressId(foundSupplier.getAddressId());
+        supplier.setCreatedAt(foundSupplier.getCreatedAt());
 
         //Gui request update address
         AddressRequest addressRequest = new AddressRequest();
@@ -97,6 +116,12 @@ public class SupplierServiceImpl implements SupplierService {
         addressRequest.setStreet(supplierRequest.getAddress().getStreet());
         addressRequest.setWard(supplierRequest.getAddress().getWard());
         addressRequest.setCountry(supplierRequest.getAddress().getCountry());
+        String fullAddress = supplierRequest.getAddress().getStreet() + ", " +
+                supplierRequest.getAddress().getWard() + ", " +
+                supplierRequest.getAddress().getDistrict() + ", " +
+                supplierRequest.getAddress().getCity()+ ", " +
+                supplierRequest.getAddress().getCountry();
+        addressRequest.setFullAddress(fullAddress);
         addressRequest.setUserId(supplier.getSupplierId());
         userServiceClient.updateAddress(addressRequest);
 

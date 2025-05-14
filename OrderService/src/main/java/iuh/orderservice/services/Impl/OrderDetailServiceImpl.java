@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,7 +50,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                     ProductNameRespone productNameRespone = productServiceClient.getName(obj[0].toString());
                     String productName = productNameRespone != null ? productNameRespone.getData() : "Unknown";
                     map.put("productName", productName);
-                    map.put("totalRevenue", (Double) obj[1]);
+                    DecimalFormat df = new DecimalFormat("#,##0.00");
+                    map.put("totalRevenue", df.format(BigDecimal.valueOf((Double) obj[1])));
                     return map;
                 })
                 .collect(Collectors.toList());

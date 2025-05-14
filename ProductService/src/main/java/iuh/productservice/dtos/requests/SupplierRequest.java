@@ -10,5 +10,5 @@ public class SupplierRequest {
     private String phone;
     private String email;
     private String description;
-    private AddressResponse address;
+    private AddressRequest address;
 }
