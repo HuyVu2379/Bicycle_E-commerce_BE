@@ -128,7 +128,7 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         Page<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId);
-        if (orders.isEmpty()) {
+        if (orders == null) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(400,
                             "Orders not found",
