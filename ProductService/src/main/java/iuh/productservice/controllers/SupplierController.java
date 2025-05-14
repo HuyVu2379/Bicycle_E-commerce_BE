@@ -41,6 +41,21 @@ public class SupplierController {
         }
         return SuccessEntityResponse.ok("Suppliers retrieved successfully", suppliers);
     }
+    @GetMapping("/getAllSupplier")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<MessageResponse<List<Supplier>>> getListSupplier() {
+        List<Supplier> suppliers = supplierService.getAllSuppliers();
+        if (suppliers.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "No suppliers found",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.ok("Suppliers retrieved successfully", suppliers);
+    }
+
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN')")

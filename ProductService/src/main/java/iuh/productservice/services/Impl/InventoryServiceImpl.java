@@ -1,23 +1,24 @@
 package iuh.productservice.services.Impl;
 
 import iuh.productservice.entities.Inventory;
+import iuh.productservice.enums.Color;
 import iuh.productservice.repositories.InventoryRepository;
+import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.InventoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class InventoryServiceImpl implements InventoryService {
-    private InventoryRepository inventoryRepository;
-
-    @Autowired
-    public InventoryServiceImpl(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
-    }
+    private final InventoryRepository inventoryRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public Optional<Inventory> createInventory(Inventory inventory) {
@@ -46,7 +47,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Optional<Inventory> getAllInventoryByProductId(String productId) {
+    public List<Inventory> getAllInventoryByProductId(String productId) {
         return inventoryRepository.findAllByProductId(productId);
     }
 
@@ -57,8 +58,13 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional
-    public boolean reduceInventory(String productId, int quantityToDeduct) {
-        List<Inventory> inventories = inventoryRepository.findByProductIdOrderByImportDateAsc(productId);
+    public boolean reduceInventory(String productId, String color, int quantityToDeduct) {
+        Color colorEnum = Arrays.stream(Color.values())
+                .filter(c -> c.getColorName().equalsIgnoreCase(color))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid color: " + color));
+
+        List<Inventory> inventories = inventoryRepository.findByProductIdAndColorOrderByImportDateAsc(productId, colorEnum);
         int remaining = quantityToDeduct;
 
         for (Inventory inventory : inventories) {

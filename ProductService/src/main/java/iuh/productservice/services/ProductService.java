@@ -1,6 +1,7 @@
 package iuh.productservice.services;
 
 import iuh.productservice.dtos.responses.ProductResponse;
+import iuh.productservice.dtos.responses.ProductResponseUser;
 import iuh.productservice.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,6 @@ public interface ProductService {
     List<Product> getProductByCategory(String categoryId);
     List<Product> getProductBySupplier(String supplierId);
     List<Product> getProductBySearch(String searchText);
-    List<Product> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection);
+    Page<ProductResponse> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection);
+    List<ProductResponseUser> getProducts();
 }

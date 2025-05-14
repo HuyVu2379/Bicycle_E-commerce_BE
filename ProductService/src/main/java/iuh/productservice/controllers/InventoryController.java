@@ -79,21 +79,22 @@ public class InventoryController {
     }
 
     @GetMapping("/public/getAllInventoryByProductId/{productId}")
-    public ResponseEntity<MessageResponse<Object>> getAllInventoryByProductId(@PathVariable String productId) {
-        Optional<Inventory> inventory = inventoryService.getAllInventoryByProductId(productId);
+    public ResponseEntity<MessageResponse<List<Inventory>>> getAllInventoryByProductId(@PathVariable String productId) {
+        List<Inventory> inventory = inventoryService.getAllInventoryByProductId(productId);
         if (inventory.isEmpty()) {
             return ResponseEntity.badRequest().body(
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
             );
         }
-        return SuccessEntityResponse.found("Inventory found", inventory.get());
+        return SuccessEntityResponse.found("Inventory found", inventory);
     }
 
-    @PostMapping("/public/reduce-quantity/{productId}/{quantity}")
+    @PostMapping("/public/reduce-quantity/{productId}/{color}/{quantity}")
     public ResponseEntity<MessageResponse<Object>> reduceInventory(
             @PathVariable String productId,
+            @PathVariable String color,
             @PathVariable int quantity) {
-        boolean success = inventoryService.reduceInventory(productId, quantity);
+        boolean success = inventoryService.reduceInventory(productId, color, quantity);
         if (success) {
             return ResponseEntity.ok(new MessageResponse<>(HttpStatus.OK.value(), "Inventory had been reduced", true));
         } else {

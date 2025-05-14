@@ -61,7 +61,7 @@ public class SpecificationConttroller {
         return SuccessEntityResponse.ok("Specifications deleted successfully", specificationResponse);
     }
 
-    @GetMapping("/find/{productid}")
+    @GetMapping("/public/find/{productid}")
     public ResponseEntity<MessageResponse<List<Specification>>> findSpecifications(@PathVariable String productid) {
         List<Specification> specificationsResponse = specificationService.findSpecificationsByProductId(productid);
         if (specificationsResponse.isEmpty()) {

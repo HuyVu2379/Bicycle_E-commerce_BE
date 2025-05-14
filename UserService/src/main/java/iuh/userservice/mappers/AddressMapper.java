@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
-    public AddressResponse AddressToAddressResponse(Address address);
+    AddressResponse AddressToAddressResponse(Address address);
 }

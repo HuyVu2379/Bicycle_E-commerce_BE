@@ -16,6 +16,8 @@ public class OrderDetail extends BaseEntity{
     private String orderDetailId;
     @Column(nullable = false)
     private String productId;
+    @Column(nullable = true)
+    private String color;
     @Column(nullable = false)
     private int quantity;
     @Column(nullable = false)

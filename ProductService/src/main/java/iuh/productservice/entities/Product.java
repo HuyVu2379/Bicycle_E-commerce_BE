@@ -1,5 +1,6 @@
 package iuh.productservice.entities;
 
+import iuh.productservice.enums.Color;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -11,11 +12,12 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document
 @Data
 @EqualsAndHashCode(of = {"productId"})
-@Builder
+@NoArgsConstructor
 public class Product {
     @Id
     private String productId;
@@ -26,6 +28,8 @@ public class Product {
     private String categoryId;
     @NotNull(message = "Nhà cung cấp không được để trống")
     private String supplierId;
+    @NotNull(message = "Lô nhap không được để trống")
+//    private String inventoryId; //Xóa
     private String description;
     @DecimalMin(value = "0.0", message = "Giá phải lớn hơn hoặc bằng 0")
     private double price;

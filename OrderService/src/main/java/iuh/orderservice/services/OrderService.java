@@ -5,6 +5,7 @@ import iuh.orderservice.entities.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,10 +23,10 @@ public interface OrderService {
     Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId);
 
     //Thong ke doanh thu theo thoi gian
-    double getRevenueByTime(String startTime, String endTime);
+    BigDecimal getRevenueByTime(String startTime, String endTime);
 
     //Thong ke doanh thu theo tung thang trong nam
-    Map<String, Double> getRevenueByYear(int year);
+    Map<String, BigDecimal> getRevenueByYear(int year);
 
     //Thong ke doanh thu theo nguoi dung
     Page<Map<String, Object>> getRevenueByUsers(int pageNo, int pageSize, String sortBy, String sortDirection);

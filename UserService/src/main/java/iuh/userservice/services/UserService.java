@@ -1,6 +1,7 @@
 package iuh.userservice.services;
 
 import iuh.userservice.dtos.requests.RegisterRequest;
+import iuh.userservice.dtos.requests.UpdateAvatarRequest;
 import iuh.userservice.entities.User;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,6 @@ public interface UserService {
     Optional<User> registerUser(RegisterRequest registerRequest);
     Optional<User> updateUser(User user);
     Boolean existsByEmail(String email);
-    Boolean existsByPhoneNumber(String phoneNumber);
+    int existsByPhoneNumber(String phoneNumber);
+    boolean updateAvatar(UpdateAvatarRequest updateAvatarRequest);
 }

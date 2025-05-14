@@ -12,7 +12,7 @@ public interface InventoryService {
     Optional<Inventory> updateInventory(Inventory inventory);
     void deleteInventory(String inventoryId);
     Optional<Inventory> getInventoryById(String inventoryId);
-    Optional<Inventory> getAllInventoryByProductId(String productId);
+    List<Inventory> getAllInventoryByProductId(String productId);
     List<Inventory> getAllInventories();
-    boolean reduceInventory(String productId, int quantityToDeduct);
+    boolean reduceInventory(String productId, String color, int quantityToDeduct);
 }
