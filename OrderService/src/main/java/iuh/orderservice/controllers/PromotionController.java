@@ -93,6 +93,6 @@ public class PromotionController {
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No promotion found", false, null)
             );
         }
-        return SuccessEntityResponse.found("Promotions found", promotions);
+        return SuccessEntityResponse.ok("Promotions found", promotions);
     }
 }

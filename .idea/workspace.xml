@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/InventoryRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dq" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -299,7 +295,11 @@
       <workItem from="1746847081187" duration="18129000" />
       <workItem from="1746921248250" duration="54000" />
       <workItem from="1747033938641" duration="12818000" />
-      <workItem from="1747102477483" duration="12851000" />
+      <workItem from="1747102477483" duration="15930000" />
+      <workItem from="1747141092748" duration="4987000" />
+      <workItem from="1747186468090" duration="1326000" />
+      <workItem from="1747193112448" duration="3326000" />
+      <workItem from="1747199854857" duration="3811000" />
     </task>
     <servers />
   </component>

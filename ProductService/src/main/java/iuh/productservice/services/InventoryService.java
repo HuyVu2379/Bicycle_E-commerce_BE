@@ -15,4 +15,5 @@ public interface InventoryService {
     List<Inventory> getAllInventoryByProductId(String productId);
     List<Inventory> getAllInventories();
     boolean reduceInventory(String productId, int quantityToDeduct);
+    List<Inventory> bulkCreateInventory(List<Inventory> inventories);
 }

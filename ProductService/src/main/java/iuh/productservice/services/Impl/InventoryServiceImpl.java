@@ -76,4 +76,9 @@ public class InventoryServiceImpl implements InventoryService {
         }
         return remaining == 0; // true nếu trừ thành công hết số lượng yêu cầu
     }
+
+    @Override
+    public List<Inventory> bulkCreateInventory(List<Inventory> inventories) {
+        return inventoryRepository.saveAll(inventories);
+    }
 }
