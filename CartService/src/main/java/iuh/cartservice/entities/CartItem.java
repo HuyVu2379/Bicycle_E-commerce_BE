@@ -2,6 +2,7 @@ package iuh.cartservice.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import iuh.cartservice.enums.Color;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ public class CartItem extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String cartItemId;
     private String productId;
+    private Color color;
     private int quantity;
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)

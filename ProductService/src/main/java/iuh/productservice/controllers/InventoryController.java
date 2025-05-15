@@ -96,7 +96,7 @@ public class InventoryController {
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
             );
         }
-        return SuccessEntityResponse.found("Inventory found", inventory);
+        return SuccessEntityResponse.ok("Inventory found", inventory);
     }
 
     @PostMapping("/public/reduce-quantity/{productId}/{color}/{quantity}")
