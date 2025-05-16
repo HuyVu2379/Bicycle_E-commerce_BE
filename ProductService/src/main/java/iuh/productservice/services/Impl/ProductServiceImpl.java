@@ -1,10 +1,10 @@
 package iuh.productservice.services.Impl;
 
 import iuh.productservice.client.OrderServiceClient;
+import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.ProductResponse;
 import iuh.productservice.dtos.responses.ProductResponseAtHome;
 import iuh.productservice.dtos.responses.PromotionResponse;
-import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.entities.*;
 import iuh.productservice.enums.Color;
 import iuh.productservice.mappers.ProductMapper;
@@ -13,6 +13,7 @@ import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.InventoryService;
 import iuh.productservice.services.ProductService;
 import iuh.productservice.services.SpecificationService;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.bson.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -236,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
         if (sortBy.equals("category.name")) {
             mongoSortField = "category.name";
         } else if (sortBy.equals("inventory.quantity")) {
-            mongoSortField = "inventory.quantity";
+            mongoSortField = "totalQuantity";
         } else if (sortBy.equals("supplier.name")) {
             mongoSortField = "supplier.name";
         }
@@ -261,18 +261,26 @@ public class ProductServiceImpl implements ProductService {
         return Aggregation.newAggregation(
                 Aggregation.project()
                         .and(ConvertOperators.ToObjectId.toObjectId("$categoryId")).as("categoryIdObj")
-                        .and(ConvertOperators.ToObjectId.toObjectId("$inventoryId")).as("inventoryIdObj")
                         .and(ConvertOperators.ToObjectId.toObjectId("$supplierId")).as("supplierIdObj")
-                        .andInclude("_id", "productId", "name", "categoryId", "supplierId", "inventoryId", "description", "price", "priceReduced",
+                        .and(context -> new Document("$toString", "$_id")).as("productIdStr")
+                        .andInclude("_id", "productId", "name", "categoryId", "supplierId", "description", "price", "priceReduced",
                                 "promotionId", "createdAt", "updatedAt"),
                 Aggregation.lookup("category", "categoryIdObj", "_id", "category"),
-                Aggregation.lookup("inventory", "inventoryIdObj", "_id", "inventory"),
                 Aggregation.lookup("supplier", "supplierIdObj", "_id", "supplier"),
-                Aggregation.lookup("specification", "_id", "productId", "specifications"),
+                Aggregation.lookup("inventory", "productIdStr", "productId", "inventory"),
+                Aggregation.lookup("specification", "productIdStr", "productId", "specifications"),
+                new AggregationOperation() {
+                    @Override
+                    public Document toDocument(AggregationOperationContext context) {
+                        return new Document("$addFields", new Document()
+                                .append("totalQuantity", new Document("$sum", "$inventory.quantity"))
+                        );
+                    }
+                },
 
                 Aggregation.unwind("category", true),
-                Aggregation.unwind("inventory", true),
                 Aggregation.unwind("supplier", true),
+
                 Aggregation.sort(sort),
                 Aggregation.skip((long) pageNo * pageSize),
                 Aggregation.limit(pageSize)
@@ -320,90 +328,45 @@ public class ProductServiceImpl implements ProductService {
             product.setUpdatedAt(doc.getDate("updatedAt") != null ?
                     LocalDateTime.ofInstant(doc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
 
-            // Lấy Category
             Category category = null;
             if (doc.get("category") instanceof Document) {
                 Document categoryDoc = (Document) doc.get("category");
                 category = new Category();
-                // Đây là điểm quan trọng - lấy _id từ subdocument và gán vào categoryId
                 category.setCategoryId(categoryDoc.getObjectId("_id").toString());
                 category.setName(categoryDoc.getString("name"));
                 category.setDescription(categoryDoc.getString("description"));
-
-                if (categoryDoc.get("createdAt") != null) {
-                    if (categoryDoc.get("createdAt") instanceof Date) {
-                        category.setCreatedAt(LocalDateTime.ofInstant(((Date) categoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
-                    }
-                }
-
-                if (categoryDoc.get("updatedAt") != null) {
-                    if (categoryDoc.get("updatedAt") instanceof Date) {
-                        category.setUpdatedAt(LocalDateTime.ofInstant(((Date) categoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
-                    }
-                }
+                category.setCreatedAt(categoryDoc.getDate("createdAt") != null ?
+                        LocalDateTime.ofInstant(categoryDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
+                category.setUpdatedAt(categoryDoc.getDate("updatedAt") != null ?
+                        LocalDateTime.ofInstant(categoryDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
             }
 
-            // Lấy Inventory
-            List<Inventory> inventory = new ArrayList<>();
-            if (doc.get("inventory") instanceof Document) {
+            List<Inventory> inventories = new ArrayList<>();
+            if (doc.get("inventory") instanceof List) {
                 List<Document> inventoryDocs = (List<Document>) doc.get("inventory");
-                inventory = inventoryDocs.stream().map(inventoryDoc -> {
+                inventories = inventoryDocs.stream().map(inventoryDoc -> {
                     Inventory inven = new Inventory();
-                    if (inventoryDoc.get("_id") != null) {
-                        inven.setInventoryId(inventoryDoc.getObjectId("_id").toString());
-                    }
                     inven.setInventoryId(inventoryDoc.getObjectId("_id").toString());
                     inven.setProductId(inventoryDoc.getString("productId"));
                     inven.setQuantity(inventoryDoc.getInteger("quantity", 0));
-                    inven.setImageUrls(Collections.singletonList(inventoryDoc.getString("imageUrls")));
+                    inven.setImageUrls((List<String>) inventoryDoc.get("imageUrls"));
                     inven.setColor(Color.valueOf(inventoryDoc.getString("color")));
-                    if (inventoryDoc.get("importDate") != null && inventoryDoc.get("importDate") instanceof Date) {
-                        inven.setImportDate(((Date) inventoryDoc.get("importDate")).toInstant()
-                                .atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay());
-                    }
-
-                    if (inventoryDoc.get("createdAt") != null && inventoryDoc.get("createdAt") instanceof Date) {
-                        inven.setCreatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
-                    }
-
-                    if (inventoryDoc.get("updatedAt") != null && inventoryDoc.get("updatedAt") instanceof Date) {
-                        inven.setUpdatedAt(LocalDateTime.ofInstant(((Date) inventoryDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
-                    }
+                    inven.setImportDate(inventoryDoc.getDate("importDate") != null ?
+                            inventoryDoc.getDate("importDate").toInstant().atZone(ZoneId.systemDefault()).toLocalDate().atStartOfDay() : null);
+                    inven.setCreatedAt(inventoryDoc.getDate("createdAt") != null ?
+                            LocalDateTime.ofInstant(inventoryDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
+                    inven.setUpdatedAt(inventoryDoc.getDate("updatedAt") != null ?
+                            LocalDateTime.ofInstant(inventoryDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
                     return inven;
                 }).collect(Collectors.toList());
             }
 
-            // Lấy Supplier
-            Supplier supplier = null;
-            if (doc.get("supplier") instanceof Document) {
-                Document supplierDoc = (Document) doc.get("supplier");
-                supplier = new Supplier();
-                // Lấy _id từ subdocument supplier
-                supplier.setSupplierId(supplierDoc.getObjectId("_id").toString());
-                supplier.setName(supplierDoc.getString("name"));
-                supplier.setAddressId(supplierDoc.getString("addressId"));
-                supplier.setPhone(supplierDoc.getString("phone"));
-                supplier.setEmail(supplierDoc.getString("email"));
-                supplier.setDescription(supplierDoc.getString("description"));
-
-                if (supplierDoc.get("createdAt") != null && supplierDoc.get("createdAt") instanceof Date) {
-                    supplier.setCreatedAt(LocalDateTime.ofInstant(((Date) supplierDoc.get("createdAt")).toInstant(), ZoneId.systemDefault()));
-                }
-
-                if (supplierDoc.get("updatedAt") != null && supplierDoc.get("updatedAt") instanceof Date) {
-                    supplier.setUpdatedAt(LocalDateTime.ofInstant(((Date) supplierDoc.get("updatedAt")).toInstant(), ZoneId.systemDefault()));
-                }
-            }
-
-            // Lấy Specifications
             List<Specification> specifications = new ArrayList<>();
             if (doc.get("specifications") instanceof List) {
                 List<Document> specDocs = (List<Document>) doc.get("specifications");
                 specifications = specDocs.stream().map(specDoc -> {
                     Specification spec = new Specification();
-                    if (specDoc.get("_id") != null) {
-                        spec.setSpecificationId(specDoc.getObjectId("_id").toString());
-                    }
+                    spec.setSpecificationId(specDoc.getObjectId("_id").toString());
                     spec.setProductId(specDoc.getString("productId"));
                     spec.setKey(specDoc.getString("key"));
                     spec.setValue(specDoc.getString("value"));
@@ -411,10 +374,26 @@ public class ProductServiceImpl implements ProductService {
                 }).collect(Collectors.toList());
             }
 
+            Supplier supplier = null;
+            if (doc.get("supplier") instanceof Document) {
+                Document supplierDoc = (Document) doc.get("supplier");
+                supplier = new Supplier();
+                supplier.setSupplierId(supplierDoc.getObjectId("_id").toString());
+                supplier.setName(supplierDoc.getString("name"));
+                supplier.setAddressId(supplierDoc.getString("addressId"));
+                supplier.setPhone(supplierDoc.getString("phone"));
+                supplier.setEmail(supplierDoc.getString("email"));
+                supplier.setDescription(supplierDoc.getString("description"));
+                supplier.setCreatedAt(supplierDoc.getDate("createdAt") != null ?
+                        LocalDateTime.ofInstant(supplierDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
+                supplier.setUpdatedAt(supplierDoc.getDate("updatedAt") != null ?
+                        LocalDateTime.ofInstant(supplierDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
+            }
+
             return ProductResponse.builder()
                     .product(product)
                     .category(category)
-                    .inventory(inventory)
+                    .inventory(inventories)
                     .supplier(supplier)
                     .specification(specifications)
                     .build();
@@ -450,14 +429,5 @@ public class ProductServiceImpl implements ProductService {
                 .mapToInt(doc -> doc.getInteger("total"))
                 .findFirst()
                 .orElse(0);
-    }
-
-    private long countTotalDocument() {
-        Aggregation countAggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.expr(AggregationExpression.from(MongoExpression.create("$gt", Arrays.asList("$price", "$priceReduced"))))),
-                Aggregation.count().as("total"));
-        Document result = mongoTemplate.aggregate(countAggregation, "product", Document.class)
-                .getUniqueMappedResult();
-        return result != null && result.containsKey("total") ? result.getLong("total") : 0L;
     }
 }

@@ -24,4 +24,5 @@ public interface CartItemService {
 
     public boolean bulkDelete(List<String> array);
     public boolean deleteAllCartItem(String cartId);
+    public List<CartItem> getAllCartItemByUserId(String userId);
 }

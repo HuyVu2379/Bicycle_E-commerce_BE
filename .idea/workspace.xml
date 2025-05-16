@@ -5,11 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/clients/FeignClientService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/Inventory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/responses/CartItemResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/responses/GetCartResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/enums/Color.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponseUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/dtos/responses/ProductResponseAtHome.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/CartServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/CartServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/EurekaServerApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/CartItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/CartItemRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/entities/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/entities/CartItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/repositories/CartItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/repositories/CartItemRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/PromotionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/InventoryServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/InventoryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,13 +69,6 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectColorInfo">{ &quot;customColor&quot;: &quot;&quot;, &quot;associatedIndex&quot;: 5 }</component>
   <component name="ProjectId" id="2tA4ElTrgYz8L39wAcAPwYq7Z3s" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -76,14 +86,13 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;LuongTanDat&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging LuongTanDat&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -94,7 +103,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -127,7 +136,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+  <component name="RunManager" selected="Spring Boot.ProductServiceApplication">
     <configuration name="CartServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="iuh.cartservice.CartServiceApplication" />
       <extension name="coverage">
@@ -172,20 +181,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="EurekaServer" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.eurekaserver.EurekaServerApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="GatewayService" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.gatewayservice.GatewayServiceApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="OrderService" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.orderservice.OrderServiceApplication" />
@@ -207,20 +202,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="UserService" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.userservice.UserServiceApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Application.CartServiceApplication" />
       <item itemvalue="Application.EurekaServiceApplication" />
-      <item itemvalue="Spring Boot.GatewayServiceApplication" />
-      <item itemvalue="Spring Boot.UserServiceApplication" />
       <item itemvalue="Spring Boot.CartServiceApplication" />
-      <item itemvalue="Spring Boot.EurekaServerApplication" />
       <item itemvalue="Spring Boot.OrderServiceApplication" />
       <item itemvalue="Spring Boot.PaymentServiceApplication" />
       <item itemvalue="Spring Boot.ProductServiceApplication" />
@@ -321,10 +306,7 @@
       <workItem from="1746921248250" duration="54000" />
       <workItem from="1747033938641" duration="12818000" />
       <workItem from="1747102477483" duration="12851000" />
-      <workItem from="1747234916243" duration="1929000" />
-      <workItem from="1747322894632" duration="67000" />
-      <workItem from="1747355856987" duration="71000" />
-      <workItem from="1747358305634" duration="8474000" />
+      <workItem from="1747278435811" duration="7504000" />
     </task>
     <servers />
   </component>

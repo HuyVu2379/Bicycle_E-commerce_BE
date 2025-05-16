@@ -40,6 +40,16 @@ public class InventoryController {
         }
         return SuccessEntityResponse.created("Inventory created successfully", inventory);
     }
+    @PostMapping("/bulkCreateInventory")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse<List<Inventory>>> createInventory(@RequestBody List<Inventory> inventory) {
+        List<Inventory> inventories = inventoryService.bulkCreateInventory(inventory);
+        if (inventories.isEmpty()) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "Inventory created failed", false, null));
+        }
+        return SuccessEntityResponse.created("Inventories created successfully", inventory);
+    }
 
     @PutMapping("/updateInventory")
     @PreAuthorize("hasRole('ADMIN')")
@@ -86,7 +96,7 @@ public class InventoryController {
                     new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
             );
         }
-        return SuccessEntityResponse.found("Inventory found", inventory);
+        return SuccessEntityResponse.ok("Inventory found", inventory);
     }
 
     @PostMapping("/public/reduce-quantity/{productId}/{color}/{quantity}")

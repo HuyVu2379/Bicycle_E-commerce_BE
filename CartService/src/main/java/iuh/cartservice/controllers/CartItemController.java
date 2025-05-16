@@ -6,6 +6,7 @@ import iuh.cartservice.dtos.responses.MessageResponse;
 import iuh.cartservice.dtos.responses.SuccessEntityResponse;
 import iuh.cartservice.entities.Cart;
 import iuh.cartservice.entities.CartItem;
+import iuh.cartservice.enums.Color;
 import iuh.cartservice.exception.errors.CartNotFoundException;
 import iuh.cartservice.mappers.CartItemMapper;
 import iuh.cartservice.services.Impl.CartItemServiceImpl;
@@ -39,12 +40,13 @@ public class CartItemController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/all", produces = "application/json")
     public ResponseEntity<MessageResponse<List<CartItem>>> getAllCartItems() {
-        try{
-            return SuccessEntityResponse.found("Get all cartItem succeed",cartItemService.getAllCartItems()) ;
+        try {
+            return SuccessEntityResponse.found("Get all cartItem succeed", cartItemService.getAllCartItems());
         } catch (Exception e) {
             throw e;
         }
     }
+
     //OK
     @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -52,6 +54,7 @@ public class CartItemController {
         Optional<CartItem> result = cartItemService.getCartItemsById(id);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     //OK
     @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/remove/{cartItemId}", produces = "application/json")
@@ -67,6 +70,7 @@ public class CartItemController {
             throw e;
         }
     }
+
     //OK
     @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/create", produces = "application/json")
@@ -77,6 +81,7 @@ public class CartItemController {
                 throw new CartNotFoundException("Cart not found");
             }
             CartItem cartItem = cartItemMapper.CartItemRequestToCartItem(cartItemRequest);
+            cartItem.setColor(Color.valueOf(cartItemRequest.getColor()));
             cartItem.setCart(cart);
             Optional<CartItem> result = cartItemService.addCartItem(cartItem);
             if (result.isPresent()) {
@@ -87,6 +92,10 @@ public class CartItemController {
         } catch (Exception e) {
             throw e;
         }
+    }
+    @GetMapping("/getAllCartItemByUserId/{userId}")
+    public ResponseEntity<MessageResponse<List<CartItem>>> getAllCartItemByUserId(@PathVariable String userId) {
+        return SuccessEntityResponse.ok("get all cart item successfully",cartItemService.getAllCartItemByUserId(userId));
     }
 
     @PreAuthorize("hasRole('USER')")
