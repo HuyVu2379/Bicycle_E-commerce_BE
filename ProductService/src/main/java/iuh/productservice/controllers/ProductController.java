@@ -2,23 +2,20 @@ package iuh.productservice.controllers;
 
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.ProductResponse;
-import iuh.productservice.dtos.responses.ProductResponseUser;
+import iuh.productservice.dtos.responses.ProductResponseAtHome;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Product;
 import iuh.productservice.exception.erorrs.NotFoundException;
 import iuh.productservice.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -50,6 +47,7 @@ public class ProductController {
             throw e;
         }
     }
+
     @GetMapping("/public/{productId}")
     public ResponseEntity<MessageResponse<ProductResponse>> getProductById(@PathVariable String productId) {
         try {
@@ -179,12 +177,13 @@ public class ProductController {
                             "No products found", true, productResponsePage));
         }
 
-        return SuccessEntityResponse.ok("Products retrieved successfully",productResponsePage);
+        return SuccessEntityResponse.ok("Products retrieved successfully", productResponsePage);
     }
 
-    @GetMapping("/public/getAllProduct")
-    public ResponseEntity<MessageResponse<List<ProductResponseUser>>> getAllProduct() {
-        List<ProductResponseUser> products = productService.getProducts();
+    @GetMapping("/public/getProductForHome")
+    public ResponseEntity<MessageResponse<List<ProductResponseAtHome>>> getAllProduct(
+    ) {
+        List<ProductResponseAtHome> products = productService.getProductsWithPagination();
         if (products.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),

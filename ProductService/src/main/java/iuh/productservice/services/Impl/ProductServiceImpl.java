@@ -2,7 +2,7 @@ package iuh.productservice.services.Impl;
 
 import iuh.productservice.client.OrderServiceClient;
 import iuh.productservice.dtos.responses.ProductResponse;
-import iuh.productservice.dtos.responses.ProductResponseUser;
+import iuh.productservice.dtos.responses.ProductResponseAtHome;
 import iuh.productservice.dtos.responses.PromotionResponse;
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.entities.*;
@@ -17,11 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.bson.Document;
-import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -156,29 +156,47 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseUser> getProducts() {
+    public List<ProductResponseAtHome> getProductsWithPagination() {
+//        try {
+//            validateInputs(pageNo, pageSize, sortBy, sortDirection);
+//            Sort sort = createSort(sortBy, sortDirection);
+//            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+//
+//            List<ProductResponseAtHome> productResponseUsers = fetchProductResponseAtHome(pageNo, pageSize, sort);
+//
+//            long total = countTotalDocument();
+//
+//            return new PageImpl<>(productResponseUsers, pageable, total);
+//        } catch (IllegalArgumentException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error fetching products: " + e.getMessage());
+//        }
         List<Product> products = productRepository.findAll();
         return products.stream().map(product -> {
+            if (product.getPrice() <= product.getPriceReduced()) {
+                return null;
+            }
+
             Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(product.getProductId());
 
             String imageUrl = inventoryOptional
                     .map(inventory -> {
-                           List<String> imageUrls = inventory.getImageUrls();
-                            if (imageUrls != null && !imageUrls.isEmpty()) {
-                                return imageUrls.get(0);
-                            }
-                            return null;
+                        List<String> imageUrls = inventory.getImageUrls();
+                        if (imageUrls != null && !imageUrls.isEmpty()) {
+                            return imageUrls.get(0);
+                        }
+                        return null;
                     }).orElse(null);
 
-            return ProductResponseUser.builder()
+            return ProductResponseAtHome.builder()
                     .productId(product.getProductId())
                     .productName(product.getName())
                     .price(product.getPrice())
                     .priceReduced(product.getPriceReduced())
                     .image(imageUrl)
                     .build();
-        }).collect(Collectors.toList());
-
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
@@ -232,6 +250,13 @@ public class ProductServiceImpl implements ProductService {
         return mapToProductResponses(documents);
     }
 
+    private List<ProductResponseAtHome> fetchProductResponseAtHome(int pageNo, int pageSize, Sort sort) {
+        Aggregation aggregation = buildAggregationForHome(pageNo, pageSize, sort);
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "product", Document.class);
+        List<Document> documents = results.getMappedResults();
+        return mapToProductResponse(documents);
+    }
+
     private Aggregation buildAggregation(int pageNo, int pageSize, Sort sort) {
         return Aggregation.newAggregation(
                 Aggregation.project()
@@ -252,6 +277,30 @@ public class ProductServiceImpl implements ProductService {
                 Aggregation.skip((long) pageNo * pageSize),
                 Aggregation.limit(pageSize)
         );
+    }
+
+    private Aggregation buildAggregationForHome(int pageNo, int pageSize, Sort sort) {
+        List<AggregationOperation> operations = new ArrayList<>();
+
+        // Match products with price greater than priceReduced
+        operations.add(Aggregation.match(Criteria.expr(
+                AggregationExpression.from(
+                        MongoExpression.create("$gt", Arrays.asList("$price", "$priceReduced"))
+                )
+        )));
+
+        operations.add(Aggregation.lookup("inventory", "productId", "productId", "inventories"));
+        operations.add(Aggregation.unwind("$inventories", true));
+        operations.add(Aggregation.project()
+                .and("productId").as("productId")
+                .and("name").as("name")
+                .and("price").as("price")
+                .and("priceReduced").as("priceReduced")
+                .and("inventories.imageUrls").as("imageUrls"));
+        operations.add(Aggregation.sort(sort));
+        operations.add(Aggregation.skip((long) pageNo * pageSize));
+        operations.add(Aggregation.limit(pageSize));
+        return Aggregation.newAggregation(operations);
     }
 
     private List<ProductResponse> mapToProductResponses(List<Document> documents) {
@@ -372,6 +421,23 @@ public class ProductServiceImpl implements ProductService {
         }).collect(Collectors.toList());
     }
 
+    private List<ProductResponseAtHome> mapToProductResponse(List<Document> documents) {
+        return documents.stream().map(doc -> {
+            List<String> imageUrls = doc.get("imageUrls", List.class);
+            String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+
+            log.debug("Document: productId={}, name={}", doc.getString("productId"), doc.getString("name"));
+
+            return ProductResponseAtHome.builder()
+                    .productId(doc.getString("productId"))
+                    .productName(doc.getString("name"))
+                    .price(doc.getDouble("price"))
+                    .priceReduced(doc.getDouble("priceReduced") != null ? doc.getDouble("priceReduced") : 0.0)
+                    .image(imageUrl)
+                    .build();
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
     private long countTotalDocuments() {
         Aggregation countAggregation = Aggregation.newAggregation(
                 Aggregation.group("productId")
@@ -384,5 +450,14 @@ public class ProductServiceImpl implements ProductService {
                 .mapToInt(doc -> doc.getInteger("total"))
                 .findFirst()
                 .orElse(0);
+    }
+
+    private long countTotalDocument() {
+        Aggregation countAggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.expr(AggregationExpression.from(MongoExpression.create("$gt", Arrays.asList("$price", "$priceReduced"))))),
+                Aggregation.count().as("total"));
+        Document result = mongoTemplate.aggregate(countAggregation, "product", Document.class)
+                .getUniqueMappedResult();
+        return result != null && result.containsKey("total") ? result.getLong("total") : 0L;
     }
 }

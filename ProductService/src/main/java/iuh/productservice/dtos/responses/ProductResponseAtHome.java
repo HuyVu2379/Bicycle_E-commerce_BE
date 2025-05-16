@@ -1,5 +1,5 @@
 /*
- * @ (#) ProductResponseUser.java       1.0     5/14/2025
+ * @ (#) ProductResponseAtHome.java       1.0     5/14/2025
  *
  * Copyright (c) 2025. All rights reserved.
  */
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class ProductResponseUser {
+public class ProductResponseAtHome {
     private String productId;
     private String productName;
     private double price;
