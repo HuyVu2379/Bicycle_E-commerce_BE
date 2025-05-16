@@ -1,10 +1,10 @@
 package iuh.productservice.services.Impl;
 
 import iuh.productservice.client.OrderServiceClient;
-import iuh.productservice.dtos.responses.ProductResponse;
-import iuh.productservice.dtos.responses.ProductResponseUser;
-import iuh.productservice.dtos.responses.PromotionResponse;
 import iuh.productservice.dtos.responses.MessageResponse;
+import iuh.productservice.dtos.responses.ProductResponse;
+import iuh.productservice.dtos.responses.ProductResponseAtHome;
+import iuh.productservice.dtos.responses.PromotionResponse;
 import iuh.productservice.entities.*;
 import iuh.productservice.enums.Color;
 import iuh.productservice.mappers.ProductMapper;
@@ -13,13 +13,13 @@ import iuh.productservice.repositories.ProductRepository;
 import iuh.productservice.services.InventoryService;
 import iuh.productservice.services.ProductService;
 import iuh.productservice.services.SpecificationService;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.bson.Document;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -135,11 +135,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductResponse> getProductWithPage(int pageNo, int pageSize, String sortBy, String sortDirection) {
         try {
+            log.info("Fetching products with pageNo={}, pageSize={}, sortBy={}, sortDirection={}",
+                    pageNo, pageSize, sortBy, sortDirection);
             validateInputs(pageNo, pageSize, sortBy, sortDirection);
             Sort sort = createSort(sortBy, sortDirection);
             Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
             List<ProductResponse> productResponses = fetchProductResponses(pageNo, pageSize, sort);
             long total = countTotalDocuments();
+            log.info("Fetched {} products, total documents: {}", productResponses.size(), total);
             return new PageImpl<>(productResponses, pageable, total);
         } catch (IllegalArgumentException e) {
             log.error("Invalid parameters: {}", e.getMessage());
@@ -151,29 +154,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseUser> getProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream().map(product -> {
-            Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(product.getProductId());
+    public Page<ProductResponseAtHome> getProductsWithPagination(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        validateInputs(pageNo, pageSize, sortBy, sortDirection);
 
-            String imageUrl = inventoryOptional
-                    .map(inventory -> {
-                           List<String> imageUrls = inventory.getImageUrls();
-                            if (imageUrls != null && !imageUrls.isEmpty()) {
-                                return imageUrls.get(0);
-                            }
-                            return null;
-                    }).orElse(null);
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
 
-            return ProductResponseUser.builder()
-                    .productId(product.getProductId())
-                    .productName(product.getName())
-                    .price(product.getPrice())
-                    .priceReduced(product.getPriceReduced())
-                    .image(imageUrl)
-                    .build();
-        }).collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Product> productPage = productRepository.findAll(pageable);
 
+        List<ProductResponseAtHome> productResponses = productPage.getContent().stream().map(
+                product -> {
+                    if (product.getPrice() <= product.getPriceReduced()) {
+                        return null;
+                    }
+
+                    Optional<Inventory> inventoryOptional = inventoryRepository.findFirstByProductId((product.getProductId()));
+
+                    String imageUrl = inventoryOptional
+                            .map(inventory -> {
+                                List<String> imageUrls = inventory.getImageUrls();
+                                if (imageUrls != null && !imageUrls.isEmpty()) {
+                                    return imageUrls.get(0);
+                                }
+                                return null;
+                            }).orElse(null);
+
+                    return ProductResponseAtHome.builder()
+                            .productId(product.getProductId())
+                            .productName(product.getName())
+                            .price(product.getPrice())
+                            .priceReduced(product.getPriceReduced())
+                            .image(imageUrl)
+                            .build();
+                }).filter(Objects::nonNull).collect(Collectors.toList());
+
+        Long total = productRepository.countByPriceGreaterThanPriceReduced();
+
+        long totalCount = total != null ? total : 0L;
+        return new PageImpl<>(productResponses, pageable, totalCount);
     }
 
     @Override
@@ -256,8 +274,10 @@ public class ProductServiceImpl implements ProductService {
                 Aggregation.limit(pageSize)
         );
     }
+
     private List<ProductResponse> mapToProductResponses(List<Document> documents) {
         return documents.stream().map(doc -> {
+            log.warn("Document in mapToProduct: {}", doc);
             Product product = new Product();
             product.setProductId(doc.getObjectId("_id").toString());
             product.setName(doc.getString("name"));
