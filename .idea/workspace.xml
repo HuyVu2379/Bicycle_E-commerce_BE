@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/CartServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/CartServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/EurekaServerApplication.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/CartItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/CartItemRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/entities/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/entities/CartItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/repositories/CartItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/repositories/CartItemRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/CartItemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/services/Impl/CartItemServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/InventoryController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,36 +58,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.CartServiceApplication.executor": "Run",
-    "Spring Boot.EurekaServerApplication.executor": "Run",
-    "Spring Boot.GatewayServiceApplication.executor": "Run",
-    "Spring Boot.OrderServiceApplication.executor": "Run",
-    "Spring Boot.ProductServiceApplication.executor": "Run",
-    "Spring Boot.UserServiceApplication.executor": "Run",
-    "git-widget-placeholder": "Merging LuongTanDat",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/KienTrucPhanMem/Bicycle_E-commerce_BE",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging LuongTanDat&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -290,6 +279,7 @@
       <workItem from="1747033938641" duration="12818000" />
       <workItem from="1747102477483" duration="12851000" />
       <workItem from="1747278435811" duration="7504000" />
+      <workItem from="1747379407706" duration="731000" />
     </task>
     <servers />
   </component>
