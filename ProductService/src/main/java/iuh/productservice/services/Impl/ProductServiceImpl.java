@@ -174,11 +174,12 @@ public class ProductServiceImpl implements ProductService {
 //        }
         List<Product> products = productRepository.findAll();
         return products.stream().map(product -> {
+
             if (product.getPrice() <= product.getPriceReduced()) {
                 return null;
             }
 
-            Optional<Inventory> inventoryOptional = inventoryRepository.findByProductId(product.getProductId());
+            Optional<Inventory> inventoryOptional = inventoryRepository.findFirstByProductId((product.getProductId()));
 
             String imageUrl = inventoryOptional
                     .map(inventory -> {

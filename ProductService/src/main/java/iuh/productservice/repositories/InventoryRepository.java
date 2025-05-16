@@ -16,4 +16,6 @@ public interface InventoryRepository extends MongoRepository<Inventory, String> 
     List<Inventory> findByProductIdAndColorOrderByImportDateAsc(String productId, Color color);
 
     Optional<Inventory> findByProductId(String productId);
+
+    Optional<Inventory> findFirstByProductId(@NotNull(message = "Product ID không được để trống") String productId);
 }
