@@ -18,10 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -156,48 +154,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseAtHome> getProductsWithPagination() {
-//        try {
-//            validateInputs(pageNo, pageSize, sortBy, sortDirection);
-//            Sort sort = createSort(sortBy, sortDirection);
-//            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-//
-//            List<ProductResponseAtHome> productResponseUsers = fetchProductResponseAtHome(pageNo, pageSize, sort);
-//
-//            long total = countTotalDocument();
-//
-//            return new PageImpl<>(productResponseUsers, pageable, total);
-//        } catch (IllegalArgumentException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            throw new RuntimeException("Error fetching products: " + e.getMessage());
-//        }
-        List<Product> products = productRepository.findAll();
-        return products.stream().map(product -> {
+    public Page<ProductResponseAtHome> getProductsWithPagination(int pageNo, int pageSize, String sortBy, String sortDirection) {
+        validateInputs(pageNo, pageSize, sortBy, sortDirection);
 
-            if (product.getPrice() <= product.getPriceReduced()) {
-                return null;
-            }
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
 
-            Optional<Inventory> inventoryOptional = inventoryRepository.findFirstByProductId((product.getProductId()));
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Product> productPage = productRepository.findAll(pageable);
 
-            String imageUrl = inventoryOptional
-                    .map(inventory -> {
-                        List<String> imageUrls = inventory.getImageUrls();
-                        if (imageUrls != null && !imageUrls.isEmpty()) {
-                            return imageUrls.get(0);
-                        }
+        List<ProductResponseAtHome> productResponses = productPage.getContent().stream().map(
+                product -> {
+                    if (product.getPrice() <= product.getPriceReduced()) {
                         return null;
-                    }).orElse(null);
+                    }
 
-            return ProductResponseAtHome.builder()
-                    .productId(product.getProductId())
-                    .productName(product.getName())
-                    .price(product.getPrice())
-                    .priceReduced(product.getPriceReduced())
-                    .image(imageUrl)
-                    .build();
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+                    Optional<Inventory> inventoryOptional = inventoryRepository.findFirstByProductId((product.getProductId()));
+
+                    String imageUrl = inventoryOptional
+                            .map(inventory -> {
+                                List<String> imageUrls = inventory.getImageUrls();
+                                if (imageUrls != null && !imageUrls.isEmpty()) {
+                                    return imageUrls.get(0);
+                                }
+                                return null;
+                            }).orElse(null);
+
+                    return ProductResponseAtHome.builder()
+                            .productId(product.getProductId())
+                            .productName(product.getName())
+                            .price(product.getPrice())
+                            .priceReduced(product.getPriceReduced())
+                            .image(imageUrl)
+                            .build();
+                }).filter(Objects::nonNull).collect(Collectors.toList());
+
+        Long total = productRepository.countByPriceGreaterThanPriceReduced();
+
+        long totalCount = total != null ? total : 0L;
+        return new PageImpl<>(productResponses, pageable, totalCount);
     }
 
     @Override
@@ -251,13 +245,6 @@ public class ProductServiceImpl implements ProductService {
         return mapToProductResponses(documents);
     }
 
-    private List<ProductResponseAtHome> fetchProductResponseAtHome(int pageNo, int pageSize, Sort sort) {
-        Aggregation aggregation = buildAggregationForHome(pageNo, pageSize, sort);
-        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "product", Document.class);
-        List<Document> documents = results.getMappedResults();
-        return mapToProductResponse(documents);
-    }
-
     private Aggregation buildAggregation(int pageNo, int pageSize, Sort sort) {
         return Aggregation.newAggregation(
                 Aggregation.project()
@@ -286,30 +273,6 @@ public class ProductServiceImpl implements ProductService {
                 Aggregation.skip((long) pageNo * pageSize),
                 Aggregation.limit(pageSize)
         );
-    }
-
-    private Aggregation buildAggregationForHome(int pageNo, int pageSize, Sort sort) {
-        List<AggregationOperation> operations = new ArrayList<>();
-
-        // Match products with price greater than priceReduced
-        operations.add(Aggregation.match(Criteria.expr(
-                AggregationExpression.from(
-                        MongoExpression.create("$gt", Arrays.asList("$price", "$priceReduced"))
-                )
-        )));
-
-        operations.add(Aggregation.lookup("inventory", "productId", "productId", "inventories"));
-        operations.add(Aggregation.unwind("$inventories", true));
-        operations.add(Aggregation.project()
-                .and("productId").as("productId")
-                .and("name").as("name")
-                .and("price").as("price")
-                .and("priceReduced").as("priceReduced")
-                .and("inventories.imageUrls").as("imageUrls"));
-        operations.add(Aggregation.sort(sort));
-        operations.add(Aggregation.skip((long) pageNo * pageSize));
-        operations.add(Aggregation.limit(pageSize));
-        return Aggregation.newAggregation(operations);
     }
 
     private List<ProductResponse> mapToProductResponses(List<Document> documents) {
@@ -399,23 +362,6 @@ public class ProductServiceImpl implements ProductService {
                     .specification(specifications)
                     .build();
         }).collect(Collectors.toList());
-    }
-
-    private List<ProductResponseAtHome> mapToProductResponse(List<Document> documents) {
-        return documents.stream().map(doc -> {
-            List<String> imageUrls = doc.get("imageUrls", List.class);
-            String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-
-            log.debug("Document: productId={}, name={}", doc.getString("productId"), doc.getString("name"));
-
-            return ProductResponseAtHome.builder()
-                    .productId(doc.getString("productId"))
-                    .productName(doc.getString("name"))
-                    .price(doc.getDouble("price"))
-                    .priceReduced(doc.getDouble("priceReduced") != null ? doc.getDouble("priceReduced") : 0.0)
-                    .image(imageUrl)
-                    .build();
-        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private long countTotalDocuments() {

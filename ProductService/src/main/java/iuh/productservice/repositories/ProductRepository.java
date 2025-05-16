@@ -1,6 +1,7 @@
 package iuh.productservice.repositories;
 
 import iuh.productservice.entities.Product;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,9 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     @Query("{ 'name' : { $regex: ?0, $options: 'i' } }")
     List<Product> getProductsByName(String name);
 
+    @Aggregation(pipeline = {
+        "{ $match: { $expr: { $gt: [ '$price', '$priceReduced' ] } } }",
+        "{ $count: 'total' }"
+    })
+    Long countByPriceGreaterThanPriceReduced();
 }

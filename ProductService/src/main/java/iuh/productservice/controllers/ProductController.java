@@ -181,9 +181,12 @@ public class ProductController {
     }
 
     @GetMapping("/public/getProductForHome")
-    public ResponseEntity<MessageResponse<List<ProductResponseAtHome>>> getAllProduct(
-    ) {
-        List<ProductResponseAtHome> products = productService.getProductsWithPagination();
+    public ResponseEntity<MessageResponse<Page<ProductResponseAtHome>>> getAllProduct(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDirection) {
+        Page<ProductResponseAtHome> products = productService.getProductsWithPagination(pageNo, pageSize, sortBy, sortDirection );
         if (products.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new MessageResponse<>(HttpStatus.NO_CONTENT.value(),
