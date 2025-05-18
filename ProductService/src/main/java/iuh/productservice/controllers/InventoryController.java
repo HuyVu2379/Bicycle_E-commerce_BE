@@ -40,6 +40,7 @@ public class InventoryController {
         }
         return SuccessEntityResponse.created("Inventory created successfully", inventory);
     }
+
     @PostMapping("/bulkCreateInventory")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse<List<Inventory>>> createInventory(@RequestBody List<Inventory> inventory) {
@@ -67,7 +68,7 @@ public class InventoryController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse<Void>> deleteInventory(@PathVariable String inventoryId) {
         Optional<Inventory> inventory = inventoryService.getInventoryById(inventoryId);
-        if (inventory.isPresent()){
+        if (inventory.isPresent()) {
             inventoryService.deleteInventory(inventoryId);
             return SuccessEntityResponse.ok("Inventory deleted successfully", null);
         }
@@ -90,13 +91,17 @@ public class InventoryController {
 
     @GetMapping("/public/getAllInventoryByProductId/{productId}")
     public ResponseEntity<MessageResponse<List<Inventory>>> getAllInventoryByProductId(@PathVariable String productId) {
-        List<Inventory> inventory = inventoryService.getAllInventoryByProductId(productId);
-        if (inventory.isEmpty()) {
-            return ResponseEntity.badRequest().body(
-                    new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
-            );
+        try {
+            List<Inventory> inventory = inventoryService.getAllInventoryByProductId(productId);
+            if (inventory.isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        new MessageResponse<>(HttpStatus.BAD_REQUEST.value(), "No inventory found", false, null)
+                );
+            }
+            return SuccessEntityResponse.ok("Inventory found", inventory);
+        } catch (Exception e) {
+            throw e;
         }
-        return SuccessEntityResponse.ok("Inventory found", inventory);
     }
 
     @PostMapping("/public/reduce-quantity/{productId}/{color}/{quantity}")

@@ -1,127 +1,224 @@
 package iuh.paymentservice.services.Impl;
 
-import iuh.paymentservice.dtos.requests.MomoPaymentRequest;
-import iuh.paymentservice.dtos.responses.MomoPaymentResponse;
+import iuh.paymentservice.configs.VNPayConfig;
+import iuh.paymentservice.dtos.requests.PaymentRequest;
+import iuh.paymentservice.dtos.requests.VNPayRequest;
+import iuh.paymentservice.dtos.responses.PaymentResponse;
+import iuh.paymentservice.dtos.responses.VNPayResponse;
 import iuh.paymentservice.entities.Payment;
 import iuh.paymentservice.enums.PaymentMethod;
 import iuh.paymentservice.enums.PaymentStatus;
-import iuh.paymentservice.exception.MessageResponse;
 import iuh.paymentservice.repositories.PaymentRepository;
 import iuh.paymentservice.services.PaymentService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.HmacUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import iuh.paymentservice.utils.VNPayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
 public class PaymentServiceImpl implements PaymentService {
-    @Value(value = "${momo.partner-code}")
-    private String partnerCode;
-    @Value(value = "${momo.access-key}")
-    private String accessKey;
-    @Value(value = "${momo.secret-key}")
-    private String secretKey;
-    @Value(value = "${momo.end-point}")
-    private String momoEndPoint;
 
-    private final PaymentRepository paymentRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
 
+    @Autowired
+    private VNPayConfig vnPayConfig;
 
     @Override
-    public String processPayment(String userId, double amount, String currency) {
-        return "";
+    public PaymentResponse createPayment(PaymentRequest paymentRequest) {
+        // Tạo một entity Payment mới
+        Payment payment = new Payment();
+        payment.setOrderId(paymentRequest.getOrderId());
+        payment.setUserId(paymentRequest.getUserId());
+        payment.setAmount(paymentRequest.getAmount());
+        payment.setCurrency(paymentRequest.getCurrency());
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        payment.setPaymentStatus(PaymentStatus.PENDING);
+
+        // Lưu vào database
+        payment = paymentRepository.save(payment);
+
+        // Nếu phương thức thanh toán là VNPay
+        if (payment.getPaymentMethod() == PaymentMethod.VN_PAY) {
+            // Tạo URL thanh toán VNPay
+            String paymentUrl = createVNPayPaymentUrl(paymentRequest);
+
+            // Trả về response với URL thanh toán
+            return PaymentResponse.builder()
+                    .paymentId(payment.getPaymentId())
+                    .orderId(payment.getOrderId())
+                    .userId(payment.getUserId())
+                    .amount(payment.getAmount())
+                    .currency(payment.getCurrency())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .paymentStatus(payment.getPaymentStatus())
+                    .transactionId(payment.getTransactionId())
+                    .paymentUrl(paymentUrl)
+                    .createdAt(payment.getCreatedAt())
+                    .updatedAt(payment.getUpdatedAt())
+                    .build();
+        }
+
+        // Nếu không phải VNPay, chỉ trả về thông tin Payment bình thường
+        return PaymentResponse.builder()
+                .paymentId(payment.getPaymentId())
+                .orderId(payment.getOrderId())
+                .userId(payment.getUserId())
+                .amount(payment.getAmount())
+                .currency(payment.getCurrency())
+                .paymentMethod(payment.getPaymentMethod())
+                .paymentStatus(payment.getPaymentStatus())
+                .transactionId(payment.getTransactionId())
+                .createdAt(payment.getCreatedAt())
+                .updatedAt(payment.getUpdatedAt())
+                .build();
+    }
+
+    private String createVNPayPaymentUrl(PaymentRequest paymentRequest) {
+        String vnp_Version = "2.1.0";
+        String vnp_Command = "pay";
+        String vnp_TxnRef = paymentRequest.getOrderId();
+        String vnp_IpAddr = paymentRequest.getIpAddress();
+        String vnp_TmnCode = vnPayConfig.getTmnCode();
+        String orderInfo = paymentRequest.getOrderInfo();
+        long amount = (long) (paymentRequest.getAmount() * 100); // Chuyển đổi sang số tiền VNPay (VND * 100)
+
+        Map<String, String> vnp_Params = new HashMap<>();
+        vnp_Params.put("vnp_Version", vnp_Version);
+        vnp_Params.put("vnp_Command", vnp_Command);
+        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(amount));
+        vnp_Params.put("vnp_CurrCode", paymentRequest.getCurrency().toString());
+
+        if (paymentRequest.getBankCode() != null && !paymentRequest.getBankCode().isEmpty()) {
+            vnp_Params.put("vnp_BankCode", paymentRequest.getBankCode());
+        }
+
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
+        vnp_Params.put("vnp_OrderType", vnPayConfig.getOrderType());
+
+        String locate = paymentRequest.getLanguage();
+        if (locate != null && !locate.isEmpty()) {
+            vnp_Params.put("vnp_Locale", locate);
+        } else {
+            vnp_Params.put("vnp_Locale", "vn");
+        }
+
+        vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
+        cld.add(Calendar.MINUTE, 15);
+        String vnp_ExpireDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+
+        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+
+        for (String fieldName : fieldNames) {
+            String fieldValue = vnp_Params.get(fieldName);
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
+                hashData.append(fieldName).append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8)).append('&');
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8)).append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8)).append('&');
+            }
+        }
+
+        String queryUrl = query.toString();
+        String vnp_SecureHash = VNPayUtils.hmacSHA512(vnPayConfig.getHashSecret(), hashData.toString());
+        queryUrl += "vnp_SecureHash=" + vnp_SecureHash;
+        return vnPayConfig.getPaymentUrl() + "?" + queryUrl;
     }
 
     @Override
-    public MomoPaymentResponse initiatePayment(MomoPaymentRequest request) {
-        if (request.getPaymentMethod() != PaymentMethod.MOMO) {
-            throw new IllegalArgumentException("Payment method must be MOMO");
+    public VNPayResponse processVNPayCallback(Map<String, String> vnpParams) {
+        String vnp_ResponseCode = vnpParams.get("vnp_ResponseCode");
+        String vnp_TxnRef = vnpParams.get("vnp_TxnRef");
+        String vnp_Amount = vnpParams.get("vnp_Amount");
+        String vnp_TransactionNo = vnpParams.get("vnp_TransactionNo");
+        String vnp_BankCode = vnpParams.get("vnp_BankCode");
+        String vnp_PayDate = vnpParams.get("vnp_PayDate");
+        String vnp_OrderInfo = vnpParams.get("vnp_OrderInfo");
+
+        // Xác thực chữ ký từ VNPay
+        String vnp_SecureHash = vnpParams.get("vnp_SecureHash");
+        Map<String, String> validationParams = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
+            if (!entry.getKey().equals("vnp_SecureHash") && !entry.getKey().equals("vnp_SecureHashType")) {
+                validationParams.put(entry.getKey(), entry.getValue());
+            }
         }
-        RestTemplate restTemplate = new RestTemplate();
-        String requestId = String.valueOf(System.currentTimeMillis());
-        String orderId = String.valueOf(System.currentTimeMillis());
-        double amount = request.getAmount();
-        String redirectUrl = "http://localhost:8080/api/payment/momo/callback";
-        String ipn_url = "http://localhost:8080/api/payment/momo/callback";
 
-        String rawData = String.format(
-                "accessKey=%s&amount=%d&extraData=&ipnUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&redirectUrl=%s&requestId=%s&requestType=captureWallet",
-                accessKey, (long) amount, ipn_url, orderId, "Payment for order " + orderId, partnerCode, redirectUrl, requestId
-        );
+        String calculatedHash = VNPayUtils.hashAllFields(validationParams, vnPayConfig.getHashSecret());
 
-        String signature = HmacUtils.hmacSha256Hex(secretKey, rawData);
+        // Kiểm tra chữ ký và cập nhật trạng thái thanh toán
+        if (calculatedHash.equals(vnp_SecureHash)) {
+            // Tìm payment dựa trên orderId (vnp_TxnRef)
+            Optional<Payment> paymentOptional = paymentRepository.findByOrderId(vnp_TxnRef);
 
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("partnerCode", partnerCode);
-        payload.put("accessKey", accessKey);
-        payload.put("requestId", requestId);
-        payload.put("amount", (long) amount);
-        payload.put("orderId", orderId);
-        payload.put("orderInfo", "Payment for order " + orderId);
-        payload.put("redirectUrl", redirectUrl);
-        payload.put("ipnUrl", ipn_url);
-        payload.put("extraData", "");
-        payload.put("requestType", "captureWallet");
-        payload.put("signature", signature);
+            if (paymentOptional.isPresent()) {
+                Payment payment = paymentOptional.get();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
+                // Nếu thanh toán thành công
+                if ("00".equals(vnp_ResponseCode)) {
+                    payment.setPaymentStatus(PaymentStatus.COMPLETED);
+                    payment.setTransactionId(vnp_TransactionNo);
+                } else {
+                    // Thanh toán thất bại
+                    payment.setPaymentStatus(PaymentStatus.FAILED);
+                }
 
-        Map response = restTemplate.postForObject(momoEndPoint + "/create", entity, Map.class);
+                paymentRepository.save(payment);
+            }
+        }
 
-        Payment payment = new Payment();
-        payment.setOrderId(orderId);
-        payment.setUserId(request.getUserId());
-        payment.setAmount(amount);
-        payment.setCurrency(request.getCurrency());
-        payment.setPaymentMethod(request.getPaymentMethod());
-        payment.setPaymentStatus(PaymentStatus.PENDING);
-        payment.setUpdatedAt(LocalDateTime.now());
-        payment.setCreatedAt(LocalDateTime.now());
-        paymentRepository.save(payment);
-
-        return MomoPaymentResponse.builder()
-                .paymentUrl((String) response.get("payUrl"))
+        // Trả về thông tin từ VNPay
+        return VNPayResponse.builder()
+                .vnpResponseCode(vnp_ResponseCode)
+                .vnpTxnRef(vnp_TxnRef)
+                .vnpAmount(vnp_Amount)
+                .vnpTransactionNo(vnp_TransactionNo)
+                .vnpBankCode(vnp_BankCode)
+                .vnpPayDate(vnp_PayDate)
+                .vnpOrderInfo(vnp_OrderInfo)
                 .build();
     }
 
     @Override
-    public String handleCallback(String orderId, String resultCode, String signature, String paymentTransactionId) {
-        Optional<Payment> payment = paymentRepository.findByOrderId(orderId);
-        if (payment.isEmpty()) {
-            return "Payment not found";
+    public PaymentResponse getPaymentByOrderId(String orderId) {
+        Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderId);
+
+        if (paymentOptional.isPresent()) {
+            Payment payment = paymentOptional.get();
+
+            return PaymentResponse.builder()
+                    .paymentId(payment.getPaymentId())
+                    .orderId(payment.getOrderId())
+                    .userId(payment.getUserId())
+                    .amount(payment.getAmount())
+                    .currency(payment.getCurrency())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .paymentStatus(payment.getPaymentStatus())
+                    .transactionId(payment.getTransactionId())
+                    .createdAt(payment.getCreatedAt())
+                    .updatedAt(payment.getUpdatedAt())
+                    .build();
         }
 
-        String rawData = String.format("orderId=%s&resultCode=%s", orderId, resultCode);
-        String expectedSignature = HmacUtils.hmacSha256Hex(secretKey, rawData);
-        if (!expectedSignature.equals(signature)) {
-            throw new RuntimeException("Invalid signature");
-        }
-
-        Payment paymentEntity = payment.get();
-        paymentEntity.setPaymentStatus("0".equals(resultCode) ? PaymentStatus.SUCCESS : PaymentStatus.FAILED);
-        paymentEntity.setTransactionId(paymentTransactionId);
-        paymentEntity.setUpdatedAt(LocalDateTime.now());
-
-        paymentRepository.save(paymentEntity);
-
-        if("0".equals(resultCode)) {
-            return "Payment successful";
-        } else {
-            return "Payment failed";
-        }
+        return null;
     }
 }

@@ -18,13 +18,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 payment:
   vnPay:
-    url: ${PAY_URL}
-    tmnCode: ${TMN_CODE}
-    secretKey: ${SECRET_KEY}
-    returnUrl: ${RETURN_URL}
-    version: ${VERSION}
-    command: ${COMMAND}
-    orderType: ${ORDER_TYPE}
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    tmnCode: DQ2QRKII
+    secretKey: FSK6DMH5TQ03QHP03H2YUHBHCA1HHIH5
+    returnUrl: http://localhost:8083/api/payments/vnpay-callback
+    orderType: billpayment
 
 eureka:
   client:
