@@ -27,6 +27,12 @@ spring:
             - Path=/api/v1/carts/**, /api/v1/cart-items/**
           filters:
             - AuthenticationFilter
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - AuthenticationFilter
         - id: user-service
           uri: lb://user-service
           predicates:

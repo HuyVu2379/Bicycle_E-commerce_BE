@@ -7,6 +7,7 @@ import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
+import iuh.orderservice.enums.OrderStatus;
 import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
 import iuh.orderservice.repositories.PromotionRepository;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -101,6 +101,12 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return Optional.of(order);
+    }
+
+
+    @Override
+    public int updateOrder(String orderId, OrderStatus orderStatus) {
+        return orderRepository.updateOrder(orderId,orderStatus);
     }
 
 

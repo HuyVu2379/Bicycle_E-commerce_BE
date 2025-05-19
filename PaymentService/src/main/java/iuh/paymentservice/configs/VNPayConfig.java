@@ -6,19 +6,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class VNPayConfig {
 
-    @Value("${vnpay.tmnCode}")
+    @Value("${payment.vnpay.tmnCode}")
     private String tmnCode;
 
-    @Value("${vnpay.hashSecret}")
+    @Value("${payment.vnpay.secretKey}")
     private String hashSecret;
 
-    @Value("${vnpay.paymentUrl}")
+    @Value("${payment.vnpay.url}")
     private String paymentUrl;
 
-    @Value("${vnpay.returnUrl}")
+    @Value("${payment.vnpay.returnUrl}")
     private String returnUrl;
 
-    @Value("${vnpay.orderType}")
+    @Value("${payment.vnpay.orderType}")
     private String orderType;
 
     // Getters

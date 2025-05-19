@@ -1,16 +1,23 @@
 package iuh.paymentservice.services.Impl;
 
+import feign.FeignException;
+import iuh.paymentservice.clients.FeignClientService;
 import iuh.paymentservice.configs.VNPayConfig;
+import iuh.paymentservice.dtos.requests.OrderRequest;
 import iuh.paymentservice.dtos.requests.PaymentRequest;
-import iuh.paymentservice.dtos.requests.VNPayRequest;
 import iuh.paymentservice.dtos.responses.PaymentResponse;
 import iuh.paymentservice.dtos.responses.VNPayResponse;
 import iuh.paymentservice.entities.Payment;
+import iuh.paymentservice.enums.OrderStatus;
 import iuh.paymentservice.enums.PaymentMethod;
 import iuh.paymentservice.enums.PaymentStatus;
 import iuh.paymentservice.repositories.PaymentRepository;
+import iuh.paymentservice.repositories.PaymentTokenRepository;
 import iuh.paymentservice.services.PaymentService;
+import iuh.paymentservice.utils.TemporaryIdGenerator;
 import iuh.paymentservice.utils.VNPayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +29,33 @@ import java.util.*;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
+    private static final Map<String, PaymentStatus> RESPONSE_CODE_TO_STATUS = Map.of(
+            "00", PaymentStatus.COMPLETED,
+            "01", PaymentStatus.PENDING,
+            "02", PaymentStatus.CANCELLED,
+            "99", PaymentStatus.FAILED
+    );
+    private static final Map<String, String> RESPONSE_CODE_TO_ORDER_STATUS = Map.of(
+            "00", "COMPLETED",
+            "01", "PENDING",
+            "02", "CANCELLED",
+            "99", "FAILED"
+    );
 
     @Autowired
     private PaymentRepository paymentRepository;
-
     @Autowired
     private VNPayConfig vnPayConfig;
+    @Autowired
+    private PaymentTokenRepository paymentTokenRepository;
+    @Autowired
+    private TemporaryIdGenerator temporaryIdGenerator;
+    @Autowired
+    private FeignClientService feignClientService;
 
     @Override
-    public PaymentResponse createPayment(PaymentRequest paymentRequest) {
-        // Tạo một entity Payment mới
+    public PaymentResponse createPayment(PaymentRequest paymentRequest, String token) {
         Payment payment = new Payment();
         payment.setOrderId(paymentRequest.getOrderId());
         payment.setUserId(paymentRequest.getUserId());
@@ -39,32 +63,21 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setCurrency(paymentRequest.getCurrency());
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setPaymentStatus(PaymentStatus.PENDING);
+        payment.setCreatedAt(LocalDateTime.now());
 
-        // Lưu vào database
         payment = paymentRepository.save(payment);
-
-        // Nếu phương thức thanh toán là VNPay
-        if (payment.getPaymentMethod() == PaymentMethod.VN_PAY) {
-            // Tạo URL thanh toán VNPay
-            String paymentUrl = createVNPayPaymentUrl(paymentRequest);
-
-            // Trả về response với URL thanh toán
-            return PaymentResponse.builder()
-                    .paymentId(payment.getPaymentId())
-                    .orderId(payment.getOrderId())
-                    .userId(payment.getUserId())
-                    .amount(payment.getAmount())
-                    .currency(payment.getCurrency())
-                    .paymentMethod(payment.getPaymentMethod())
-                    .paymentStatus(payment.getPaymentStatus())
-                    .transactionId(payment.getTransactionId())
-                    .paymentUrl(paymentUrl)
-                    .createdAt(payment.getCreatedAt())
-                    .updatedAt(payment.getUpdatedAt())
-                    .build();
+        String tempId = temporaryIdGenerator.generateTemporaryId();
+        String signature = temporaryIdGenerator.generateSignature(payment.getOrderId(), tempId);
+        if (token != null && token.startsWith("Bearer ")) {
+            paymentTokenRepository.saveToken(tempId, token);
+            logger.info("Saved token to Redis for tempId: {}", tempId);
+        } else {
+            logger.warn("No valid token provided for orderId: {}", paymentRequest.getOrderId());
         }
-
-        // Nếu không phải VNPay, chỉ trả về thông tin Payment bình thường
+        String paymentUrl = null;
+        if (payment.getPaymentMethod() == PaymentMethod.VN_PAY) {
+            paymentUrl = createVNPayPaymentUrl(paymentRequest, tempId, signature);
+        }
         return PaymentResponse.builder()
                 .paymentId(payment.getPaymentId())
                 .orderId(payment.getOrderId())
@@ -74,21 +87,22 @@ public class PaymentServiceImpl implements PaymentService {
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
                 .transactionId(payment.getTransactionId())
+                .paymentUrl(paymentUrl)
                 .createdAt(payment.getCreatedAt())
                 .updatedAt(payment.getUpdatedAt())
                 .build();
     }
 
-    private String createVNPayPaymentUrl(PaymentRequest paymentRequest) {
+    private String createVNPayPaymentUrl(PaymentRequest paymentRequest, String tempId, String signature) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = paymentRequest.getOrderId();
+        String vnp_TxnRef = String.format("%s_%s_%s", paymentRequest.getOrderId(), tempId, signature);
         String vnp_IpAddr = paymentRequest.getIpAddress();
         String vnp_TmnCode = vnPayConfig.getTmnCode();
         String orderInfo = paymentRequest.getOrderInfo();
-        long amount = (long) (paymentRequest.getAmount() * 100); // Chuyển đổi sang số tiền VNPay (VND * 100)
+        long amount = (long) (paymentRequest.getAmount() * 100);
 
-        Map<String, String> vnp_Params = new HashMap<>();
+        Map<String, String> vnp_Params = new TreeMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
@@ -104,11 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_OrderType", vnPayConfig.getOrderType());
 
         String locate = paymentRequest.getLanguage();
-        if (locate != null && !locate.isEmpty()) {
-            vnp_Params.put("vnp_Locale", locate);
-        } else {
-            vnp_Params.put("vnp_Locale", "vn");
-        }
+        vnp_Params.put("vnp_Locale", (locate != null && !locate.isEmpty()) ? locate : "vn");
 
         vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
@@ -122,29 +132,46 @@ public class PaymentServiceImpl implements PaymentService {
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
-        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
-        Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
-
-        for (String fieldName : fieldNames) {
-            String fieldValue = vnp_Params.get(fieldName);
-            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
-                hashData.append(fieldName).append('=')
-                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8)).append('&');
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8)).append('=')
-                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8)).append('&');
+        for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
+            String fieldName = entry.getKey();
+            String fieldValue = entry.getValue();
+            if (fieldValue != null && !fieldValue.isEmpty()) {
+                hashData.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                        .append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8))
+                        .append('&');
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                        .append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8))
+                        .append('&');
             }
         }
 
-        String queryUrl = query.toString();
+        if (hashData.length() > 0) {
+            hashData.deleteCharAt(hashData.length() - 1);
+        }
+        if (query.length() > 0) {
+            query.deleteCharAt(query.length() - 1);
+        }
+
         String vnp_SecureHash = VNPayUtils.hmacSHA512(vnPayConfig.getHashSecret(), hashData.toString());
-        queryUrl += "vnp_SecureHash=" + vnp_SecureHash;
-        return vnPayConfig.getPaymentUrl() + "?" + queryUrl;
+
+        query.append("&vnp_SecureHash=").append(URLEncoder.encode(vnp_SecureHash, StandardCharsets.UTF_8));
+
+        String paymentUrl = vnPayConfig.getPaymentUrl() + "?" + query.toString();
+
+        logger.info("vnp_TxnRef: {}", vnp_TxnRef);
+        logger.info("HashData: {}", hashData.toString());
+        logger.info("vnp_SecureHash: {}", vnp_SecureHash);
+        logger.info("Payment URL: {}", paymentUrl);
+
+        return paymentUrl;
     }
 
     @Override
-    public VNPayResponse processVNPayCallback(Map<String, String> vnpParams) {
+    public VNPayResponse processVNPayCallback(Map<String, String> vnpParams, String token) {
         String vnp_ResponseCode = vnpParams.get("vnp_ResponseCode");
         String vnp_TxnRef = vnpParams.get("vnp_TxnRef");
         String vnp_Amount = vnpParams.get("vnp_Amount");
@@ -152,11 +179,11 @@ public class PaymentServiceImpl implements PaymentService {
         String vnp_BankCode = vnpParams.get("vnp_BankCode");
         String vnp_PayDate = vnpParams.get("vnp_PayDate");
         String vnp_OrderInfo = vnpParams.get("vnp_OrderInfo");
-
-        // Xác thực chữ ký từ VNPay
         String vnp_SecureHash = vnpParams.get("vnp_SecureHash");
-        Map<String, String> validationParams = new HashMap<>();
 
+        logger.info("VNPay Callback Params: {}", vnpParams);
+
+        Map<String, String> validationParams = new TreeMap<>();
         for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
             if (!entry.getKey().equals("vnp_SecureHash") && !entry.getKey().equals("vnp_SecureHashType")) {
                 validationParams.put(entry.getKey(), entry.getValue());
@@ -164,29 +191,56 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         String calculatedHash = VNPayUtils.hashAllFields(validationParams, vnPayConfig.getHashSecret());
+        logger.info("Calculated Hash: {}", calculatedHash);
+        logger.info("Received vnp_SecureHash: {}", vnp_SecureHash);
 
-        // Kiểm tra chữ ký và cập nhật trạng thái thanh toán
+        String paymentId = null;
+        String tempId = null;
         if (calculatedHash.equals(vnp_SecureHash)) {
-            // Tìm payment dựa trên orderId (vnp_TxnRef)
-            Optional<Payment> paymentOptional = paymentRepository.findByOrderId(vnp_TxnRef);
+            String[] txnRefParts = vnp_TxnRef.split("_");
+            if (txnRefParts.length < 3) {
+                logger.error("Invalid vnp_TxnRef format: {}", vnp_TxnRef);
+                return VNPayResponse.builder()
+                        .vnpResponseCode(vnp_ResponseCode)
+                        .vnpTxnRef(vnp_TxnRef)
+                        .vnpAmount(vnp_Amount)
+                        .vnpTransactionNo(vnp_TransactionNo)
+                        .vnpBankCode(vnp_BankCode)
+                        .vnpPayDate(vnp_PayDate)
+                        .vnpOrderInfo(vnp_OrderInfo)
+                        .paymentId(paymentId)
+                        .build();
+            }
+            String orderId = txnRefParts[0];
+            tempId = txnRefParts[1];
+            String signature = txnRefParts[2];
 
+            if (!temporaryIdGenerator.verifySignature(orderId, tempId, signature)) {
+                logger.error("Invalid signature for vnp_TxnRef: {}", vnp_TxnRef);
+                return VNPayResponse.builder()
+                        .vnpResponseCode(vnp_ResponseCode)
+                        .vnpTxnRef(vnp_TxnRef)
+                        .vnpAmount(vnp_Amount)
+                        .vnpTransactionNo(vnp_TransactionNo)
+                        .vnpBankCode(vnp_BankCode)
+                        .vnpPayDate(vnp_PayDate)
+                        .vnpOrderInfo(vnp_OrderInfo)
+                        .paymentId(paymentId)
+                        .build();
+            }
+
+            Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderId);
             if (paymentOptional.isPresent()) {
                 Payment payment = paymentOptional.get();
-
-                // Nếu thanh toán thành công
-                if ("00".equals(vnp_ResponseCode)) {
-                    payment.setPaymentStatus(PaymentStatus.COMPLETED);
-                    payment.setTransactionId(vnp_TransactionNo);
-                } else {
-                    // Thanh toán thất bại
-                    payment.setPaymentStatus(PaymentStatus.FAILED);
-                }
-
-                paymentRepository.save(payment);
+                paymentId = payment.getPaymentId();
+                updateRelatedTables(payment, vnp_ResponseCode, vnp_TransactionNo, token, tempId);
+            } else {
+                logger.error("Payment not found for orderId: {}", orderId);
             }
+        } else {
+            logger.error("Invalid secure hash for vnp_TxnRef: {}", vnp_TxnRef);
         }
 
-        // Trả về thông tin từ VNPay
         return VNPayResponse.builder()
                 .vnpResponseCode(vnp_ResponseCode)
                 .vnpTxnRef(vnp_TxnRef)
@@ -195,7 +249,34 @@ public class PaymentServiceImpl implements PaymentService {
                 .vnpBankCode(vnp_BankCode)
                 .vnpPayDate(vnp_PayDate)
                 .vnpOrderInfo(vnp_OrderInfo)
+                .paymentId(paymentId)
                 .build();
+    }
+
+    private void updateRelatedTables(Payment payment, String responseCode, String transactionNo, String token, String tempId) {
+        try {
+            payment.setPaymentStatus(RESPONSE_CODE_TO_STATUS.getOrDefault(responseCode, PaymentStatus.FAILED));
+            payment.setTransactionId(transactionNo);
+            payment.setUpdatedAt(LocalDateTime.now());
+            paymentRepository.save(payment);
+
+            OrderStatus orderStatus = OrderStatus.valueOf(RESPONSE_CODE_TO_ORDER_STATUS.getOrDefault(responseCode, "FAILED"));
+            OrderRequest orderRequest = OrderRequest.builder()
+                    .orderId(payment.getOrderId())
+                    .orderStatus(orderStatus)
+                    .build();
+
+            String authToken = token;
+            try {
+                feignClientService.updateOrder(orderRequest, authToken);
+                paymentTokenRepository.deleteToken(tempId);
+            } catch (FeignException e) {
+                logger.error("Feign error updating order for paymentId: {}. Status: {}, Message: {}",
+                        payment.getPaymentId(), e.status(), e.getMessage());
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error updating related tables for paymentId: {}", payment.getPaymentId(), e);
+        }
     }
 
     @Override
@@ -204,7 +285,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (paymentOptional.isPresent()) {
             Payment payment = paymentOptional.get();
-
             return PaymentResponse.builder()
                     .paymentId(payment.getPaymentId())
                     .orderId(payment.getOrderId())
@@ -218,7 +298,11 @@ public class PaymentServiceImpl implements PaymentService {
                     .updatedAt(payment.getUpdatedAt())
                     .build();
         }
-
         return null;
+    }
+
+    @Override
+    public Optional<Payment> getPaymentById(String paymentId) {
+        return paymentRepository.findById(paymentId);
     }
 }

@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VNPayResponse {
-    private String paymentUrl;
-    private String vnpTxnRef;
-    private String vnpOrderInfo;
     private String vnpResponseCode;
+    private String vnpTxnRef;
+    private String vnpAmount;
     private String vnpTransactionNo;
     private String vnpBankCode;
-    private String vnpAmount;
     private String vnpPayDate;
+    private String vnpOrderInfo;
+    private String paymentId;
 }

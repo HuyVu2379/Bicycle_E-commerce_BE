@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Service
 public interface PaymentService {
-    PaymentResponse createPayment(PaymentRequest paymentRequest);
-    VNPayResponse processVNPayCallback(Map<String, String> vnpParams);
+    PaymentResponse createPayment(PaymentRequest paymentRequest,String token);
+    VNPayResponse processVNPayCallback(Map<String, String> vnpParams, String token);
     PaymentResponse getPaymentByOrderId(String orderId);
+    Optional<Payment> getPaymentById(String paymentId);
 }
