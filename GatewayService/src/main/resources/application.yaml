@@ -39,6 +39,7 @@ spring:
             - Path=/api/v1/users/**, /api/v1/auth/**, /api/v1/address/**
           filters:
             - AuthenticationFilter
+            - PreserveHostHeader
         - id: media-service
           uri:
             foward:/

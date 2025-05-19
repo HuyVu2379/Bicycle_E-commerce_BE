@@ -15,13 +15,13 @@ import java.util.Collections;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(auth -> auth
+                        .pathMatchers("/api/v1/auth/google").permitAll()
                         .pathMatchers("/api/v1/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/", "/error").permitAll()
@@ -30,6 +30,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -55,7 +57,8 @@ public class SecurityConfig {
                 "Accept",
                 "Origin",
                 "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
+                "Access-Control-Request-Headers",
+                "*"
         ));
 
         // Allow cookies and authentication headers

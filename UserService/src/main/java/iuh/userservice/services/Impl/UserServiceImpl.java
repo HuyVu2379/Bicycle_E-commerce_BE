@@ -8,9 +8,7 @@ import iuh.userservice.exception.errors.DuplicateUserException;
 import iuh.userservice.repositories.UserRepository;
 import iuh.userservice.services.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,6 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-
     public UserServiceImpl(UserRepository userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -60,6 +57,30 @@ public class UserServiceImpl implements UserService {
                 .dob(registerRequest.getDob())
                 .build();
         return Optional.of(userService.save(user));
+    }
+
+    @Override
+    public Optional<User> registerUserForGoogle(RegisterRequest registerRequest) {
+        System.out.println("Bắt đầu lưu user Google: " + registerRequest.getEmail());
+        if (userService.existsByEmail(registerRequest.getEmail())) {
+            return userService.findByEmail(registerRequest.getEmail());
+        }
+        Role role = registerRequest.getRole() != null ? registerRequest.getRole() : Role.USER;
+        User user = User.builder()
+                .email(registerRequest.getEmail())
+                .phoneNumber(registerRequest.getPhoneNumber())
+                .password(registerRequest.getPassword())
+                .role(role)
+                .fullName(registerRequest.getFullName())
+                .gender(null)
+                .addressId(null)
+                .avatar(registerRequest.getAvatar())
+                .dob(null)
+                .build();
+
+        User savedUser = userService.save(user);
+        System.out.println("User Google đã lưu xong: " + savedUser);
+        return Optional.of(savedUser);
     }
 
     @Override

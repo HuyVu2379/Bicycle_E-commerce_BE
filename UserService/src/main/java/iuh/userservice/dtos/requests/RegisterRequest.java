@@ -3,6 +3,7 @@ package iuh.userservice.dtos.requests;
 import iuh.userservice.enums.Gender;
 import iuh.userservice.enums.Role;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@Builder
 public class RegisterRequest {
     @NotBlank(message = "Email is required")
     private String email;
@@ -28,6 +30,7 @@ public class RegisterRequest {
     private String avatar;
     private Gender gender;
     private Role role;
+    private String googleId;
     @Override
     public String toString() {
         return "RegisterRequest{" +

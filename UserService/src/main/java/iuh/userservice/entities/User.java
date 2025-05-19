@@ -37,6 +37,8 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private Gender gender;
+    @Column(nullable = true)
+    private String googleId;
 
     public User(String password, String email, Role role) {
         this.password = password;
