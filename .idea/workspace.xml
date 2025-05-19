@@ -1,386 +1,390 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-    <component name="AutoImportSettings">
-        <option name="autoReloadType" value="SELECTIVE" />
-    </component>
-    <component name="ChangeListManager">
-        <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
-            <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/controllers/ProductController.java" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/repositories/ProductRepository.java" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/src/main/java/iuh/productservice/services/ProductService.java" afterDir="false" />
-        </list>
-        <option name="SHOW_DIALOG" value="false" />
-        <option name="HIGHLIGHT_CONFLICTS" value="true" />
-        <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
-        <option name="LAST_RESOLUTION" value="IGNORE" />
-    </component>
-    <component name="FileTemplateManagerImpl">
-        <option name="RECENT_TEMPLATES">
-            <list>
-                <option value="Interface" />
-                <option value="Enum" />
-                <option value="Class" />
-            </list>
-        </option>
-    </component>
-    <component name="Git.Merge.Settings">
-        <option name="BRANCH" value="origin/dev" />
-    </component>
-    <component name="Git.Settings">
-        <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    </component>
-    <component name="GitHubPullRequestSearchHistory">{
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/dev" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
         &quot;lastFilter&quot;: {
         &quot;state&quot;: &quot;OPEN&quot;,
         &quot;assignee&quot;: &quot;luongtandat0512&quot;
         }
         }</component>
-    <component name="GithubPullRequestsUISettings">{
+  <component name="GithubPullRequestsUISettings">{
         &quot;selectedUrlAndAccountId&quot;: {
         &quot;url&quot;: &quot;https://github.com/HuyVu2379/Bicycle_E-commerce_BE.git&quot;,
         &quot;accountId&quot;: &quot;f9498931-c123-4bc8-8a02-8808f71b53fe&quot;
         }
         }</component>
-    <component name="JpbToolWindowState">
-        <option name="isToolWindowVisible" value="false" />
-    </component>
-    <component name="KubernetesApiProvider">{
+  <component name="JpbToolWindowState">
+    <option name="isToolWindowVisible" value="false" />
+  </component>
+  <component name="KubernetesApiProvider">{
         &quot;isMigrated&quot;: true
         }</component>
-    <component name="MarkdownSettingsMigration">
-        <option name="stateVersion" value="1" />
-    </component>
-    <component name="ProjectColorInfo">{ &quot;customColor&quot;: &quot;&quot;, &quot;associatedIndex&quot;: 5 }</component>
-    <component name="ProjectId" id="2tA4ElTrgYz8L39wAcAPwYq7Z3s" />
-    <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-        <ConfirmationsSetting value="1" id="Add" />
-    </component>
-    <component name="ProjectViewState">
-        <option name="hideEmptyMiddlePackages" value="true" />
-        <option name="showLibraryContents" value="true" />
-    </component>
-    <component name="PropertiesComponent">{
-        &quot;keyToString&quot;: {
-        &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-        &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-        &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-        &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-        &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-        &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-        &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-        &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
-        &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
-        &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
-        &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
-        &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
-        &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-        &quot;git-widget-placeholder&quot;: &quot;LuongTanDat&quot;,
-        &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-        &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
-        &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-        &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-        &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-        &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-        &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-        &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-        &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-        &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-        &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-        &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
-        &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-        }
-        }</component>
-    <component name="ReactorSettings">
-        <option name="notificationShown" value="true" />
-    </component>
-    <component name="RecentsManager">
-        <key name="CopyFile.RECENT_KEYS">
-            <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\GatewayService\src\main\java\iuh\gatewayservice\dtos" />
-            <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\ProductService\src\main\java\iuh\productservice\dtos\responses" />
-            <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\UserService\src\main\java\iuh\userservice" />
-            <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\PaymentService\src\main\java\iuh\paymentservice" />
-            <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\OrderService\src\main\java\iuh\orderservice" />
-        </key>
-        <key name="CopyClassDialog.RECENTS_KEY">
-            <recent name="iuh.gatewayservice.responses" />
-            <recent name="iuh.gatewayservice.exception" />
-            <recent name="iuh.productservice.dtos.requests" />
-            <recent name="iuh.productservice.exception.erorrs" />
-            <recent name="iuh.productservice.exception" />
-        </key>
-    </component>
-    <component name="RunDashboard">
-        <option name="configurationTypes">
-            <set>
-                <option value="MicronautRunConfigurationType" />
-                <option value="QuarkusRunConfigurationType" />
-                <option value="SpringBootApplicationConfigurationType" />
-            </set>
-        </option>
-    </component>
-    <component name="RunManager" selected="Spring Boot.UserServiceApplication">
-        <configuration name="CartServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-            <option name="MAIN_CLASS_NAME" value="iuh.cartservice.CartServiceApplication" />
-            <extension name="coverage">
-                <pattern>
-                    <option name="PATTERN" value="iuh.cartservice.*" />
-                    <option name="ENABLED" value="true" />
-                </pattern>
-            </extension>
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="EurekaServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-            <option name="ALTERNATIVE_JRE_PATH" value="17" />
-            <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-            <option name="MAIN_CLASS_NAME" value="iuh.eurekaservice.EurekaServiceApplication" />
-            <extension name="coverage">
-                <pattern>
-                    <option name="PATTERN" value="iuh.eurekaservice.*" />
-                    <option name="ENABLED" value="true" />
-                </pattern>
-            </extension>
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration default="true" type="JetRunConfigurationType">
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-            <option name="filePath" />
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="CartServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-            <module name="CartService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.cartservice.CartServiceApplication" />
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-            <module name="EurekaServer" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.eurekaserver.EurekaServerApplication" />
-            <extension name="coverage">
-                <pattern>
-                    <option name="PATTERN" value="iuh.eurekaserver.*" />
-                    <option name="ENABLED" value="true" />
-                </pattern>
-            </extension>
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="GatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-            <module name="GatewayService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.gatewayservice.GatewayServiceApplication" />
-            <extension name="coverage">
-                <pattern>
-                    <option name="PATTERN" value="iuh.gatewayservice.*" />
-                    <option name="ENABLED" value="true" />
-                </pattern>
-            </extension>
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-            <module name="OrderService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.orderservice.OrderServiceApplication" />
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="PaymentServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-            <module name="PaymentService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.paymentservice.PaymentServiceApplication" />
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="ProductServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-            <module name="ProductService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.productservice.ProductServiceApplication" />
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-            <module name="UserService" />
-            <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.userservice.UserServiceApplication" />
-            <extension name="coverage">
-                <pattern>
-                    <option name="PATTERN" value="iuh.userservice.*" />
-                    <option name="ENABLED" value="true" />
-                </pattern>
-            </extension>
-            <method v="2">
-                <option name="Make" enabled="true" />
-            </method>
-        </configuration>
-        <list>
-            <item itemvalue="Application.CartServiceApplication" />
-            <item itemvalue="Application.EurekaServiceApplication" />
-            <item itemvalue="Spring Boot.CartServiceApplication" />
-            <item itemvalue="Spring Boot.OrderServiceApplication" />
-            <item itemvalue="Spring Boot.PaymentServiceApplication" />
-            <item itemvalue="Spring Boot.ProductServiceApplication" />
-            <item itemvalue="Spring Boot.UserServiceApplication" />
-            <item itemvalue="Spring Boot.EurekaServerApplication" />
-            <item itemvalue="Spring Boot.GatewayServiceApplication" />
-        </list>
-        <recent_temporary>
-            <list>
-                <item itemvalue="Spring Boot.GatewayServiceApplication" />
-                <item itemvalue="Spring Boot.EurekaServerApplication" />
-                <item itemvalue="Spring Boot.UserServiceApplication" />
-                <item itemvalue="Application.CartServiceApplication" />
-                <item itemvalue="Application.EurekaServiceApplication" />
-            </list>
-        </recent_temporary>
-    </component>
-    <component name="SharedIndexes">
-        <attachedChunks>
-            <set>
-                <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
-                <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
-            </set>
-        </attachedChunks>
-    </component>
-    <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-    <component name="TaskManager">
-        <task active="true" id="Default" summary="Default task">
-            <changelist id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="" />
-            <created>1739781437596</created>
-            <option name="number" value="Default" />
-            <option name="presentableId" value="Default" />
-            <updated>1739781437596</updated>
-            <workItem from="1739781440019" duration="778000" />
-            <workItem from="1739782989940" duration="1200000" />
-            <workItem from="1740151660950" duration="1086000" />
-            <workItem from="1740153335174" duration="794000" />
-            <workItem from="1740154150513" duration="656000" />
-            <workItem from="1740184554696" duration="1624000" />
-            <workItem from="1740193502348" duration="2692000" />
-            <workItem from="1740407284393" duration="3857000" />
-            <workItem from="1740455643932" duration="12241000" />
-            <workItem from="1740536415072" duration="3425000" />
-            <workItem from="1740566916395" duration="1267000" />
-            <workItem from="1740568660682" duration="4564000" />
-            <workItem from="1740622915456" duration="11023000" />
-            <workItem from="1740645169196" duration="19821000" />
-            <workItem from="1740732038980" duration="8174000" />
-            <workItem from="1740786953387" duration="1618000" />
-            <workItem from="1740792512286" duration="401000" />
-            <workItem from="1740802541814" duration="691000" />
-            <workItem from="1740836534001" duration="5545000" />
-            <workItem from="1740889249602" duration="8279000" />
-            <workItem from="1740925050851" duration="521000" />
-            <workItem from="1740925599638" duration="8684000" />
-            <workItem from="1740989114175" duration="2278000" />
-            <workItem from="1741078595017" duration="13630000" />
-            <workItem from="1741101579073" duration="2746000" />
-            <workItem from="1741141595769" duration="15058000" />
-            <workItem from="1741184661725" duration="4168000" />
-            <workItem from="1741225690111" duration="2434000" />
-            <workItem from="1741242274205" duration="2114000" />
-            <workItem from="1741257246251" duration="5444000" />
-            <workItem from="1741278712909" duration="3233000" />
-            <workItem from="1741283474056" duration="3913000" />
-            <workItem from="1741316764456" duration="14922000" />
-            <workItem from="1741344217172" duration="3811000" />
-            <workItem from="1741353363338" duration="3067000" />
-            <workItem from="1741530568238" duration="588000" />
-            <workItem from="1741575736640" duration="1503000" />
-            <workItem from="1741580412265" duration="6473000" />
-            <workItem from="1741592796255" duration="11020000" />
-            <workItem from="1741662598498" duration="10537000" />
-            <workItem from="1741704716738" duration="7418000" />
-            <workItem from="1741737673987" duration="7273000" />
-            <workItem from="1741917301255" duration="463000" />
-            <workItem from="1741932553255" duration="918000" />
-            <workItem from="1741933587842" duration="12000" />
-            <workItem from="1741945221433" duration="261000" />
-            <workItem from="1741965074119" duration="81000" />
-            <workItem from="1741965179977" duration="165000" />
-            <workItem from="1741965363977" duration="197000" />
-            <workItem from="1741965652272" duration="27000" />
-            <workItem from="1742135693721" duration="1314000" />
-            <workItem from="1742450062872" duration="10724000" />
-            <workItem from="1742527771833" duration="7224000" />
-            <workItem from="1742800184544" duration="16045000" />
-            <workItem from="1742871625918" duration="4969000" />
-            <workItem from="1742882547212" duration="954000" />
-            <workItem from="1742896119020" duration="835000" />
-            <workItem from="1742978411861" duration="248000" />
-            <workItem from="1744081135536" duration="6305000" />
-            <workItem from="1744344387080" duration="3266000" />
-            <workItem from="1744369691025" duration="11288000" />
-            <workItem from="1745847744613" duration="3504000" />
-            <workItem from="1745895568633" duration="20128000" />
-            <workItem from="1745976424383" duration="2165000" />
-            <workItem from="1746243662507" duration="36000" />
-            <workItem from="1746435740824" duration="324000" />
-            <workItem from="1746605059075" duration="12339000" />
-            <workItem from="1746677653794" duration="19563000" />
-            <workItem from="1746763163679" duration="24071000" />
-            <workItem from="1746847081187" duration="18129000" />
-            <workItem from="1746921248250" duration="54000" />
-            <workItem from="1747033938641" duration="12818000" />
-            <workItem from="1747102477483" duration="12851000" />
-            <workItem from="1747278435811" duration="7504000" />
-            <workItem from="1747368745658" duration="650000" />
-            <workItem from="1747379993121" duration="2258000" />
-            <workItem from="1747384428089" duration="2437000" />
-        </task>
-        <task id="LOCAL-00001" summary="fix merge">
-            <option name="closed" value="true" />
-            <created>1747367893945</created>
-            <option name="number" value="00001" />
-            <option name="presentableId" value="LOCAL-00001" />
-            <option name="project" value="LOCAL" />
-            <updated>1747367893945</updated>
-        </task>
-        <task id="LOCAL-00002" summary="fix get data for home">
-            <option name="closed" value="true" />
-            <created>1747369385090</created>
-            <option name="number" value="00002" />
-            <option name="presentableId" value="LOCAL-00002" />
-            <option name="project" value="LOCAL" />
-            <updated>1747369385090</updated>
-        </task>
-        <option name="localTasksCounter" value="3" />
-        <servers />
-    </component>
-    <component name="TypeScriptGeneratedFilesManager">
-        <option name="version" value="3" />
-    </component>
-    <component name="Vcs.Log.Tabs.Properties">
-        <option name="TAB_STATES">
-            <map>
-                <entry key="MAIN">
-                    <value>
-                        <State />
-                    </value>
-                </entry>
-            </map>
-        </option>
-    </component>
-    <component name="VcsManagerConfiguration">
-        <MESSAGE value="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java&#10;" />
-        <MESSAGE value="fix merge" />
-        <MESSAGE value="fix get data for home" />
-        <option name="LAST_COMMIT_MESSAGE" value="fix get data for home" />
-    </component>
-    <component name="XSLT-Support.FileAssociations.UIState">
-        <expand />
-        <select />
-    </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{ &quot;customColor&quot;: &quot;&quot;, &quot;associatedIndex&quot;: 5 }</component>
+  <component name="ProjectId" id="2tA4ElTrgYz8L39wAcAPwYq7Z3s" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LuongTanDat&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/KienTrucPhanMem/Bicycle_E-commerce_BE&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\GatewayService\src\main\java\iuh\gatewayservice\dtos" />
+      <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\ProductService\src\main\java\iuh\productservice\dtos\responses" />
+      <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\UserService\src\main\java\iuh\userservice" />
+      <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\PaymentService\src\main\java\iuh\paymentservice" />
+      <recent name="D:\KienTrucPhanMem\Bicycle_E-commerce_BE\OrderService\src\main\java\iuh\orderservice" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="iuh.gatewayservice.responses" />
+      <recent name="iuh.gatewayservice.exception" />
+      <recent name="iuh.productservice.dtos.requests" />
+      <recent name="iuh.productservice.exception.erorrs" />
+      <recent name="iuh.productservice.exception" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+    <configuration name="CartServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="iuh.cartservice.CartServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iuh.cartservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="iuh.eurekaservice.EurekaServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iuh.eurekaservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CartServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="CartService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.cartservice.CartServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="EurekaServer" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.eurekaserver.EurekaServerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iuh.eurekaserver.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="GatewayService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.gatewayservice.GatewayServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iuh.gatewayservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="OrderService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.orderservice.OrderServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PaymentServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="PaymentService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.paymentservice.PaymentServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="ProductService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.productservice.ProductServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="UserService" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="iuh.userservice.UserServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="iuh.userservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.CartServiceApplication" />
+      <item itemvalue="Application.EurekaServiceApplication" />
+      <item itemvalue="Spring Boot.CartServiceApplication" />
+      <item itemvalue="Spring Boot.OrderServiceApplication" />
+      <item itemvalue="Spring Boot.PaymentServiceApplication" />
+      <item itemvalue="Spring Boot.ProductServiceApplication" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
+      <item itemvalue="Spring Boot.EurekaServerApplication" />
+      <item itemvalue="Spring Boot.GatewayServiceApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.GatewayServiceApplication" />
+        <item itemvalue="Spring Boot.EurekaServerApplication" />
+        <item itemvalue="Spring Boot.UserServiceApplication" />
+        <item itemvalue="Application.CartServiceApplication" />
+        <item itemvalue="Application.EurekaServiceApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.25659.59" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.25659.59" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="" />
+      <created>1739781437596</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739781437596</updated>
+      <workItem from="1739781440019" duration="778000" />
+      <workItem from="1739782989940" duration="1200000" />
+      <workItem from="1740151660950" duration="1086000" />
+      <workItem from="1740153335174" duration="794000" />
+      <workItem from="1740154150513" duration="656000" />
+      <workItem from="1740184554696" duration="1624000" />
+      <workItem from="1740193502348" duration="2692000" />
+      <workItem from="1740407284393" duration="3857000" />
+      <workItem from="1740455643932" duration="12241000" />
+      <workItem from="1740536415072" duration="3425000" />
+      <workItem from="1740566916395" duration="1267000" />
+      <workItem from="1740568660682" duration="4564000" />
+      <workItem from="1740622915456" duration="11023000" />
+      <workItem from="1740645169196" duration="19821000" />
+      <workItem from="1740732038980" duration="8174000" />
+      <workItem from="1740786953387" duration="1618000" />
+      <workItem from="1740792512286" duration="401000" />
+      <workItem from="1740802541814" duration="691000" />
+      <workItem from="1740836534001" duration="5545000" />
+      <workItem from="1740889249602" duration="8279000" />
+      <workItem from="1740925050851" duration="521000" />
+      <workItem from="1740925599638" duration="8684000" />
+      <workItem from="1740989114175" duration="2278000" />
+      <workItem from="1741078595017" duration="13630000" />
+      <workItem from="1741101579073" duration="2746000" />
+      <workItem from="1741141595769" duration="15058000" />
+      <workItem from="1741184661725" duration="4168000" />
+      <workItem from="1741225690111" duration="2434000" />
+      <workItem from="1741242274205" duration="2114000" />
+      <workItem from="1741257246251" duration="5444000" />
+      <workItem from="1741278712909" duration="3233000" />
+      <workItem from="1741283474056" duration="3913000" />
+      <workItem from="1741316764456" duration="14922000" />
+      <workItem from="1741344217172" duration="3811000" />
+      <workItem from="1741353363338" duration="3067000" />
+      <workItem from="1741530568238" duration="588000" />
+      <workItem from="1741575736640" duration="1503000" />
+      <workItem from="1741580412265" duration="6473000" />
+      <workItem from="1741592796255" duration="11020000" />
+      <workItem from="1741662598498" duration="10537000" />
+      <workItem from="1741704716738" duration="7418000" />
+      <workItem from="1741737673987" duration="7273000" />
+      <workItem from="1741917301255" duration="463000" />
+      <workItem from="1741932553255" duration="918000" />
+      <workItem from="1741933587842" duration="12000" />
+      <workItem from="1741945221433" duration="261000" />
+      <workItem from="1741965074119" duration="81000" />
+      <workItem from="1741965179977" duration="165000" />
+      <workItem from="1741965363977" duration="197000" />
+      <workItem from="1741965652272" duration="27000" />
+      <workItem from="1742135693721" duration="1314000" />
+      <workItem from="1742450062872" duration="10724000" />
+      <workItem from="1742527771833" duration="7224000" />
+      <workItem from="1742800184544" duration="16045000" />
+      <workItem from="1742871625918" duration="4969000" />
+      <workItem from="1742882547212" duration="954000" />
+      <workItem from="1742896119020" duration="835000" />
+      <workItem from="1742978411861" duration="248000" />
+      <workItem from="1744081135536" duration="6305000" />
+      <workItem from="1744344387080" duration="3266000" />
+      <workItem from="1744369691025" duration="11288000" />
+      <workItem from="1745847744613" duration="3504000" />
+      <workItem from="1745895568633" duration="20128000" />
+      <workItem from="1745976424383" duration="2165000" />
+      <workItem from="1746243662507" duration="36000" />
+      <workItem from="1746435740824" duration="324000" />
+      <workItem from="1746605059075" duration="12339000" />
+      <workItem from="1746677653794" duration="19563000" />
+      <workItem from="1746763163679" duration="24071000" />
+      <workItem from="1746847081187" duration="18129000" />
+      <workItem from="1746921248250" duration="54000" />
+      <workItem from="1747033938641" duration="12818000" />
+      <workItem from="1747102477483" duration="12851000" />
+      <workItem from="1747278435811" duration="7504000" />
+      <workItem from="1747368745658" duration="650000" />
+      <workItem from="1747379993121" duration="2258000" />
+      <workItem from="1747384428089" duration="2437000" />
+    </task>
+    <task id="LOCAL-00001" summary="fix merge">
+      <option name="closed" value="true" />
+      <created>1747367893945</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747367893945</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix get data for home">
+      <option name="closed" value="true" />
+      <created>1747369385090</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747369385090</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
+      <option name="closed" value="true" />
+      <created>1747663875232</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747663875232</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;ProductService/src/main/java/iuh/productservice/services/Impl/ProductServiceImpl.java&#10;" />
+    <MESSAGE value="fix merge" />
+    <MESSAGE value="fix get data for home" />
+    <MESSAGE value="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;" />
+    <MESSAGE value="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'dev' of https://github.com/HuyVu2379/Bicycle_E-commerce_BE into LuongTanDat&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
 </project>
