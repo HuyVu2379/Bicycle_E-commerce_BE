@@ -19,6 +19,7 @@ public interface AuthenticationService extends UserDetailsService {
     boolean validateToken(String token);
     String generateToken(Map<String, Object> extraClaims, User user);
     AuthResponse authenticate(AuthRequest request);
+    AuthResponse authenticateWithGoogle(String email);
     String generateToken(User user);
     String extractEmail(String token);
     String generateRefreshToken(User user);

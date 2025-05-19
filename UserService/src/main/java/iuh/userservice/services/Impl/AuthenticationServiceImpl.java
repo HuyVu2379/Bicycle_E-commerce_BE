@@ -69,6 +69,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public AuthResponse authenticateWithGoogle(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException("User not found with email: " + email));
+
+        String accessToken = generateToken(user);
+        String refreshToken = generateRefreshToken(user);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+    }
+
+    @Override
     public String generateToken(User user) {
         return generateToken(new HashMap<>(), user);
     }
