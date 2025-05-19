@@ -15,4 +15,6 @@ public interface FeignClientService {
     MessageResponse<List<Inventory>> getInventoryByProductId(@PathVariable("productId") String productId, @RequestHeader("Authorization") String token);
     @GetMapping("/api/v1/products/public/get-name/{productId}")
     MessageResponse<String> getProductName(@PathVariable String productId, @RequestHeader("Authorization") String token);
+    @GetMapping("/api/v1/products/public/get-price/{productId}")
+    MessageResponse<Double> getProductPrice(@PathVariable String productId, @RequestHeader("Authorization") String token);
 }

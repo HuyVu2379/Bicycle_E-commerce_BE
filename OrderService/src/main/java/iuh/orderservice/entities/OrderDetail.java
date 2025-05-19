@@ -1,6 +1,7 @@
 package iuh.orderservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import iuh.orderservice.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

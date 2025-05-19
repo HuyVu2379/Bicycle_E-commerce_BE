@@ -1,7 +1,9 @@
 package iuh.orderservice.services;
 
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
+import iuh.orderservice.dtos.requests.OrderRequest;
 import iuh.orderservice.entities.Order;
+import iuh.orderservice.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.Optional;
 @Service
 public interface OrderService {
     Optional<Order> createOrder(CreateOrderRequest request, String userId, String token);
+    int updateOrder(String orderId, OrderStatus OrderStatus);
+
     Optional<Order> getOrderById(String orderId);
     boolean deleteOrder(String orderId, String userId);
 

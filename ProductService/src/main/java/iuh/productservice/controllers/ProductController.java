@@ -47,7 +47,6 @@ public class ProductController {
             throw e;
         }
     }
-
     @GetMapping("/public/{productId}")
     public ResponseEntity<MessageResponse<ProductResponse>> getProductById(@PathVariable String productId) {
         try {

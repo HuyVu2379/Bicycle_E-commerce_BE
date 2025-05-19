@@ -1,6 +1,7 @@
 package iuh.orderservice.controllers;
 
 import iuh.orderservice.dtos.requests.CreateOrderRequest;
+import iuh.orderservice.dtos.requests.OrderRequest;
 import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.OrderDetailResponse;
 import iuh.orderservice.dtos.responses.OrderResponse;
@@ -8,6 +9,7 @@ import iuh.orderservice.dtos.responses.SuccessEntityResponse;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class OrderController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<MessageResponse<Object>> createOrder(@RequestBody CreateOrderRequest request){
+    public ResponseEntity<MessageResponse<Object>> createOrder(@RequestBody CreateOrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         String token = httpServletRequest.getHeader("Authorization");
@@ -48,9 +50,23 @@ public class OrderController {
         return SuccessEntityResponse.created("Order create sucessfully", orderOpt.get());
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<MessageResponse<Integer>> updateOrder(@RequestBody OrderRequest orderRequest) {
+        int result = orderService.updateOrder(orderRequest.getOrderId(), orderRequest.getOrderStatus());
+        if (result == 0) {
+            return ResponseEntity.badRequest().body(
+                    new MessageResponse<>(400,
+                            "Order update failed",
+                            false,
+                            null
+                    ));
+        }
+        return SuccessEntityResponse.ok("Order updated", result);
+    }
+
     @PostMapping("/delete/{orderId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<MessageResponse<Object>> deleteOrder(@PathVariable String orderId){
+    public ResponseEntity<MessageResponse<Object>> deleteOrder(@PathVariable String orderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         boolean isDeleted = orderService.deleteOrder(orderId, userId);
@@ -71,7 +87,7 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "orderDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection){
+            @RequestParam(defaultValue = "desc") String sortDirection) {
         Page<Order> orders = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDirection);
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
@@ -91,7 +107,7 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "orderDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection){
+            @RequestParam(defaultValue = "desc") String sortDirection) {
         Page<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId);
         if (orders.isEmpty()) {
             return ResponseEntity.badRequest().body(
@@ -106,7 +122,7 @@ public class OrderController {
 
     @GetMapping("/get/{orderId}")
     @PreAuthorize("hasAnyRole('ADMIN')" + " || hasAnyRole('USER')")
-    public ResponseEntity<MessageResponse<Object>> getOrder(@PathVariable String orderId){
+    public ResponseEntity<MessageResponse<Object>> getOrder(@PathVariable String orderId) {
         Optional<Order> orderOpt = orderService.getOrderById(orderId);
         if (orderOpt.isEmpty()) {
             return ResponseEntity.badRequest().body(
@@ -125,7 +141,7 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "orderDate") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection){
+            @RequestParam(defaultValue = "desc") String sortDirection) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         Page<Order> orders = orderService.getOrdersPageByUserId(pageNo, pageSize, sortBy, sortDirection, userId);
@@ -142,7 +158,7 @@ public class OrderController {
 
     @GetMapping("/get-revenue-by-time")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<MessageResponse<Object>> getRevenueByTime(@RequestParam String startTime, @RequestParam String endTime){
+    public ResponseEntity<MessageResponse<Object>> getRevenueByTime(@RequestParam String startTime, @RequestParam String endTime) {
         BigDecimal orderOpt = orderService.getRevenueByTime(startTime, endTime);
         if (orderOpt == null) {
             return ResponseEntity.badRequest().body(
@@ -157,7 +173,7 @@ public class OrderController {
 
     @GetMapping("/get-revenue-by-year/{year}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<MessageResponse<Object>> getRevenueByYear(@PathVariable String year){
+    public ResponseEntity<MessageResponse<Object>> getRevenueByYear(@PathVariable String year) {
         Map<String, BigDecimal> revenues = orderService.getRevenueByYear(Integer.parseInt(year));
         if (revenues.isEmpty()) {
             return ResponseEntity.badRequest().body(
@@ -176,7 +192,7 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "totalRevenue") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection){
+            @RequestParam(defaultValue = "desc") String sortDirection) {
         Page<Map<String, Object>> revenues = orderService.getRevenueByUsers(
                 pageNo,
                 pageSize,
