@@ -1,127 +1,308 @@
 package iuh.paymentservice.services.Impl;
 
-import iuh.paymentservice.dtos.requests.MomoPaymentRequest;
-import iuh.paymentservice.dtos.responses.MomoPaymentResponse;
+import feign.FeignException;
+import iuh.paymentservice.clients.FeignClientService;
+import iuh.paymentservice.configs.VNPayConfig;
+import iuh.paymentservice.dtos.requests.OrderRequest;
+import iuh.paymentservice.dtos.requests.PaymentRequest;
+import iuh.paymentservice.dtos.responses.PaymentResponse;
+import iuh.paymentservice.dtos.responses.VNPayResponse;
 import iuh.paymentservice.entities.Payment;
+import iuh.paymentservice.enums.OrderStatus;
 import iuh.paymentservice.enums.PaymentMethod;
 import iuh.paymentservice.enums.PaymentStatus;
-import iuh.paymentservice.exception.MessageResponse;
 import iuh.paymentservice.repositories.PaymentRepository;
+import iuh.paymentservice.repositories.PaymentTokenRepository;
 import iuh.paymentservice.services.PaymentService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.HmacUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import iuh.paymentservice.utils.TemporaryIdGenerator;
+import iuh.paymentservice.utils.VNPayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
 public class PaymentServiceImpl implements PaymentService {
-    @Value(value = "${momo.partner-code}")
-    private String partnerCode;
-    @Value(value = "${momo.access-key}")
-    private String accessKey;
-    @Value(value = "${momo.secret-key}")
-    private String secretKey;
-    @Value(value = "${momo.end-point}")
-    private String momoEndPoint;
+    private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
+    private static final Map<String, PaymentStatus> RESPONSE_CODE_TO_STATUS = Map.of(
+            "00", PaymentStatus.COMPLETED,
+            "01", PaymentStatus.PENDING,
+            "02", PaymentStatus.CANCELLED,
+            "99", PaymentStatus.FAILED
+    );
+    private static final Map<String, String> RESPONSE_CODE_TO_ORDER_STATUS = Map.of(
+            "00", "COMPLETED",
+            "01", "PENDING",
+            "02", "CANCELLED",
+            "99", "FAILED"
+    );
 
-    private final PaymentRepository paymentRepository;
-
+    @Autowired
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private VNPayConfig vnPayConfig;
+    @Autowired
+    private PaymentTokenRepository paymentTokenRepository;
+    @Autowired
+    private TemporaryIdGenerator temporaryIdGenerator;
+    @Autowired
+    private FeignClientService feignClientService;
 
     @Override
-    public String processPayment(String userId, double amount, String currency) {
-        return "";
-    }
-
-    @Override
-    public MomoPaymentResponse initiatePayment(MomoPaymentRequest request) {
-        if (request.getPaymentMethod() != PaymentMethod.MOMO) {
-            throw new IllegalArgumentException("Payment method must be MOMO");
-        }
-        RestTemplate restTemplate = new RestTemplate();
-        String requestId = String.valueOf(System.currentTimeMillis());
-        String orderId = String.valueOf(System.currentTimeMillis());
-        double amount = request.getAmount();
-        String redirectUrl = "http://localhost:8080/api/payment/momo/callback";
-        String ipn_url = "http://localhost:8080/api/payment/momo/callback";
-
-        String rawData = String.format(
-                "accessKey=%s&amount=%d&extraData=&ipnUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&redirectUrl=%s&requestId=%s&requestType=captureWallet",
-                accessKey, (long) amount, ipn_url, orderId, "Payment for order " + orderId, partnerCode, redirectUrl, requestId
-        );
-
-        String signature = HmacUtils.hmacSha256Hex(secretKey, rawData);
-
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("partnerCode", partnerCode);
-        payload.put("accessKey", accessKey);
-        payload.put("requestId", requestId);
-        payload.put("amount", (long) amount);
-        payload.put("orderId", orderId);
-        payload.put("orderInfo", "Payment for order " + orderId);
-        payload.put("redirectUrl", redirectUrl);
-        payload.put("ipnUrl", ipn_url);
-        payload.put("extraData", "");
-        payload.put("requestType", "captureWallet");
-        payload.put("signature", signature);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
-
-        Map response = restTemplate.postForObject(momoEndPoint + "/create", entity, Map.class);
-
+    public PaymentResponse createPayment(PaymentRequest paymentRequest, String token) {
         Payment payment = new Payment();
-        payment.setOrderId(orderId);
-        payment.setUserId(request.getUserId());
-        payment.setAmount(amount);
-        payment.setCurrency(request.getCurrency());
-        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setOrderId(paymentRequest.getOrderId());
+        payment.setUserId(paymentRequest.getUserId());
+        payment.setAmount(paymentRequest.getAmount());
+        payment.setCurrency(paymentRequest.getCurrency());
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setPaymentStatus(PaymentStatus.PENDING);
-        payment.setUpdatedAt(LocalDateTime.now());
         payment.setCreatedAt(LocalDateTime.now());
-        paymentRepository.save(payment);
 
-        return MomoPaymentResponse.builder()
-                .paymentUrl((String) response.get("payUrl"))
+        payment = paymentRepository.save(payment);
+        String tempId = temporaryIdGenerator.generateTemporaryId();
+        String signature = temporaryIdGenerator.generateSignature(payment.getOrderId(), tempId);
+        if (token != null && token.startsWith("Bearer ")) {
+            paymentTokenRepository.saveToken(tempId, token);
+            logger.info("Saved token to Redis for tempId: {}", tempId);
+        } else {
+            logger.warn("No valid token provided for orderId: {}", paymentRequest.getOrderId());
+        }
+        String paymentUrl = null;
+        if (payment.getPaymentMethod() == PaymentMethod.VN_PAY) {
+            paymentUrl = createVNPayPaymentUrl(paymentRequest, tempId, signature);
+        }
+        return PaymentResponse.builder()
+                .paymentId(payment.getPaymentId())
+                .orderId(payment.getOrderId())
+                .userId(payment.getUserId())
+                .amount(payment.getAmount())
+                .currency(payment.getCurrency())
+                .paymentMethod(payment.getPaymentMethod())
+                .paymentStatus(payment.getPaymentStatus())
+                .transactionId(payment.getTransactionId())
+                .paymentUrl(paymentUrl)
+                .createdAt(payment.getCreatedAt())
+                .updatedAt(payment.getUpdatedAt())
                 .build();
     }
 
+    private String createVNPayPaymentUrl(PaymentRequest paymentRequest, String tempId, String signature) {
+        String vnp_Version = "2.1.0";
+        String vnp_Command = "pay";
+        String vnp_TxnRef = String.format("%s_%s_%s", paymentRequest.getOrderId(), tempId, signature);
+        String vnp_IpAddr = paymentRequest.getIpAddress();
+        String vnp_TmnCode = vnPayConfig.getTmnCode();
+        String orderInfo = paymentRequest.getOrderInfo();
+        long amount = (long) (paymentRequest.getAmount() * 100);
+
+        Map<String, String> vnp_Params = new TreeMap<>();
+        vnp_Params.put("vnp_Version", vnp_Version);
+        vnp_Params.put("vnp_Command", vnp_Command);
+        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(amount));
+        vnp_Params.put("vnp_CurrCode", paymentRequest.getCurrency().toString());
+
+        if (paymentRequest.getBankCode() != null && !paymentRequest.getBankCode().isEmpty()) {
+            vnp_Params.put("vnp_BankCode", paymentRequest.getBankCode());
+        }
+
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
+        vnp_Params.put("vnp_OrderType", vnPayConfig.getOrderType());
+
+        String locate = paymentRequest.getLanguage();
+        vnp_Params.put("vnp_Locale", (locate != null && !locate.isEmpty()) ? locate : "vn");
+
+        vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String vnp_CreateDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
+        cld.add(Calendar.MINUTE, 15);
+        String vnp_ExpireDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+
+        StringBuilder hashData = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+        for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
+            String fieldName = entry.getKey();
+            String fieldValue = entry.getValue();
+            if (fieldValue != null && !fieldValue.isEmpty()) {
+                hashData.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                        .append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8))
+                        .append('&');
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                        .append('=')
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8))
+                        .append('&');
+            }
+        }
+
+        if (hashData.length() > 0) {
+            hashData.deleteCharAt(hashData.length() - 1);
+        }
+        if (query.length() > 0) {
+            query.deleteCharAt(query.length() - 1);
+        }
+
+        String vnp_SecureHash = VNPayUtils.hmacSHA512(vnPayConfig.getHashSecret(), hashData.toString());
+
+        query.append("&vnp_SecureHash=").append(URLEncoder.encode(vnp_SecureHash, StandardCharsets.UTF_8));
+
+        String paymentUrl = vnPayConfig.getPaymentUrl() + "?" + query.toString();
+
+        logger.info("vnp_TxnRef: {}", vnp_TxnRef);
+        logger.info("HashData: {}", hashData.toString());
+        logger.info("vnp_SecureHash: {}", vnp_SecureHash);
+        logger.info("Payment URL: {}", paymentUrl);
+
+        return paymentUrl;
+    }
+
     @Override
-    public String handleCallback(String orderId, String resultCode, String signature, String paymentTransactionId) {
-        Optional<Payment> payment = paymentRepository.findByOrderId(orderId);
-        if (payment.isEmpty()) {
-            return "Payment not found";
+    public VNPayResponse processVNPayCallback(Map<String, String> vnpParams, String token) {
+        String vnp_ResponseCode = vnpParams.get("vnp_ResponseCode");
+        String vnp_TxnRef = vnpParams.get("vnp_TxnRef");
+        String vnp_Amount = vnpParams.get("vnp_Amount");
+        String vnp_TransactionNo = vnpParams.get("vnp_TransactionNo");
+        String vnp_BankCode = vnpParams.get("vnp_BankCode");
+        String vnp_PayDate = vnpParams.get("vnp_PayDate");
+        String vnp_OrderInfo = vnpParams.get("vnp_OrderInfo");
+        String vnp_SecureHash = vnpParams.get("vnp_SecureHash");
+
+        logger.info("VNPay Callback Params: {}", vnpParams);
+
+        Map<String, String> validationParams = new TreeMap<>();
+        for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
+            if (!entry.getKey().equals("vnp_SecureHash") && !entry.getKey().equals("vnp_SecureHashType")) {
+                validationParams.put(entry.getKey(), entry.getValue());
+            }
         }
 
-        String rawData = String.format("orderId=%s&resultCode=%s", orderId, resultCode);
-        String expectedSignature = HmacUtils.hmacSha256Hex(secretKey, rawData);
-        if (!expectedSignature.equals(signature)) {
-            throw new RuntimeException("Invalid signature");
-        }
+        String calculatedHash = VNPayUtils.hashAllFields(validationParams, vnPayConfig.getHashSecret());
+        logger.info("Calculated Hash: {}", calculatedHash);
+        logger.info("Received vnp_SecureHash: {}", vnp_SecureHash);
 
-        Payment paymentEntity = payment.get();
-        paymentEntity.setPaymentStatus("0".equals(resultCode) ? PaymentStatus.SUCCESS : PaymentStatus.FAILED);
-        paymentEntity.setTransactionId(paymentTransactionId);
-        paymentEntity.setUpdatedAt(LocalDateTime.now());
+        String paymentId = null;
+        String tempId = null;
+        if (calculatedHash.equals(vnp_SecureHash)) {
+            String[] txnRefParts = vnp_TxnRef.split("_");
+            if (txnRefParts.length < 3) {
+                logger.error("Invalid vnp_TxnRef format: {}", vnp_TxnRef);
+                return VNPayResponse.builder()
+                        .vnpResponseCode(vnp_ResponseCode)
+                        .vnpTxnRef(vnp_TxnRef)
+                        .vnpAmount(vnp_Amount)
+                        .vnpTransactionNo(vnp_TransactionNo)
+                        .vnpBankCode(vnp_BankCode)
+                        .vnpPayDate(vnp_PayDate)
+                        .vnpOrderInfo(vnp_OrderInfo)
+                        .paymentId(paymentId)
+                        .build();
+            }
+            String orderId = txnRefParts[0];
+            tempId = txnRefParts[1];
+            String signature = txnRefParts[2];
 
-        paymentRepository.save(paymentEntity);
+            if (!temporaryIdGenerator.verifySignature(orderId, tempId, signature)) {
+                logger.error("Invalid signature for vnp_TxnRef: {}", vnp_TxnRef);
+                return VNPayResponse.builder()
+                        .vnpResponseCode(vnp_ResponseCode)
+                        .vnpTxnRef(vnp_TxnRef)
+                        .vnpAmount(vnp_Amount)
+                        .vnpTransactionNo(vnp_TransactionNo)
+                        .vnpBankCode(vnp_BankCode)
+                        .vnpPayDate(vnp_PayDate)
+                        .vnpOrderInfo(vnp_OrderInfo)
+                        .paymentId(paymentId)
+                        .build();
+            }
 
-        if("0".equals(resultCode)) {
-            return "Payment successful";
+            Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderId);
+            if (paymentOptional.isPresent()) {
+                Payment payment = paymentOptional.get();
+                paymentId = payment.getPaymentId();
+                updateRelatedTables(payment, vnp_ResponseCode, vnp_TransactionNo, token, tempId);
+            } else {
+                logger.error("Payment not found for orderId: {}", orderId);
+            }
         } else {
-            return "Payment failed";
+            logger.error("Invalid secure hash for vnp_TxnRef: {}", vnp_TxnRef);
         }
+
+        return VNPayResponse.builder()
+                .vnpResponseCode(vnp_ResponseCode)
+                .vnpTxnRef(vnp_TxnRef)
+                .vnpAmount(vnp_Amount)
+                .vnpTransactionNo(vnp_TransactionNo)
+                .vnpBankCode(vnp_BankCode)
+                .vnpPayDate(vnp_PayDate)
+                .vnpOrderInfo(vnp_OrderInfo)
+                .paymentId(paymentId)
+                .build();
+    }
+
+    private void updateRelatedTables(Payment payment, String responseCode, String transactionNo, String token, String tempId) {
+        try {
+            payment.setPaymentStatus(RESPONSE_CODE_TO_STATUS.getOrDefault(responseCode, PaymentStatus.FAILED));
+            payment.setTransactionId(transactionNo);
+            payment.setUpdatedAt(LocalDateTime.now());
+            paymentRepository.save(payment);
+
+            OrderStatus orderStatus = OrderStatus.valueOf(RESPONSE_CODE_TO_ORDER_STATUS.getOrDefault(responseCode, "FAILED"));
+            OrderRequest orderRequest = OrderRequest.builder()
+                    .orderId(payment.getOrderId())
+                    .orderStatus(orderStatus)
+                    .build();
+
+            String authToken = token;
+            try {
+                feignClientService.updateOrder(orderRequest, authToken);
+                paymentTokenRepository.deleteToken(tempId);
+            } catch (FeignException e) {
+                logger.error("Feign error updating order for paymentId: {}. Status: {}, Message: {}",
+                        payment.getPaymentId(), e.status(), e.getMessage());
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error updating related tables for paymentId: {}", payment.getPaymentId(), e);
+        }
+    }
+
+    @Override
+    public PaymentResponse getPaymentByOrderId(String orderId) {
+        Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderId);
+
+        if (paymentOptional.isPresent()) {
+            Payment payment = paymentOptional.get();
+            return PaymentResponse.builder()
+                    .paymentId(payment.getPaymentId())
+                    .orderId(payment.getOrderId())
+                    .userId(payment.getUserId())
+                    .amount(payment.getAmount())
+                    .currency(payment.getCurrency())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .paymentStatus(payment.getPaymentStatus())
+                    .transactionId(payment.getTransactionId())
+                    .createdAt(payment.getCreatedAt())
+                    .updatedAt(payment.getUpdatedAt())
+                    .build();
+        }
+        return null;
+    }
+
+    @Override
+    public Optional<Payment> getPaymentById(String paymentId) {
+        return paymentRepository.findById(paymentId);
     }
 }

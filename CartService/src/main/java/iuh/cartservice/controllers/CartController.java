@@ -94,38 +94,66 @@ public class CartController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/find-cart-by-userId/{id}", produces = "application/json")
     public ResponseEntity<MessageResponse<GetCartResponse>> getCartByUserId(@PathVariable String id) {
+
+        // Kiểm tra giỏ hàng tồn tại
         Optional<Cart> result = cartService.getCartByUserId(id);
-        String token = httpServletRequest.getHeader("Authorization");
-        try {
-            GetCartResponse getCartResponse = new GetCartResponse();
-            getCartResponse.setUserId(id);
-            getCartResponse.setCartId(result.get().getCartId());
-            // set CartItemResponse
-            List<CartItemResponse> cartItemResponseList = new ArrayList<>();
-            List<CartItem> listCartItem = cartItemService.getAllCartItemByUserId(id);
-            CartItemResponse cartItemResponse = new CartItemResponse();
-            listCartItem.forEach(cartItem -> {
-                cartItemResponse.setCartId(result.get().getCartId());
-                cartItemResponse.setCartItemId(cartItem.getCartItemId());
-                cartItemResponse.setColor(cartItem.getColor().toString());
-                cartItemResponse.setQuantity(cartItem.getQuantity());
-                MessageResponse<List<Inventory>> listMessageResponse = feignClientService.getInventoryByProductId(cartItem.getProductId(), token);
-                cartItemResponse.setImageUrl(listMessageResponse.getData().get(0).getImageUrls().get(0));
-                MessageResponse<String> productNameResponse = feignClientService.getProductName(cartItem.getProductId(), token);
-                cartItemResponse.setProductName(productNameResponse.getData());
-                cartItemResponse.setProductId(cartItem.getProductId());
-                cartItemResponseList.add(cartItemResponse);
-            });
-            getCartResponse.setItems(cartItemResponseList);
-            if(getCartResponse!=null){
-                return SuccessEntityResponse.ok("get all cartItem successfully", getCartResponse);
-            }
-            else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(), "Cart not found", false, null));
-            }
-        } catch (Exception e) {
-            throw e;
+        if (result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(), "Không tìm thấy giỏ hàng", false, null));
         }
 
+        String token = httpServletRequest.getHeader("Authorization");
+        GetCartResponse getCartResponse = new GetCartResponse();
+        getCartResponse.setUserId(id);
+        getCartResponse.setCartId(result.get().getCartId());
+
+        // Lấy danh sách CartItem
+        List<CartItemResponse> cartItemResponseList = new ArrayList<>();
+        List<CartItem> listCartItem = cartItemService.getAllCartItemByUserId(id);
+
+        for (CartItem cartItem : listCartItem) {
+            // Khởi tạo mới CartItemResponse cho mỗi CartItem
+            CartItemResponse cartItemResponse = new CartItemResponse();
+            cartItemResponse.setCartId(result.get().getCartId());
+            cartItemResponse.setCartItemId(cartItem.getCartItemId());
+            cartItemResponse.setColor(cartItem.getColor().toString());
+            cartItemResponse.setQuantity(cartItem.getQuantity());
+            cartItemResponse.setProductId(cartItem.getProductId());
+
+            try {
+                // Lấy thông tin inventory
+                MessageResponse<List<Inventory>> listMessageResponse = feignClientService.getInventoryByProductId(cartItem.getProductId(), token);
+                if (listMessageResponse.getData() != null && !listMessageResponse.getData().isEmpty()
+                        && listMessageResponse.getData().get(0).getImageUrls() != null && !listMessageResponse.getData().get(0).getImageUrls().isEmpty()) {
+                    cartItemResponse.setImageUrl(listMessageResponse.getData().get(0).getImageUrls().get(0));
+                } else {
+                    cartItemResponse.setImageUrl("Không có hình ảnh");
+                }
+
+                // Lấy tên sản phẩm
+                MessageResponse<String> productNameResponse = feignClientService.getProductName(cartItem.getProductId(), token);
+                if (productNameResponse.getData() != null) {
+                    cartItemResponse.setProductName(productNameResponse.getData());
+                } else {
+                    cartItemResponse.setProductName("Không xác định");
+                }
+
+                // Lấy giá sản phẩm
+                MessageResponse<Double> productPriceResponse = feignClientService.getProductPrice(cartItem.getProductId(), token);
+                if (productPriceResponse.getData() != null) {
+                    cartItemResponse.setPrice(productPriceResponse.getData());
+                } else {
+                    cartItemResponse.setPrice(0.0);
+                }
+
+            } catch (Exception e) {
+                throw e;
+            }
+
+            cartItemResponseList.add(cartItemResponse);
+        }
+
+        getCartResponse.setItems(cartItemResponseList);
+        return SuccessEntityResponse.ok("Lấy tất cả CartItem thành công", getCartResponse);
     }
 }

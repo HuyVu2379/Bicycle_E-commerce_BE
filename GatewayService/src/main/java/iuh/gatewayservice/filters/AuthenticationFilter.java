@@ -38,8 +38,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             "/api/v1/specifications/public/**",
             "/api/v1/inventories/public/**",
             "/api/v1/reviews/public/**",
-            "/api/v1/auth/google"
-    );
+            "/api/v1/payments/vnpay-callback",
+            "/api/v1/auth/google");
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     @Autowired
@@ -99,7 +99,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        AuthResponse response = new AuthResponse(HttpStatus.UNAUTHORIZED.value(), message, false, System.currentTimeMillis());
+        AuthResponse response = new AuthResponse(HttpStatus.UNAUTHORIZED.value(), message, false,
+                System.currentTimeMillis());
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -112,8 +113,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             logger.error("Error converting response to JSON", e);
             String fallbackJson = String.format(
                     "{\"status\":401,\"message\":\"Unauthorized\",\"success\":false,\"timestamp\":%d}",
-                    System.currentTimeMillis()
-            );
+                    System.currentTimeMillis());
             return exchange.getResponse()
                     .writeWith(Mono.just(exchange.getResponse()
                             .bufferFactory()

@@ -1,7 +1,10 @@
 package iuh.cartservice.controllers;
 
+import iuh.cartservice.clients.FeignClientService;
 import iuh.cartservice.dtos.requests.BulkDeleteCartItemRequest;
 import iuh.cartservice.dtos.requests.CartItemRequest;
+import iuh.cartservice.dtos.requests.Inventory;
+import iuh.cartservice.dtos.responses.CartItemResponse;
 import iuh.cartservice.dtos.responses.MessageResponse;
 import iuh.cartservice.dtos.responses.SuccessEntityResponse;
 import iuh.cartservice.entities.Cart;
@@ -11,6 +14,7 @@ import iuh.cartservice.exception.errors.CartNotFoundException;
 import iuh.cartservice.mappers.CartItemMapper;
 import iuh.cartservice.services.Impl.CartItemServiceImpl;
 import iuh.cartservice.services.Impl.CartServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +32,10 @@ public class CartItemController {
     private final CartItemServiceImpl cartItemService;
     private final CartServiceImpl cartService;
     private final CartItemMapper cartItemMapper;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+    @Autowired
+    private FeignClientService feignClientService;
 
     @Autowired
     public CartItemController(CartItemServiceImpl cartItemService, CartServiceImpl cartService, CartItemMapper cartItemMapper) {
@@ -74,18 +82,29 @@ public class CartItemController {
     //OK
     @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/create", produces = "application/json")
-    public ResponseEntity<MessageResponse<CartItem>> createCartItem(@RequestBody CartItemRequest cartItemRequest) {
+    public ResponseEntity<MessageResponse<CartItemResponse>> createCartItem(@RequestBody CartItemRequest cartItemRequest) {
         try {
             Cart cart = cartService.getCartById(cartItemRequest.getCartId()).orElse(null);
             if (cart == null) {
                 throw new CartNotFoundException("Cart not found");
             }
+            String token = httpServletRequest.getHeader("Authorization");
             CartItem cartItem = cartItemMapper.CartItemRequestToCartItem(cartItemRequest);
             cartItem.setColor(Color.valueOf(cartItemRequest.getColor()));
             cartItem.setCart(cart);
             Optional<CartItem> result = cartItemService.addCartItem(cartItem);
+            CartItemResponse cartItemResponse = new CartItemResponse();
+            cartItemResponse = cartItemMapper.CartItemToCartItemResponse(result.get());
+            MessageResponse<List<Inventory>> listMessageResponse = feignClientService.getInventoryByProductId(cartItem.getProductId(), token);
+            cartItemResponse.setImageUrl(listMessageResponse.getData().get(0).getImageUrls().get(0));
+            MessageResponse<String> productNameResponse = feignClientService.getProductName(cartItem.getProductId(), token);
+            MessageResponse<Double> productPriceResponse = feignClientService.getProductPrice(cartItem.getProductId(), token);
+            cartItemResponse.setPrice(productPriceResponse.getData());
+            cartItemResponse.setProductName(productNameResponse.getData());
+            cartItemResponse.setCartId(cartItemRequest.getCartId());
+            cartItemResponse.setProductName(productNameResponse.getData());
             if (result.isPresent()) {
-                return SuccessEntityResponse.created("CartItem created successfully", result.get());
+                return SuccessEntityResponse.created("CartItem created successfully", cartItemResponse);
             } else {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "CartItem creation failed");
             }

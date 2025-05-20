@@ -1,6 +1,7 @@
 package iuh.orderservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import iuh.orderservice.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,9 @@ public class Order extends BaseEntity{
     private String userId;
     private LocalDateTime orderDate;
     private double totalPrice;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PENDING;
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     private List<OrderDetail> orderDetails;

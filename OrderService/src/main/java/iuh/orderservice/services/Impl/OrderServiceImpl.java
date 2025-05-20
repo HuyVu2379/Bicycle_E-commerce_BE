@@ -7,6 +7,7 @@ import iuh.orderservice.dtos.responses.MessageResponse;
 import iuh.orderservice.dtos.responses.ProductPriceRespone;
 import iuh.orderservice.entities.Order;
 import iuh.orderservice.entities.OrderDetail;
+import iuh.orderservice.enums.OrderStatus;
 import iuh.orderservice.repositories.OrderDetailRepository;
 import iuh.orderservice.repositories.OrderRepository;
 import iuh.orderservice.repositories.PromotionRepository;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -105,6 +105,12 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    public int updateOrder(String orderId, OrderStatus orderStatus) {
+        return orderRepository.updateOrder(orderId,orderStatus);
+    }
+
+
+    @Override
     public Optional<Order> getOrderById(String orderId) {
         return Optional.ofNullable(orderRepository.findById(orderId).orElse(null));
     }
@@ -130,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Order> orders = orderRepository.findOrdersByUserId(userId, pageable);
+        Page<Order> orders = orderRepository.findOrdersByUserIdAndStatus(userId, pageable, OrderStatus.COMPLETED);
         if (orders.isEmpty()) {
             return null;
         }
