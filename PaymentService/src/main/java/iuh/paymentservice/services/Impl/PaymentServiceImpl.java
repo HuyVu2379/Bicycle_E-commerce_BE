@@ -97,6 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = String.format("%s_%s_%s", paymentRequest.getOrderId(), tempId, signature);
+        System.out.println("vnp_TxnRef: " + vnp_TxnRef);
         String vnp_IpAddr = paymentRequest.getIpAddress();
         String vnp_TmnCode = vnPayConfig.getTmnCode();
         String orderInfo = paymentRequest.getOrderInfo();
@@ -121,6 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_Locale", (locate != null && !locate.isEmpty()) ? locate : "vn");
 
         vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
+        vnp_Params.put("vnp_IpnUrl",vnPayConfig.getIpnUrl());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -269,7 +271,7 @@ public class PaymentServiceImpl implements PaymentService {
             String authToken = token;
             try {
                 feignClientService.updateOrder(orderRequest, authToken);
-                paymentTokenRepository.deleteToken(tempId);
+//                paymentTokenRepository.deleteToken(tempId);
             } catch (FeignException e) {
                 logger.error("Feign error updating order for paymentId: {}. Status: {}, Message: {}",
                         payment.getPaymentId(), e.status(), e.getMessage());

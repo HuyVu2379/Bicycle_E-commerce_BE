@@ -1,14 +1,11 @@
 package iuh.cartservice.dtos.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class BulkDeleteCartItemRequest {
-    private String[] cartItemIds;
+public class BulkDeleteCartItemRequest extends ArrayList<String> {
+    @JsonCreator
+    public BulkDeleteCartItemRequest(ArrayList<String> items) {
+        super(items);
+    }
 }
