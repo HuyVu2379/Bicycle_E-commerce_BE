@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - spring-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    networks:
+      - spring-net
+
+  eureka-server:
+    build:
+      context: ./EurekaServer
+    image: eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - spring-net
+
+  gateway-service:
+    build:
+      context: ./GatewayService
+    image: gateway-service
+    container_name: gateway-service
+    depends_on:
+      - eureka-server
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - spring-net
+
+  user-service:
+    build:
+      context: ./UserService
+    image: user-service
+    container_name: user-service
+    depends_on:
+      - eureka-server
+      - postgres
+      - redis
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/userdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_APPLICATION_JSON={"spring":{"data":{"redis":{"host":"redis-server","port":6379}}}}
+    ports:
+      - "8085:8085"
+    networks:
+      - spring-net
+
+  product-service:
+    build:
+      context: ./ProductService
+    image: product-service
+    container_name: product-service
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - spring-net
+
+  cart-service:
+    build:
+      context: ./CartService
+    image: cart-service
+    container_name: cart-service
+    depends_on:
+      - eureka-server
+      - postgres
+      - redis
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/cartdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_REDIS_HOST=redis-server
+      - SPRING_REDIS_PORT=6379
+    networks:
+      - spring-net
+
+  order-service:
+    build:
+      context: ./OrderService
+    image: order-service
+    container_name: order-service
+    depends_on:
+      - eureka-server
+      - postgres
+      - redis
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/orderdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_REDIS_HOST=redis-server
+      - SPRING_REDIS_PORT=6379
+    networks:
+      - spring-net
+
+  payment-service:
+    build:
+      context: ./PaymentService
+    image: payment-service
+    container_name: payment-service
+    depends_on:
+      - eureka-server
+      - postgres
+      - redis
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/paymentdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - SPRING_REDIS_HOST=redis-server
+      - SPRING_REDIS_PORT=6379
+    networks:
+      - spring-net
+
+networks:
+  spring-net:
+    driver: bridge
