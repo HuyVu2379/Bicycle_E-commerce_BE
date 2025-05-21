@@ -133,7 +133,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.found("Order found", orderOpt.get());
+        return SuccessEntityResponse.ok("Order found", orderOpt.get());
     }
 
     @GetMapping("/history-orders")

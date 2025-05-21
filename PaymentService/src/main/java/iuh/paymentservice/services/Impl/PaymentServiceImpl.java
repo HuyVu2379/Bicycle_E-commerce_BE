@@ -5,24 +5,26 @@ import iuh.paymentservice.clients.FeignClientService;
 import iuh.paymentservice.configs.VNPayConfig;
 import iuh.paymentservice.dtos.requests.OrderRequest;
 import iuh.paymentservice.dtos.requests.PaymentRequest;
-import iuh.paymentservice.dtos.responses.PaymentResponse;
-import iuh.paymentservice.dtos.responses.VNPayResponse;
+import iuh.paymentservice.dtos.responses.*;
 import iuh.paymentservice.entities.Payment;
 import iuh.paymentservice.enums.OrderStatus;
 import iuh.paymentservice.enums.PaymentMethod;
 import iuh.paymentservice.enums.PaymentStatus;
 import iuh.paymentservice.repositories.PaymentRepository;
 import iuh.paymentservice.repositories.PaymentTokenRepository;
+import iuh.paymentservice.services.EmailService;
 import iuh.paymentservice.services.PaymentService;
 import iuh.paymentservice.utils.TemporaryIdGenerator;
 import iuh.paymentservice.utils.VNPayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -53,6 +55,8 @@ public class PaymentServiceImpl implements PaymentService {
     private TemporaryIdGenerator temporaryIdGenerator;
     @Autowired
     private FeignClientService feignClientService;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public PaymentResponse createPayment(PaymentRequest paymentRequest, String token) {
@@ -122,7 +126,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_Locale", (locate != null && !locate.isEmpty()) ? locate : "vn");
 
         vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getReturnUrl());
-        vnp_Params.put("vnp_IpnUrl",vnPayConfig.getIpnUrl());
+        vnp_Params.put("vnp_IpnUrl", vnPayConfig.getIpnUrl());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -271,13 +275,107 @@ public class PaymentServiceImpl implements PaymentService {
             String authToken = token;
             try {
                 feignClientService.updateOrder(orderRequest, authToken);
-//                paymentTokenRepository.deleteToken(tempId);
+                // Gửi email nếu thanh toán thành công
+                if (responseCode.equals("00")) {
+                    sendPaymentSuccessEmail(payment, token);
+                }
             } catch (FeignException e) {
                 logger.error("Feign error updating order for paymentId: {}. Status: {}, Message: {}",
                         payment.getPaymentId(), e.status(), e.getMessage());
             }
         } catch (Exception e) {
             logger.error("Unexpected error updating related tables for paymentId: {}", payment.getPaymentId(), e);
+        }
+    }
+
+    @Async
+    protected void sendPaymentSuccessEmail(Payment payment, String token) {
+        try {
+            // Lấy email người dùng
+            String userEmail = feignClientService.getEmailUser(payment.getUserId(), token).getData();
+            if (userEmail == null || userEmail.isEmpty()) {
+                logger.error("No email found for userId: {}", payment.getUserId());
+                return;
+            }
+
+            // Lấy chi tiết đơn hàng
+            OrderResponse orderResponse = feignClientService.getOrderById(payment.getOrderId(), token).getData();
+            if (orderResponse == null) {
+                logger.error("No order details found for orderId: {}", payment.getOrderId());
+                return;
+            }
+            List<OrderDetailResponse> orderDetails = orderResponse.getOrderDetails();
+
+            // Định dạng tiền tệ
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String formattedAmount = currencyFormat.format(payment.getAmount());
+
+            // Tạo bảng sản phẩm
+            StringBuilder itemsTable = new StringBuilder();
+            itemsTable.append("<table style='border-collapse: collapse; width: 100%; max-width: 600px; font-family: Arial, sans-serif; font-size: 14px; margin: 20px 0;'>");
+            itemsTable.append("<thead style='background-color: #4CAF50; color: white;'>");
+            itemsTable.append("<tr>");
+            itemsTable.append("<th style='padding: 12px; text-align: left; border: 1px solid #ddd;'>Sản phẩm</th>");
+            itemsTable.append("<th style='padding: 12px; text-align: center; border: 1px solid #ddd;'>Số lượng</th>");
+            itemsTable.append("<th style='padding: 12px; text-align: center; border: 1px solid #ddd;'>Màu sắc</th>");
+            itemsTable.append("<th style='padding: 12px; text-align: right; border: 1px solid #ddd;'>Giá</th>");
+            itemsTable.append("</tr>");
+            itemsTable.append("</thead>");
+            itemsTable.append("<tbody>");
+            for (OrderDetailResponse item : orderDetails) {
+                String nameProduct = feignClientService.getProductName(item.getProductId()).getData();
+                if (nameProduct == null || nameProduct.isEmpty()) {
+                    nameProduct = "Sản phẩm không xác định (ID: " + item.getProductId() + ")";
+                }
+                String formattedSubtotal = currencyFormat.format(item.getSubtotal());
+                itemsTable.append("<tr>");
+                itemsTable.append("<td style='padding: 12px; border: 1px solid #ddd;'>").append(nameProduct).append("</td>");
+                itemsTable.append("<td style='padding: 12px; text-align: center; border: 1px solid #ddd;'>").append(item.getQuantity()).append("</td>");
+                itemsTable.append("<td style='padding: 12px; text-align: center; border: 1px solid #ddd;'>").append(item.getColor() != null ? item.getColor() : "N/A").append("</td>");
+                itemsTable.append("<td style='padding: 12px; text-align: right; border: 1px solid #ddd;'>").append(formattedSubtotal).append("</td>");
+                itemsTable.append("</tr>");
+            }
+            itemsTable.append("</tbody>");
+            itemsTable.append("</table>");
+
+            // Lấy địa chỉ
+            AddressResponse addressResponse = feignClientService.getAddressByUserId(payment.getUserId(), token).getData();
+            String fullAddress = (addressResponse != null && addressResponse.getFullAddress() != null) ? addressResponse.getFullAddress() : "N/A";
+
+            // Tạo nội dung email HTML
+            String emailBody = "<!DOCTYPE html>" +
+                    "<html>" +
+                    "<head>" +
+                    "<meta charset='UTF-8'>" +
+                    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<title>Thanh toán thành công</title>" +
+                    "</head>" +
+                    "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;'>" +
+                    "<div style='text-align: center; margin-bottom: 20px;'>" +
+                    "<img src='https://media.istockphoto.com/id/854733622/vector/bicycle-icon.jpg?s=612x612&w=0&k=20&c=cu34k4KEV5VYWwwVbMAmPogLJmh-OBITXEd1d9rWfrw=' alt='Shop Logo' style='max-width: 150px;'>" +
+                    "</div>" +
+                    "<h2 style='color: #4CAF50; text-align: center;'>Chúc mừng bạn đã thanh toán thành công!</h2>" +
+                    "<p style='text-align: center;'>Cảm ơn bạn đã tin tưởng và mua sắm tại <strong>Web site bicycle-E-commerce</strong>.</p>" +
+                    "<div style='background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;'>" +
+                    "<h3 style='color: #333; margin-top: 0;'>Thông tin đơn hàng</h3>" +
+                    "<p><strong>Mã đơn hàng:</strong> " + payment.getOrderId() + "</p>" +
+                    "<p><strong>Tổng tiền:</strong> " + formattedAmount + "</p>" +
+                    "<p><strong>Địa chỉ nhận hàng:</strong> " + fullAddress + "</p>" +
+                    "</div>" +
+                    "<h3 style='color: #333;'>Chi tiết sản phẩm</h3>" +
+                    itemsTable.toString() +
+                    "<p>Đơn hàng của bạn sẽ được xử lý và giao đến trong thời gian sớm nhất. Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ qua email <a href='huyvu2379kh@gmail.com'>huyvu2379kh@gmail.com</a>.</p>" +
+                    "<p style='text-align: center; margin-top: 30px;'>Trân trọng,<br><strong>Web site bicycle-E-commerce</strong></p>" +
+                    "<div style='text-align: center; margin-top: 20px; font-size: 12px; color: #777;'>" +
+                    "<p>12 Nguyễn Văn Bảo, phường 4, Gò Vấp, thành phố Hồ Chí Minh</p>" +
+                    "</div>" +
+                    "</body>" +
+                    "</html>";
+
+            emailService.sendEmail(userEmail, "Thanh toán thành công - Đơn hàng " + payment.getOrderId(), emailBody);
+            logger.info("Sent payment success email for paymentId: {}", payment.getPaymentId());
+        } catch (Exception e) {
+            logger.error("Failed to send payment success email for paymentId: {}", payment.getPaymentId(), e);
         }
     }
 

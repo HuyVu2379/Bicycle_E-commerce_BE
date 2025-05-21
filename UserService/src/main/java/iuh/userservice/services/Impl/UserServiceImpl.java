@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getEmailUserById(String userId) {
+        return userService.getEmailUserById(userId);
+    }
+
+    @Override
     public Optional<User> findUserByEmail(String email) {
         return userService.findByEmail(email);
     }
