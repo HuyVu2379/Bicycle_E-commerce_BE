@@ -23,4 +23,13 @@ public class Address extends BaseEntity{
     private String country = "Viet Nam";
     @Column(name = "userId",nullable = false)
     private String userId;
+
+    public Address(String fullAddress, String city, String street, String ward, String district, String country) {
+        this.fullAddress = fullAddress;
+        this.city = city;
+        this.street = street;
+        this.ward = ward;
+        this.district = district;
+        this.country = country;
+    }
 }

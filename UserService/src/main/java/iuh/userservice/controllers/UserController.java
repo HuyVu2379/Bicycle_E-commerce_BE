@@ -18,6 +18,7 @@ import iuh.userservice.services.Impl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,15 @@ public class UserController {
     @Autowired
     private AddressService addressService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
+    @GetMapping("/getEmailUser")
+    public ResponseEntity<MessageResponse<String>> getEmailUserById(@Param("userId") String userId) {
+        String email = userService.getEmailUserById(userId);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new MessageResponse<>(HttpStatus.NOT_FOUND.value(), "Không tìm thấy người dùng với ID: " + userId, false, null));
+        }
+        return SuccessEntityResponse.ok("Lấy email người dùng thành công", email);
+    }
     @PostMapping("/register")
     public ResponseEntity<MessageResponse<AuthResponse>> register(@RequestBody RegisterRequest registerRequest) {
         userService.registerUser(registerRequest);

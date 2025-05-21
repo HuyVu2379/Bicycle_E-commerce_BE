@@ -22,7 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Modifying
     @Transactional
     int updateOrder(String orderId, OrderStatus orderStatus);
-    Page<Order> findOrdersByUserId(String userId, Pageable pageable);
+    Page<Order> findOrdersByUserIdAndStatus(String userId, Pageable pageable, OrderStatus orderStatus);
 
     List<Order> getOrderByOrderDateBetween(LocalDateTime orderDateAfter, LocalDateTime orderDateBefore);
 

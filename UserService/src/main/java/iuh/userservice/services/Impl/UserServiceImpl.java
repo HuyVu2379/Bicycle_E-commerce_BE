@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getEmailUserById(String userId) {
+        return userService.getEmailUserById(userId);
+    }
+
+    @Override
     public Optional<User> findUserByEmail(String email) {
         return userService.findByEmail(email);
     }
@@ -73,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 .role(role)
                 .fullName(registerRequest.getFullName())
                 .gender(null)
-                .addressId(null)
+                .addressId(registerRequest.getAddressId())
                 .avatar(registerRequest.getAvatar())
                 .dob(null)
                 .build();

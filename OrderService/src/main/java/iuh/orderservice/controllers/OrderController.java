@@ -35,6 +35,7 @@ public class OrderController {
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<MessageResponse<Object>> createOrder(@RequestBody CreateOrderRequest request) {
+        System.out.println("check info create order: " + request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
         String token = httpServletRequest.getHeader("Authorization");
@@ -132,7 +133,7 @@ public class OrderController {
                             null
                     ));
         }
-        return SuccessEntityResponse.found("Order found", orderOpt.get());
+        return SuccessEntityResponse.ok("Order found", orderOpt.get());
     }
 
     @GetMapping("/history-orders")

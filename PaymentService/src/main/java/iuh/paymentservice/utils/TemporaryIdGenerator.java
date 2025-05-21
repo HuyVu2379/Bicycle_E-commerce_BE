@@ -29,6 +29,9 @@ public class TemporaryIdGenerator {
     }
 
     public boolean verifySignature(String orderId, String tempId, String signature) {
+        System.out.println("Verifying signature...: " + signature);
+        System.out.println("Order ID: " + orderId);
+        System.out.println("Temporary ID: " + tempId);
         String expected = generateSignature(orderId, tempId);
         return expected.equals(signature);
     }

@@ -5,15 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/dtos/responses/AddressResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/dtos/responses/OrderDetailResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/dtos/responses/OrderResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/services/EmailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/services/Impl/EmailPaymentServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/RandomPhoneNumberGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EurekaServer/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/EurekaServer/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GatewayService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/GatewayService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaymentService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProductService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/ProductService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/controllers/CartItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/BulkDeleteCartItemRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/java/iuh/cartservice/dtos/requests/BulkDeleteCartItemRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/controllers/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/filters/HeaderAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/filters/HeaderAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/repositories/OrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/java/iuh/orderservice/services/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/clients/FeignClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/clients/FeignClientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/configs/VNPayConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/configs/VNPayConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/controller/PaymentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/services/Impl/PaymentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/services/Impl/PaymentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/utils/TemporaryIdGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/java/iuh/paymentservice/utils/TemporaryIdGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaymentService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/entities/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/entities/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/Impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/services/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,8 +70,8 @@
     <option name="isToolWindowVisible" value="false" />
   </component>
   <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
+        &quot;isMigrated&quot;: true
+        }</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -65,45 +84,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.CartService [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.EurekaServer [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.GatewayService [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.OrderService [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.PaymentService [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.ProductService [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.UserService [package].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.CartServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.PaymentServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Docker&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/PHAM LE THANH NHIET/Desktop/ktpm/origin-be/nhiet/Bicycle_E-commerce_BE/UserService&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.CartService [package].executor": "Run",
+    "Maven.EurekaServer [package].executor": "Run",
+    "Maven.GatewayService [package].executor": "Run",
+    "Maven.OrderService [package].executor": "Run",
+    "Maven.PaymentService [package].executor": "Run",
+    "Maven.ProductService [package].executor": "Run",
+    "Maven.UserService [package].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.CartServiceApplication.executor": "Run",
+    "Spring Boot.EurekaServerApplication.executor": "Run",
+    "Spring Boot.GatewayServiceApplication.executor": "Run",
+    "Spring Boot.OrderServiceApplication.executor": "Run",
+    "Spring Boot.PaymentServiceApplication.executor": "Run",
+    "Spring Boot.ProductServiceApplication.executor": "Run",
+    "Spring Boot.UserServiceApplication.executor": "Run",
+    "git-widget-placeholder": "Docker",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/PHAM LE THANH NHIET/Desktop/ktpm/origin-be/nhiet/Bicycle_E-commerce_BE/UserService",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2023.2.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>

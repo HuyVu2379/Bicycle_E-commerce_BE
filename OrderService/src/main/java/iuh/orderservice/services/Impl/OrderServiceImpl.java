@@ -136,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> getOrdersPageByUserId(int pageNo, int pageSize, String sortBy, String sortDirection, String userId) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<Order> orders = orderRepository.findOrdersByUserId(userId, pageable);
+        Page<Order> orders = orderRepository.findOrdersByUserIdAndStatus(userId, pageable, OrderStatus.COMPLETED);
         if (orders.isEmpty()) {
             return null;
         }

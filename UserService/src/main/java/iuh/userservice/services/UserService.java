@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
+    String getEmailUserById(String userId);
     Optional<User> findUserByEmail(String email);
     Optional<User> findUserById(String id);
     Optional<User> registerUser(RegisterRequest registerRequest);
