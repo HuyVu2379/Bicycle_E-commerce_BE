@@ -17,6 +17,7 @@ public class VNPayConfig {
 
     @Value("${payment.vnpay.returnUrl}")
     private String returnUrl;
+    private String ipnUrl;
 
     @Value("${payment.vnpay.orderType}")
     private String orderType;
@@ -24,6 +25,10 @@ public class VNPayConfig {
     // Getters
     public String getTmnCode() {
         return tmnCode;
+    }
+
+    public String getIpnUrl() {
+        return ipnUrl;
     }
 
     public String getHashSecret() {

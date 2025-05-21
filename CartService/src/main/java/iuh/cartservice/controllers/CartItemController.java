@@ -65,7 +65,7 @@ public class CartItemController {
 
     //OK
     @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/remove/{cartItemId}", produces = "application/json")
+    @DeleteMapping(value = "/remove/{cartItemId}", produces = "application/json")
     public ResponseEntity<MessageResponse<Boolean>> removeCartItem(@PathVariable String cartItemId) {
         try {
             boolean result = cartItemService.removeCartItem(cartItemId);
@@ -154,7 +154,7 @@ public class CartItemController {
     @DeleteMapping(value = "/bulk-delete", produces = "application/json")
     public ResponseEntity<MessageResponse<Boolean>> bulkDeleteCartItem(@RequestBody BulkDeleteCartItemRequest request) {
         try {
-            boolean result = cartItemService.bulkDelete(Arrays.asList(request.getCartItemIds()));
+            boolean result = cartItemService.bulkDelete(request);
             if (result) {
                 return SuccessEntityResponse.ok("Bulk delete cart items successfully", result);
             }
