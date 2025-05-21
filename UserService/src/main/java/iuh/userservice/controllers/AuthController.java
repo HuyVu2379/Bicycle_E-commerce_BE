@@ -13,12 +13,14 @@ import iuh.userservice.dtos.requests.RegisterRequest;
 import iuh.userservice.dtos.responses.AuthResponse;
 import iuh.userservice.dtos.responses.MessageResponse;
 import iuh.userservice.dtos.responses.SuccessEntityResponse;
+import iuh.userservice.entities.Address;
 import iuh.userservice.entities.User;
 import iuh.userservice.enums.Role;
 import iuh.userservice.exception.errors.UnauthorizedException;
 import iuh.userservice.mappers.UserMapper;
 import iuh.userservice.repositories.TokenRepository;
 import iuh.userservice.services.Impl.AuthenticationServiceImpl;
+import iuh.userservice.services.Impl.RandomPhoneNumberGenerator;
 import iuh.userservice.services.Impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,16 +164,24 @@ public class AuthController {
             String fullName = payload.get("name") != null ? payload.get("name").toString() : "Google User";
             String avatar = payload.get("picture") != null ? payload.get("picture").toString() : null;
 
-
             Optional<User> existingUser = userService.findUserByEmail(email);
             User user;
             if (existingUser.isEmpty()) {
+                Address address = new Address(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                String random = RandomPhoneNumberGenerator.generatePhoneNumber();
                 RegisterRequest registerRequest = RegisterRequest.builder()
                         .email(email)
                         .fullName(fullName)
                         .avatar(avatar)
-                        .phoneNumber(UUID.randomUUID().toString())
-                        .addressId(null)
+                        .phoneNumber(random)
+                        .addressId(address.getAddressId())
                         .role(Role.USER)
                         .password(UUID.randomUUID().toString())
                         .googleId(userId)
@@ -192,10 +202,21 @@ public class AuthController {
                 }
             } else {
                 user = existingUser.get();
+                String random = RandomPhoneNumberGenerator.generatePhoneNumber();
+                 Address address = new Address(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                user.setPhoneNumber(random);
+                user.setAddressId(address.getAddressId());
                 if(user.getGoogleId() == null || user.getGoogleId().isEmpty()){
                     user.setGoogleId(userId);
-                    userService.updateUser(user);
                 }
+                userService.updateUser(user);
                 System.out.println("User already exists: " + user);
             }
 

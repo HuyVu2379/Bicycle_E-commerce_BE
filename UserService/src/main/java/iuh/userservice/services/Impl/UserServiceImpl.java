@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 .role(role)
                 .fullName(registerRequest.getFullName())
                 .gender(null)
-                .addressId(null)
+                .addressId(registerRequest.getAddressId())
                 .avatar(registerRequest.getAvatar())
                 .dob(null)
                 .build();
