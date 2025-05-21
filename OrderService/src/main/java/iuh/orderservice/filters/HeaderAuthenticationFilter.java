@@ -25,7 +25,7 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
 
         String username = request.getHeader("X-Auth-User");
         String role = request.getHeader("X-Auth-Role");
-
+        String userId = request.getHeader("X-Auth-UserId");
         log.debug("Received headers - X-Auth-User: {}, X-Auth-Role: {}", username, role);
 
         // Nếu không có username hoặc role, chuyển tiếp request mà không xác thực
@@ -42,7 +42,7 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
             authorities.add(new SimpleGrantedAuthority(role));
             log.debug("Setting up authentication with authorities: {}", authorities);
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             log.debug("Successfully authenticated user: {}", username);

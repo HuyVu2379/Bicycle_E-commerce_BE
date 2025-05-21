@@ -3,13 +3,13 @@ package iuh.paymentservice.controller;
 import iuh.paymentservice.clients.FeignClientService;
 import iuh.paymentservice.dtos.requests.OrderRequest;
 import iuh.paymentservice.dtos.requests.PaymentRequest;
-import iuh.paymentservice.dtos.responses.PaymentResponse;
-import iuh.paymentservice.dtos.responses.VNPayResponse;
+import iuh.paymentservice.dtos.responses.*;
 import iuh.paymentservice.entities.Payment;
 import iuh.paymentservice.enums.PaymentStatus;
 import iuh.paymentservice.exception.MessageResponse;
 import iuh.paymentservice.repositories.PaymentRepository;
 import iuh.paymentservice.repositories.PaymentTokenRepository;
+import iuh.paymentservice.services.EmailService;
 import iuh.paymentservice.services.Impl.PaymentServiceImpl;
 import iuh.paymentservice.services.PaymentService;
 import iuh.paymentservice.utils.TemporaryIdGenerator;
@@ -19,16 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/payments")
@@ -37,15 +35,17 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentTokenRepository paymentTokenRepository;
     private final TemporaryIdGenerator temporaryIdGenerator;
+    private final FeignClientService feignClientService;
 
     @Autowired
     public PaymentController(
             PaymentService paymentService,
             PaymentTokenRepository paymentTokenRepository,
-            TemporaryIdGenerator temporaryIdGenerator) {
+            TemporaryIdGenerator temporaryIdGenerator, FeignClientService feignClientService, EmailService emailService) {
         this.paymentService = paymentService;
         this.paymentTokenRepository = paymentTokenRepository;
         this.temporaryIdGenerator = temporaryIdGenerator;
+        this.feignClientService = feignClientService;
     }
 
     @PostMapping("/create")
