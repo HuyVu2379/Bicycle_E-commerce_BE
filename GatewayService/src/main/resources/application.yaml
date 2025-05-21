@@ -15,12 +15,26 @@ spring:
             - Path=/api/v1/orders/**, /api/v1/order-details/**, /api/v1/promotions/**
           filters:
             - AuthenticationFilter
+            - name: Retry
+              args:
+                  retries: 3                    # số lần retry
+                  statuses: BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR
+                  methods: GET, POST
+                  backoff:
+                    firstBackoff: 2s           # lần retry đầu sau 2 giây
+                    maxBackoff: 5s             # tối đa 5 giây giữa các lần
+                    factor: 2
         - id: product-service
           uri: lb://product-service
           predicates:
             - Path=/api/v1/products/**, /api/v1/reviews/**,/api/v1/suppliers/**,/api/v1/specifications/**,/api/v1/categories/**,/api/v1/inventories/**,/api/v1/reviews/public**,/api/v1/suppliers/public**,/api/v1/specifications/public**,/api/v1/categories/public**,/api/v1/inventories/public**,/api/v1/products/public**
           filters:
             - AuthenticationFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenish-rate: 1 #5 request/second
+                redis-rate-limiter.burst-capacity: 10 #10 request
+                key-resolver: "#{@ipKeyResolver}"
         - id: cart-service
           uri: lb://cart-service
           predicates:
@@ -71,3 +85,8 @@ cloudinary:
   api_key: 685489151257751
   api_secret: _pNWRfMbtjT08kgGp8z6c6Rotxs
   folder: Bicycle-E-commerce
+logging:
+  level:
+    org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory: DEBUG
+    org.springframework.cloud.gateway: DEBUG  # (Tùy chọn - để xem thêm log khác)
+    reactor.netty.http.client: DEBUG          # (Tùy chọn - log client request/response)
