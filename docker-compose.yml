@@ -131,8 +131,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/paymentdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_REDIS_HOST=redis-server
-      - SPRING_REDIS_PORT=6379
+      - SPRING_APPLICATION_JSON={"spring":{"data":{"redis":{"host":"redis-server","port":6379}}}}
     networks:
       - spring-net
 

@@ -33,7 +33,7 @@ spring:
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenish-rate: 1 #5 request/second
-                redis-rate-limiter.burst-capacity: 10 #10 request
+                redis-rate-limiter.burst-capacity: 20 #10 request
                 key-resolver: "#{@ipKeyResolver}"
         - id: cart-service
           uri: lb://cart-service
