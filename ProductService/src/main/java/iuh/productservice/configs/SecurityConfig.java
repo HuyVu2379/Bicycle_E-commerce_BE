@@ -17,9 +17,11 @@ import java.util.List;
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
     private final HeaderAuthenticationFilter headerAuthenticationFilter;
+    public SecurityConfig(HeaderAuthenticationFilter headerAuthenticationFilter) {
+        this.headerAuthenticationFilter = headerAuthenticationFilter;
+    }
 
     private List<String> publicEndpoints = Arrays.asList(
             "/api/v1/products/public/**",
