@@ -44,36 +44,36 @@ Dự án xây dựng một website thương mại điện tử chuyên dụng d�
 
 #### 👥 Người dùng
 - **Màn hình đăng nhập**  
-  ![Login](public/assets/markdownImgs/Login-screen.png)
+  ![Login](imageMarkdown/Login-screen.png)
 
 - **Màn hình chính (Trang chủ)**  
-  ![Home](public/assets/markdownImgs/Home-Screen.png)
+  ![Home](imageMarkdown/Home-Screen.png)
 
 - **Thông tin cá nhân**  
-  ![Profile](public/assets/markdownImgs/Profile.png)
+  ![Profile](imageMarkdown/Profile.png)
 
 - **Lịch sử mua hàng**  
-  ![Order history](public/assets/markdownImgs/Order-history)
+  ![Order history](imageMarkdown/Order-history.png)
 
 - **Giỏ hàng**  
-  ![Cart](public/assets/markdownImgs/cart.png)
+  ![Cart](imageMarkdown/cart.png)
 
 - **Thanh toán với VNPay**  
-  ![Payment](public/assets/markdownImgs/payment.png)
+  ![Payment](imageMarkdown/payment.png)
 
 - **Email xác nhận đơn hàng**  
-  ![Email](public/assets/markdownImgs/Email-payment-success.png)
+  ![Email](imageMarkdown/Email-payment-success.png)
 
 #### 🏪 Nhà cung cấp & Quản trị viên
 - **Trang sản phẩm**  
-  ![Product](public/assets/markdownImgs/admin-product.png)  
-  ![Product](public/assets/markdownImgs/admin-product2.png)
+  ![Product](imageMarkdown/admin-product.png)  
+  ![Product](imageMarkdown/admin-product2.png)
 
 - **Quản lý đơn hàng**  
-  ![Orders](public/assets/markdownImgs/admin-order.png)
+  ![Orders](imageMarkdown/admin-order.png)
 
 - **Trang khuyến mãi**  
-  ![Promotions](public/assets/markdownImgs/admin-promotion.png)
+  ![Promotions](imageMarkdown/admin-promotion.png)
 
 ---
 
