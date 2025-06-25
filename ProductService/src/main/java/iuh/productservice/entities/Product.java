@@ -25,7 +25,7 @@ public class Product {
     @NotBlank(message = "Tên sản phẩm không được để trống")
     private String name;
     @NotNull(message = "Danh mục không được để trống")
-    private String categoryId;
+    private String[] categoryIds;
     @NotNull(message = "Nhà cung cấp không được để trống")
     private String supplierId;
     @NotNull(message = "Lô nhap không được để trống")

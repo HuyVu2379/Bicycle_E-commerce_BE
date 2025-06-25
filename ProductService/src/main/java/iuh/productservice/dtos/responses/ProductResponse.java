@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class ProductResponse {
     private Product product;
-    private Category category;
+    private List<Category> category;
     private List<Inventory> inventory;
     private Supplier supplier;
     private List<Specification> specification;

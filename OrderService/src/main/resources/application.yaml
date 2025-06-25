@@ -6,7 +6,7 @@ spring:
     name: order-services
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/orderdb
+    url: jdbc:postgresql://ep-aged-leaf-a83webqp-pooler.eastus2.azure.neon.tech/orderdb?user=neondb_owner&password=npg_XfxSG0tMUwz6&sslmode=require
     username: postgres
     password: 12345678
   jpa:

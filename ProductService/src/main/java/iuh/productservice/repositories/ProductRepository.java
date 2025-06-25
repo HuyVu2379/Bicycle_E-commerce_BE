@@ -12,16 +12,16 @@ import java.util.List;
 public interface ProductRepository extends MongoRepository<Product, String> {
     int deleteByProductId(String productId);
 
+    @Query("{categoryIds: ?0}")
     List<Product> getProductsByCategoryId(String categoryId);
-
     List<Product> getProductsBySupplierId(String supplierId);
 
     @Query("{ 'name' : { $regex: ?0, $options: 'i' } }")
     List<Product> getProductsByName(String name);
 
     @Aggregation(pipeline = {
-        "{ $match: { $expr: { $gt: [ '$price', '$priceReduced' ] } } }",
-        "{ $count: 'total' }"
+            "{ $match: { $expr: { $gt: [ '$price', '$priceReduced' ] } } }",
+            "{ $count: 'total' }"
     })
     Long countByPriceGreaterThanPriceReduced();
 }

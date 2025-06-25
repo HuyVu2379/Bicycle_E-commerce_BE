@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
             return Optional.empty();
         }
         product1.setName(product.getName());
-        product1.setCategoryId(product.getCategoryId());
+        product1.setCategoryIds(product.getCategoryIds());
         product1.setSupplierId(product.getSupplierId());
         product1.setDescription(product.getDescription());
         product1.setPrice(product.getPrice());
@@ -198,12 +198,15 @@ public class ProductServiceImpl implements ProductService {
     public Optional<ProductResponse> getProductById(String productId) {
         ProductResponse productResponse = new ProductResponse();
         Product product = productRepository.findById(productId).orElse(null);
-        Category category = categoryService.getCategoryById(product.getCategoryId()).orElse(null);
+        List<Category> categories = new ArrayList<>();
+        for (String categoryId : product.getCategoryIds()) {
+            categories.add(categoryService.getCategoryById(categoryId).orElse(null));
+        }
         Supplier supplier = supplierService.getSupplierById(product.getSupplierId()).orElse(null);
         List<Inventory> inventories = inventoryService.getAllInventoryByProductId(productId);
         List<Specification> specifications = specificationService.findSpecificationsByProductId(productId);
         productResponse.setProduct(product);
-        productResponse.setCategory(category);
+        productResponse.setCategory(categories);
         productResponse.setSupplier(supplier);
         productResponse.setInventory(inventories);
         productResponse.setSpecification(specifications);
@@ -251,9 +254,9 @@ public class ProductServiceImpl implements ProductService {
                         .and(ConvertOperators.ToObjectId.toObjectId("$categoryId")).as("categoryIdObj")
                         .and(ConvertOperators.ToObjectId.toObjectId("$supplierId")).as("supplierIdObj")
                         .and(context -> new Document("$toString", "$_id")).as("productIdStr")
-                        .andInclude("_id", "productId", "name", "categoryId", "supplierId", "description", "price", "priceReduced",
+                        .andInclude("_id", "productId", "name", "categoryIds", "supplierId", "description", "price", "priceReduced",
                                 "promotionId", "createdAt", "updatedAt"),
-                Aggregation.lookup("category", "categoryIdObj", "_id", "category"),
+//                Aggregation.lookup("category", "categoryIdObj", "_id", "category"),
                 Aggregation.lookup("supplier", "supplierIdObj", "_id", "supplier"),
                 Aggregation.lookup("inventory", "productIdStr", "productId", "inventory"),
                 Aggregation.lookup("specification", "productIdStr", "productId", "specifications"),
@@ -281,7 +284,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = new Product();
             product.setProductId(doc.getObjectId("_id").toString());
             product.setName(doc.getString("name"));
-            product.setCategoryId(doc.getString("categoryId"));
+            product.setCategoryIds(doc.getList("categoryIds", String.class).toArray(new String[0]));
             product.setSupplierId(doc.getString("supplierId"));
             product.setDescription(doc.getString("description"));
             product.setPrice(doc.getDouble("price") != null ? doc.getDouble("price") : 0.0);
@@ -292,19 +295,16 @@ public class ProductServiceImpl implements ProductService {
             product.setUpdatedAt(doc.getDate("updatedAt") != null ?
                     LocalDateTime.ofInstant(doc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
 
-            Category category = null;
-            if (doc.get("category") instanceof Document) {
-                Document categoryDoc = (Document) doc.get("category");
-                category = new Category();
-                category.setCategoryId(categoryDoc.getObjectId("_id").toString());
-                category.setName(categoryDoc.getString("name"));
-                category.setDescription(categoryDoc.getString("description"));
-                category.setCreatedAt(categoryDoc.getDate("createdAt") != null ?
-                        LocalDateTime.ofInstant(categoryDoc.getDate("createdAt").toInstant(), ZoneId.systemDefault()) : null);
-                category.setUpdatedAt(categoryDoc.getDate("updatedAt") != null ?
-                        LocalDateTime.ofInstant(categoryDoc.getDate("updatedAt").toInstant(), ZoneId.systemDefault()) : null);
+            List<Category> categories = new ArrayList<>();
+            Object categoryIds = doc.get("categoryIds");
+            if (categoryIds instanceof List<?>) {
+                for (Object categoryDoc : (List<?>) categoryIds) {
+                    if (categoryDoc instanceof Document) {
+                        String categoryId = ((Document) categoryDoc).getObjectId("_id").toString();
+                        categoryService.getCategoryById(categoryId).ifPresent(categories::add);
+                    }
+                }
             }
-
             List<Inventory> inventories = new ArrayList<>();
             if (doc.get("inventory") instanceof List) {
                 List<Document> inventoryDocs = (List<Document>) doc.get("inventory");
@@ -356,7 +356,7 @@ public class ProductServiceImpl implements ProductService {
 
             return ProductResponse.builder()
                     .product(product)
-                    .category(category)
+                    .category(categories)
                     .inventory(inventories)
                     .supplier(supplier)
                     .specification(specifications)

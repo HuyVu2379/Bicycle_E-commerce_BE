@@ -10,6 +10,7 @@ package iuh.productservice.controllers;
 import iuh.productservice.dtos.responses.MessageResponse;
 import iuh.productservice.dtos.responses.SuccessEntityResponse;
 import iuh.productservice.entities.Inventory;
+import iuh.productservice.services.Impl.InventoryServiceImpl;
 import iuh.productservice.services.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @Autowired
-    public InventoryController(InventoryService inventoryService) {
+    public InventoryController(InventoryServiceImpl inventoryService) {
         this.inventoryService = inventoryService;
     }
 
