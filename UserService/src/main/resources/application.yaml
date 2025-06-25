@@ -24,10 +24,12 @@ spring:
             allowedOrigins: "*"
   data:
     redis:
-      host: redis-17597.c340.ap-northeast-2-1.ec2.redns.redis-cloud.com:17597
+      host: redis-17597.c340.ap-northeast-2-1.ec2.redns.redis-cloud.com
       port: 17597
-      timeout: 60000
       password: ${PASSWORD_REDIS}
+      timeout: 60000
+      ssl:
+        enabled: true
   security:
     oauth2:
       client:

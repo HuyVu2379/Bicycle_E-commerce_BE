@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/java/iuh/userservice/configs/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CartService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/UserService/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -353,7 +354,7 @@
       <workItem from="1748842978712" duration="11553000" />
       <workItem from="1749737375665" duration="2410000" />
       <workItem from="1749885907341" duration="1661000" />
-      <workItem from="1750840877581" duration="8112000" />
+      <workItem from="1750840877581" duration="8884000" />
     </task>
     <task id="LOCAL-00001" summary="fix merge">
       <option name="closed" value="true" />

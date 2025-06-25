@@ -6,12 +6,12 @@ spring:
     name: cart-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://seedqumrvphgtucasunl.supabase.co:5432/postgres
+    url: jdbc:postgresql://db.seedqumrvphgtucasunl.supabase.co:5432/cartdb
     username: postgres
     password: 12345678
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
