@@ -18,8 +18,8 @@ spring:
     name: payment-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require
-    username: postgres.cwnxaqwhnmdflggfjwgk
+    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require
+    username: postgres.nonefnlmplqixtnymooo
     password: ${PASSWORD_DB}
   jpa:
     hibernate:

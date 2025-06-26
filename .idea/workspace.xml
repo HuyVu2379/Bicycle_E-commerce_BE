@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9e43da08-77f0-440d-bd48-1eb2d36bb740" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CartService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/CartService/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrderService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/OrderService/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaymentService/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaymentService/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/PaymentService/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -358,7 +354,7 @@
       <workItem from="1749737375665" duration="2410000" />
       <workItem from="1749885907341" duration="1661000" />
       <workItem from="1750840877581" duration="15653000" />
-      <workItem from="1750906993696" duration="1231000" />
+      <workItem from="1750906993696" duration="2477000" />
     </task>
     <task id="LOCAL-00001" summary="fix merge">
       <option name="closed" value="true" />
