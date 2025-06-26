@@ -76,7 +76,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: https://eurekaserver-ksbs.onrender.com/eureka/
 instance:
   preferIpAddress: true
 cloudinary:
