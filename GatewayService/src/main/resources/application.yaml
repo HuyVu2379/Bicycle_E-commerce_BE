@@ -54,12 +54,11 @@ spring:
           filters:
             - AuthenticationFilter
             - PreserveHostHeader
-        - id: media-service
-          uri: forward:/
-          predicates:
-            - Path=/api/v1/media/**
-          filters:
-            - AuthenticationFilter
+#        - id: media-service
+#          predicates:
+#            - Path=/api/v1/media/**
+#          filters:
+#            - AuthenticationFilter
 jwt:
   token:
     validity: 86400000
