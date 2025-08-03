@@ -3,12 +3,12 @@ server:
 
 spring:
   application:
-    name: order-service
+    name: order-services
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://ep-aged-leaf-a83webqp-pooler.eastus2.azure.neon.tech/orderdb?user=neondb_owner&password=npg_XfxSG0tMUwz6&sslmode=require
-    username: postgres
-    password: ${PASSWORD_DB}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/orderdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:12345678}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,10 +16,24 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6380}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+      timeout: 60000
 
 eureka:
+  instance:
+    preferIpAddress: true
   client:
-    register-with-eureka: true  # Đăng ký service này với Eureka
-    fetch-registry: true  # Lấy danh sách các service từ Eureka
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: https://eurekaserver-ksbs.onrender.com/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+
+logging:
+  level:
+    org.springframework.web: INFO
+    iuh.orderservice: DEBUG
+    org.hibernate: INFO

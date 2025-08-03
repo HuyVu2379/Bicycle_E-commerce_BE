@@ -1,3 +1,0 @@
-CREATE DATABASE orderdb;
-CREATE DATABASE cartdb;
-CREATE DATABASE paymentdb;

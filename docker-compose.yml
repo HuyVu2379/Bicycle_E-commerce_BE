@@ -3,15 +3,16 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: postgres-main
     environment:
-      POSTGRES_DB: userdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345678
+      POSTGRES_MULTIPLE_DATABASES: userdb,cartdb,orderdb,paymentdb
     volumes:
+      - postgres_data:/var/lib/postgresql/data
       - ./postgres-init:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - spring-net
 
@@ -19,19 +20,26 @@ services:
     image: redis:7-alpine
     container_name: redis-server
     ports:
-      - "6379:6379"
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
     networks:
       - spring-net
 
   eureka-server:
     build:
       context: ./EurekaServer
-    image: eureka-server
-    container_name: eureka-server
+    image: eureka-server-1
+    container_name: eureka-server-1
     ports:
       - "8761:8761"
     networks:
       - spring-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   gateway-service:
     build:
@@ -39,11 +47,16 @@ services:
     image: gateway-service
     container_name: gateway-service
     depends_on:
-      - eureka-server
+      eureka-server:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - API_KEY=685489151257751
+      - API_SECRET=_pNWRfMbtjT08kgGp8z6c6Rotxs
+      - CLOUD_NAME=dxssmpeii
+      - SECRET_KEY=92312d77cd9437b5c2ddf01aef8bb8a1e5f20b5c8ee53a295fa488989652070d9aadf064d8e521219309f198de5873b59755bdc04c0fa4a2fd5c192364e60a8c492f81cfe8e6741bf1cc3064f8194a4235a5f3982cb0517c4d01741c97b76a2b339f05e57b3d4160ba092b37d35d48af2cf06ff6ae1dfd76b5ec033e8114fa01ef022fb307023ff9d3627940913d663c736747ca86468bd1735d96cb191227f6dded90a7f7ef71d7208123e4933877bd8b5b3dee1287ac111bc7fb84fee272497bdfae0f4d36743d7e761f0ac7ddb598277ce15d5ca1a3459f9072de6ce34153a29788146217a6a84aab6b1e279f603fadfd228e5cd706279894821aebac75d5171633a04f9a3738ad840cd85acf0583442019f8f5276cfd37ef976e0ba19f49
     networks:
       - spring-net
 
@@ -53,15 +66,22 @@ services:
     image: user-service
     container_name: user-service
     depends_on:
-      - eureka-server
-      - postgres
-      - redis
+      eureka-server:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/userdb
+      - CLIENT_ID=1025886906029-1go0pfc4j5pjpatg7hjguuv5km5lopl2.apps.googleusercontent.com
+      - CLIENT_SECRET=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
+      - JWT_SECRET_KEY=92312d77cd9437b5c2ddf01aef8bb8a1e5f20b5c8ee53a295fa488989652070d9aadf064d8e521219309f198de5873b59755bdc04c0fa4a2fd5c192364e60a8c492f81cfe8e6741bf1cc3064f8194a4235a5f3982cb0517c4d01741c97b76a2b339f05e57b3d4160ba092b37d35d48af2cf06ff6ae1dfd76b5ec033e8114fa01ef022fb307023ff9d3627940913d663c736747ca86468bd1735d96cb191227f6dded90a7f7ef71d7208123e4933877bd8b5b3dee1287ac111bc7fb84fee272497bdfae0f4d36743d7e761f0ac7ddb598277ce15d5ca1a3459f9072de6ce34153a29788146217a6a84aab6b1e279f603fadfd228e5cd706279894821aebac75d5171633a04f9a3738ad840cd85acf0583442019f8f5276cfd37ef976e0ba19f49
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/userdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_APPLICATION_JSON={"spring":{"data":{"redis":{"host":"redis-server","port":6379}}}}
+      - SPRING_DATA_REDIS_HOST=redis-server
+      - SPRING_DATA_REDIS_PORT=6379
     ports:
       - "8085:8085"
     networks:
@@ -73,7 +93,8 @@ services:
     image: product-service
     container_name: product-service
     depends_on:
-      - eureka-server
+      eureka-server:
+        condition: service_healthy
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
     networks:
@@ -85,16 +106,19 @@ services:
     image: cart-service
     container_name: cart-service
     depends_on:
-      - eureka-server
-      - postgres
-      - redis
+      eureka-server:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/cartdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/cartdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_REDIS_HOST=redis-server
-      - SPRING_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_HOST=redis-server
+      - SPRING_DATA_REDIS_PORT=6379
     networks:
       - spring-net
 
@@ -104,16 +128,19 @@ services:
     image: order-service
     container_name: order-service
     depends_on:
-      - eureka-server
-      - postgres
-      - redis
+      eureka-server:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/orderdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/orderdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_REDIS_HOST=redis-server
-      - SPRING_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_HOST=redis-server
+      - SPRING_DATA_REDIS_PORT=6379
     networks:
       - spring-net
 
@@ -123,17 +150,28 @@ services:
     image: payment-service
     container_name: payment-service
     depends_on:
-      - eureka-server
-      - postgres
-      - redis
+      eureka-server:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/paymentdb
+      - PASSWORD_EMAIL=hmfb jzuh zfil dhsa
+      - SECRET_KEY=FSK6DMH5TQ03QHP03H2YUHBHCA1HHIH5
+      - TMA_CODE=DQ2QRKII
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/paymentdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345678
-      - SPRING_APPLICATION_JSON={"spring":{"data":{"redis":{"host":"redis-server","port":6379}}}}
+      - SPRING_DATA_REDIS_HOST=redis-server
+      - SPRING_DATA_REDIS_PORT=6379
     networks:
       - spring-net
+
+volumes:
+  postgres_data:
+  redis_data:
 
 networks:
   spring-net:

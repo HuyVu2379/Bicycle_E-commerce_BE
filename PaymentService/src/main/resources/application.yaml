@@ -6,21 +6,20 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: vuquochuy.01012003@gmail.com
-    password: ${PASSWORD_EMAIL}
+    password: ${PASSWORD_EMAIL:hmfb jzuh zfil dhsa}
     properties:
-        mail.smtp:
-            auth: true
-            starttls.enable: true
-            ssl.trust: smtp.gmail.com
-
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+        ssl.trust: smtp.gmail.com
 
   application:
     name: payment-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require
-    username: postgres.nonefnlmplqixtnymooo
-    password: ${PASSWORD_DB}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/paymentdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:12345678}
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,24 +29,37 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   data:
     redis:
-      host: redis-12494.c340.ap-northeast-2-1.ec2.redns.redis-cloud.com
-      port: 12494
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6380}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
       timeout: 60000
-      password: ${PASSWORD_REDIS}
-      ssl:
-        enabled: true
+
 payment:
   vnpay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    tmnCode: ${TMA_CODE}
-    secretKey: ${SECRET_KEY}
+    tmnCode: ${TMA_CODE:DQ2QRKII}
+    secretKey: ${SECRET_KEY:FSK6DMH5TQ03QHP03H2YUHBHCA1HHIH5}
     returnUrl: http://localhost:3000/home/cart
     orderType: billpayment
-    ipvnUrl: https://gatewayservice-e9hh.onrender.com/api/v1/payments/vnpay-callback
+    ipvnUrl: http://localhost:8080/api/v1/payments/vnpay-callback
 
 eureka:
+  instance:
+    preferIpAddress: true
   client:
-    register-with-eureka: true  # Đăng ký service này với Eureka
-    fetch-registry: true  # Lấy danh sách các service từ Eureka
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: https://eurekaserver-ksbs.onrender.com/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+
+momo:
+  partner-code: MOMOLRJZ20181206
+  access-key: mTCKt9W3eU1m39TW
+  secret-key: SetA5RDnLHvt51AULf51DyauxUo3kDU6
+  endpoint: https://test-payment.momo.vn/v1/gateway/api
+
+logging:
+  level:
+    org.springframework.web: INFO
+    iuh.paymentservice: DEBUG
+    org.hibernate: INFO
