@@ -18,6 +18,82 @@ Dự án xây dựng một website thương mại điện tử chuyên dụng d�
 
 ---
 
+### 🛠️ **Hướng dẫn cài đặt và chạy dự án**
+
+#### **Yêu cầu hệ thống**
+- **Docker** và **Docker Compose** (cho backend)
+- **Node.js** và **npm** (cho frontend)
+- **Git** để clone repository
+
+#### **📦 Chạy Backend với Docker**
+
+1. **Clone repository backend:**
+   ```bash
+   git clone https://github.com/HuyVu2379/Bicycle_E-commerce_BE.git
+   cd Bicycle_E-commerce_BE
+   ```
+
+2. **Chạy toàn bộ hệ thống backend:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Kiểm tra trạng thái các services:**
+   ```bash
+   docker-compose ps
+   ```
+
+4. **Các services sẽ chạy trên các port sau:**
+   - **Gateway Service**: http://localhost:8080
+   - **Eureka Server**: http://localhost:8761
+   - **User Service**: http://localhost:8085
+   - **PostgreSQL**: localhost:5433
+   - **Redis**: localhost:6380
+
+5. **Dừng hệ thống:**
+   ```bash
+   docker-compose down
+   ```
+
+6. **Xóa toàn bộ (bao gồm volumes):**
+   ```bash
+   docker-compose down -v
+   ```
+
+#### **🎨 Chạy Frontend**
+
+1. **Clone repository frontend:**
+   ```bash
+   git clone https://github.com/HuyVu2379/Bicycle_E-commerce_FE.git
+   cd Bicycle_E-commerce_FE
+   ```
+
+2. **Cài đặt dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Chạy ứng dụng frontend:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Truy cập ứng dụng:**
+   - Frontend sẽ chạy trên: http://localhost:3000 (hoặc port được hiển thị trong terminal)
+
+#### **🔧 Lưu ý quan trọng**
+- Đảm bảo chạy **backend trước** rồi mới chạy **frontend**
+- Kiểm tra file `.env` trong frontend để cấu hình đúng API endpoint
+- Backend sẽ tự động tạo database và tables khi khởi động lần đầu
+- Nếu gặp lỗi port conflict, có thể thay đổi port trong `docker-compose.yml`
+
+#### **📋 Troubleshooting**
+- Nếu Docker build bị lỗi, thử: `docker-compose build --no-cache`
+- Nếu database lỗi, thử: `docker-compose down -v` rồi `docker-compose up -d`
+- Kiểm tra logs: `docker-compose logs <service-name>`
+
+---
+
 ### ✨ **Chức năng nổi bật**
 
 #### 👤 **Khách hàng**
